@@ -1,0 +1,30 @@
+.root {
+  background-color: #141414;
+  padding: 4px 0;
+  border-bottom: 0px solid #e0e0e0;
+  margin-bottom: 30px;
+  width: 100%;
+}
+
+.inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.buttons {
+  button {
+    margin-left: 5px;
+    color: #fff;
+  }
+
+  a {
+    text-decoration: none;
+  }
+}

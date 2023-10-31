@@ -1,0 +1,56 @@
+version: '3'
+
+volumes:
+  mongodb_volume:
+
+services:
+
+  mongo:
+    image: "mongo"
+    networks:
+      my-network:
+        ipv4_address: 172.20.0.4
+    volumes:
+      - mongodb_volume:/data/db
+    restart: always
+    container_name: mongo
+    
+  frontend:
+    build: ./frontend
+    networks:
+      my-network:
+        ipv4_address: 172.20.0.2
+    ports:
+      - "3000:3000"
+    restart: always
+    depends_on:
+      - backend
+    container_name: frontend
+    environment:
+      - WDS_SOCKET_PORT=0
+
+  backend:
+    build: ./backend
+    networks:
+      my-network:
+        ipv4_address: 172.20.0.3
+    ports:
+      - "5000:5000"
+    environment:
+      MONGODB_ENDPOINT: "mongodb://172.20.0.4:27017"
+    restart: always
+    depends_on:
+      - mongo
+    container_name: backend
+
+networks:
+  my-network:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.20.0.0/16
+
+
+
+
+

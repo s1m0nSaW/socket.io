@@ -1,0 +1,7 @@
+{
+    "debug.javascript.debugByLinkOptions": "on",
+    "window.zoomLevel": -1,
+    "editor.wordWrap": "on",
+    "editor.scrollBeyondLastLine": true,
+    "editor.multiCursorModifier": "ctrlCmd"
+}
