@@ -12,20 +12,22 @@ import { registerValidator, loginValidator, nicknameValidator, emailValidator, p
 import handleValidationErrors from './utils/handleValidationErrors.js';
 
 import * as UserController from './controllers/UserController.js';
-import * as RequestController from './controllers/RequestController.js';
-import * as PostController from './controllers/PostController.js';
-import * as PartnerController from './controllers/PartnerController.js';
+import * as PaymentController from './controllers/PaymentController.js';
+import * as GameController from './controllers/GameController';
+import * as QuestionController from './controllers/QuestionController.js';
+import * as MessageController from './controllers/MessageController.js';
+import * as AnsweredController from './controllers/AnsweredController.js';
 
 dotenv.config()
 
 const port = process.env.PORT || 5000
 
-const mongooseUrl = `mongodb://0.0.0.0:27017/folls` // localhost
-const url1 = `mongodb://mongo:27017/folls` //нужно поменять перед деплойем
+const mongooseUrl = `mongodb://0.0.0.0:27017/ochem` // localhost
+const url1 = `mongodb://mongo:27017/ochem` //нужно поменять перед деплойем
 
 mongoose.set("strictQuery", false);
 mongoose
-    .connect(url1, { useNewUrlParser: true, useUnifiedTopology: true })
+    .connect(mongooseUrl, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('DB ok'))
     .catch((err) => console.log('DB error ' + err));
 
@@ -54,41 +56,41 @@ app.post('/upload', upload.single('image'), (req,res) => {
     });
 });
 
-app.post('/get-all',checkAdmin, UserController.getAll);
+app.post('/get-all', checkAdmin, UserController.getAll);
 app.post('/user/:name', UserController.getUser);
-app.patch('/update/:id',checkAdmin, UserController.upgrade);
 app.delete('/admin/:id', checkAdmin, UserController.remove);
-app.post('/admi/requests', checkAdmin, RequestController.getAllRequests);
-app.patch('/admi/requests', checkAdmin, RequestController.updateStatus);
-app.delete('/admi/request/:id', checkAdmin, RequestController.remove);
-app.post('/admi/posts', checkAdmin, PostController.getPosts);
-app.post('/admi/post', checkAdmin, PostController.create);
-app.patch('/admi/post', checkAdmin, PostController.update);
-app.post('/admi/delete-post/:id', checkAdmin, PostController.remove);
-app.post('/admi/partners', checkAdmin, PartnerController.getParnters);
-app.post('/admi/delete-partner/:id', checkAdmin, PartnerController.remove);
 
 app.post('/auth/register', registerValidator, handleValidationErrors, UserController.register);    //  registerValidator, handleValidationErrors,
 app.post('/auth/login', loginValidator, handleValidationErrors, UserController.login);     //  loginValidator, handleValidationErrors,
 app.post('/check-user', UserController.checkUser);
+app.patch('/auth-data', checkAuth, UserController.update);
 app.patch('/auth-nick', nicknameValidator, handleValidationErrors, checkAuth, UserController.updateNick);
 app.patch('/auth-email', emailValidator, handleValidationErrors, checkAuth, UserController.updateEmail);
 app.patch('/auth-pass', passwordValidator, handleValidationErrors, checkAuth, UserController.updatePassword);
-app.patch('/requisites', checkAuth, UserController.requisites);
-app.patch('/payment', checkAuth, UserController.updatePayment);
 app.get('/auth', checkAuth,  UserController.getMe);       // checkAuth,
 app.delete('/auth/:id', checkAuth, UserController.remove);  // checkAuth,
-app.get('/auth/partner', checkAuth,   UserController.isPartner);
 
-app.get('/posts', checkAuth,   PostController.getPosts);
-app.post('/reaction/:id', checkAuth,   PostController.like);
+app.patch('/payment', checkAuth, PaymentController.create);
+app.post('/payment-notification', checkIp, PaymentController.payments);   //    checkIp,
 
-app.post('/partner', checkAuth, PartnerController.create);
+app.post('/answer', checkAuth, AnsweredController.create);
+app.get('/answer/:id', checkAuth, AnsweredController.getAnwereds);
+app.delete('/answer/:id', checkAuth, AnsweredController.remove);
 
-app.post('/new-request', checkAuth, RequestController.create);
-app.get('/requests', checkAuth, RequestController.getRequests);
+app.post('/message', checkAuth, MessageController.create);
+app.get('/message/:id', checkAuth, MessageController.getMessages);
+app.delete('/message/:id', checkAuth, MessageController.remove);
 
-app.post('/payment-notification', UserController.payments);   //    checkIp, 
+app.post('/question', checkAuth, QuestionController.create);
+app.post('/questions', checkAuth, QuestionController.getQuestions);
+app.delete('/question/:id', checkAuth, QuestionController.remove);
+
+app.post('/new-game', checkAuth, GameController.create);
+app.get('/my-games', checkAuth, GameController.getMyGames);
+app.get('/app-games', checkAuth, GameController.getAppGames);
+app.get('/game/:id', checkAuth, GameController.getGame);
+app.post('/join-game', checkAuth, GameController.acceptGame);
+app.delete('/game/:id', checkAuth, GameController.remove);
 
 const checkout = new YooCheckout({
     shopId: process.env.YOOKASSA_SHOP_ID,
@@ -113,7 +115,7 @@ app.post('/create-payment', async (req, res) => {
         capture:true,
         confirmation: {
             type: 'redirect',
-            return_url: `https://communicationcompass.ru`
+            return_url: `http://localhost:3000`
         },
     };
 
@@ -130,6 +132,5 @@ app.listen(port, (err) => {
         return console.log(err);
     }
 
-//    const date = +new Date + 864000000
     console.log(`App listening on ${port}! `);
 });

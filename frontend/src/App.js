@@ -44,7 +44,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Main />} />
           <Route path="/:referal" element={<Main />} />
-          <Route path="/lk/:nickname" element={<Profile />} />
+          <Route path="/profile/:nickname" element={<Profile />} />
           <Route path="/logi" element={<Login />} />
           <Route path="/info" element={<Info />} />
           <Route path="/admi" element={<Admin />} />
