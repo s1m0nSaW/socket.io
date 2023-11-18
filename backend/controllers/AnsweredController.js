@@ -5,8 +5,10 @@ export const create = async (req,res) => {
         const doc = new AnsweredModel({
             questionId: req.body.questionId,
             gameId: req.body.gameId,
-            userId: req.body.userId,
-            answer: req.body.answer,
+            user1: req.body.user1,
+            user2: req.body.user2,
+            answer1: req.body.answer1,
+            answer2: req.body.answer2,
         });
 
         const chat = await doc.save();

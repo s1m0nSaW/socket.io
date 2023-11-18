@@ -6,7 +6,7 @@ export const create = async (req,res) => {
         const doc = new Payment({
             paymentId: req.body.paymentId,
             paymentStatus: req.body.status,
-            user: req.body.user,
+            user: req.userId,
         });
 
         await doc.save();

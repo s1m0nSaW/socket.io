@@ -5,17 +5,25 @@ const GameSchema = new mongoose.Schema({
         type: String, 
         trim: true 
     },
+    turn: { 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: "User"
+    },
+    theme: { 
+        type: String,
+        default: 'none',
+    },
     status: { 
         type: String,
         default: 'inactive', 
     },
     user1: { 
-        type: String,
-        default: 'none', 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: "User" 
     },
     user2: { 
-        type: String,
-        default: 'none', 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: "User" 
     },
 },{
     timestamps:true,

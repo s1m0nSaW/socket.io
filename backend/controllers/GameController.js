@@ -5,39 +5,36 @@ export const create = async (req,res) => {
     try {
         const doc = new GameModel({
             gameName: req.body.gameName,
-            user1: req.body.user1,
+            theme: req.body.theme,
+            turn: null,
+            user1: req.userId,
             user2: req.body.user2,
         });
 
         const game = await doc.save();
 
-        await UserModel.updateOne(
-            {
-                _id: req.body.user1,
-            },
-            {
-                $push: {
-                    gamesOut: game._id,
-                },
-            },
-            (err) => {
-                if(err) console.log(err)
-            }
-        );
-        
-        await UserModel.updateOne(
-            {
-                _id: req.body.user2,
-            },
-            {
-                $push: {
-                    gamesIn: game._id,
-                },
-            },
-            (err) => {
-                if(err) console.log(err)
-            }
-        );
+        UserModel.findById(req.userId)
+        .then(user1 => {
+            // Добавление идентификатор2 в поле gameIn первого пользователя
+            user1.gamesOut.push(game._id);
+            return user1.save();
+        })
+        .then(savedUser1 => {
+            console.log(`Пользователь ${savedUser1._id} успешно обновлен.`);
+            // Получение данных второго пользователя
+            return UserModel.findById(req.body.user2);
+        })
+        .then(user2 => {
+            // Добавление идентификатор1 в поле gameOut второго пользователя
+            user2.gamesIn.push(game._id);
+            return user2.save();
+        })
+        .then(savedUser2 => {
+            console.log(`Пользователь ${savedUser2._id} успешно обновлен.`);
+        })
+        .catch(error => {
+            console.error(error);
+        });
 
         res.json(game);
     } catch (err) {
@@ -48,13 +45,15 @@ export const create = async (req,res) => {
     }
 };
 
-export const getMyGames = async (req, res) => {
+export const getGames = async (req, res) => {
     try {
-        const games = await GameModel.find({ user1: req.userId, });
+        const gamesIds = req.body.games
+
+        const games = await GameModel.find({ _id: { $in: gamesIds } });
 
         if (!games) {
             return res.status(404).json({
-                message: "Игры не найдены",
+                message: "Не удалось найти игры",
             });
         }
 
@@ -62,26 +61,7 @@ export const getMyGames = async (req, res) => {
     } catch (err) {
         console.log(err);
         res.status(500).json({
-            message: "Нет доступа",
-        });
-    }
-};
-
-export const getAppGames = async (req, res) => {
-    try {
-        const games = await GameModel.find({ user2: req.userId });
-
-        if (!games) {
-            return res.status(404).json({
-                message: "Игры не найдены",
-            });
-        }
-
-        res.json(games);
-    } catch (err) {
-        console.log(err);
-        res.status(500).json({
-            message: "Нет доступа",
+            message: 'Ошибка при поиске игр',
         });
     }
 };
@@ -107,62 +87,33 @@ export const getGame = async (req, res) => {
 
 export const acceptGame = async (req, res) => {
     try {
-        const game = await GameModel.findOneAndUpdate(
-            {
-                _id: req.body.gameId,
-            },
-            {
-                $set: {
-                    status: 'active',
-                },
-            },
-            (err) => {
-                if(err) console.log(err)
-            },
-            { returnDocument: "after" }
-        );
-
-        if (!game) {
-            return res.status(404).json({
-                message: "Чат не найден",
+        GameModel.findOneAndUpdate({ _id: req.params.id }, { status: 'active' }, { new: true })
+            .then(game => {
+                UserModel.findOneAndUpdate({ _id: game.user1 }, 
+                                        { $push: { games: game._id }, $pull: { gamesOut: game._id } }, 
+                                        { new: true })
+                .then(user1 => {
+                    UserModel.findOneAndUpdate({ _id: game.user2 }, 
+                                            { $push: { games: game._id }, $pull: { gamesIn: game._id } }, 
+                                            { new: true })
+                    .then(user2 => {
+                        res.json(game);
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        res.status(500).json({ error: 'Something went wrong' });
+                    });
+                })
+                .catch(error => {
+                    console.log(error);
+                    res.status(500).json({ error: 'Something went wrong' });
+                });
+            })
+            .catch(error => {
+                console.log(error);
+                res.status(500).json({ error: 'Something went wrong' });
             });
-        } else {
-            await UserModel.updateOne(
-                {
-                    _id: game.user1,
-                },
-                {
-                    $pull: {
-                        gamesOut: game._id,
-                    },
-                    $push: {
-                        games: game._id,
-                    },
-                },
-                (err) => {
-                    if(err) console.log(err)
-                }
-            );
-
-            await UserModel.updateOne(
-                {
-                    _id: game.user2,
-                },
-                {
-                    $pull: {
-                        gamesIn: game._id,
-                    },
-                    $push: {
-                        games: game._id,
-                    },
-                },
-                (err) => {
-                    if(err) console.log(err)
-                }
-            );
-
-            res.json(game);
-        }
+        
 
     } catch (err) {
         console.log(err);
@@ -172,11 +123,69 @@ export const acceptGame = async (req, res) => {
     }
 };
 
-export const remove = async (req, res) => {
+export const begin = async (req, res) => {
     try {
+        GameModel.findOneAndUpdate({ _id: req.params.id }, { turn: req.body.userId }, { new: true }).catch(error => {
+            console.log(error);
+            res.status(500).json({ error: 'Something went wrong' });
+        });
+
+        res.json({
+            success: true,
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: 'Ошибка при поиске игр',
+        });
+    }
+};
+
+export const removeGame = async (req, res) => {
+    try {
+        const game = await GameModel.findById(req.params.id);
+
+        if(game.status === 'active') {
+            UserModel.findByIdAndUpdate(game.user1, { $pull: { games: game._id } }, { new: true }, (err, user1) => {
+                if (err) {
+                    console.log('Произошла ошибка при обновлении пользователя 1:', err);
+                    return;
+                }
+              
+                console.log('Пользователь 1 успешно обновлен:');
+            });
+    
+            UserModel.findByIdAndUpdate(game.user2, { $pull: { games: game._id } }, { new: true }, (err, user1) => {
+                if (err) {
+                    console.log('Произошла ошибка при обновлении пользователя 1:', err);
+                    return;
+                }
+              
+                console.log('Пользователь 1 успешно обновлен:');
+            });
+        } else {
+            UserModel.findByIdAndUpdate(game.user1, { $pull: { gameOut: game._id } }, { new: true }, (err, user1) => {
+                if (err) {
+                    console.log('Произошла ошибка при обновлении пользователя 1:', err);
+                    return;
+                }
+              
+                console.log('Пользователь 1 успешно обновлен:');
+            });
+    
+            UserModel.findByIdAndUpdate(game.user2, { $pull: { gameIn: game._id } }, { new: true }, (err, user1) => {
+                if (err) {
+                    console.log('Произошла ошибка при обновлении пользователя 1:', err);
+                    return;
+                }
+              
+                console.log('Пользователь 1 успешно обновлен:');
+            });
+        }
+
         GameModel.findOneAndDelete(
             {
-                _id: req.params.id,
+                _id: game._id,
             },
             (err, doc) => {
                 if (err) {

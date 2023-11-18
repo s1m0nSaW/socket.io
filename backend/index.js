@@ -13,7 +13,7 @@ import handleValidationErrors from './utils/handleValidationErrors.js';
 
 import * as UserController from './controllers/UserController.js';
 import * as PaymentController from './controllers/PaymentController.js';
-import * as GameController from './controllers/GameController';
+import * as GameController from './controllers/GameController.js';
 import * as QuestionController from './controllers/QuestionController.js';
 import * as MessageController from './controllers/MessageController.js';
 import * as AnsweredController from './controllers/AnsweredController.js';
@@ -42,32 +42,39 @@ const storage = multer.diskStorage({
     },
 });
 
-
-
 const upload = multer({storage});
 
 app.use(express.json());
 app.use(cors());
 app.use('/uploads', express.static('uploads'));
 
-app.post('/upload', upload.single('image'), (req,res) => {
-    res.json({
-        url: `/uploads/${req.file.originalname}`,
-    });
-});
+app.post('/upload', checkAuth, upload.single('image'), UserController.updatePic);
 
-app.post('/get-all', checkAdmin, UserController.getAll);
 app.post('/user/:name', UserController.getUser);
+app.post('/get-all', checkAdmin, UserController.getAll);
 app.delete('/admin/:id', checkAdmin, UserController.remove);
+app.post('/quests', checkAdmin, QuestionController.getAll);
+app.post('/theme', checkAdmin, QuestionController.getQuestions);
+app.post('/question', checkAdmin, QuestionController.create);
+app.post('/del-quest/:id', checkAdmin, QuestionController.remove);
 
 app.post('/auth/register', registerValidator, handleValidationErrors, UserController.register);    //  registerValidator, handleValidationErrors,
 app.post('/auth/login', loginValidator, handleValidationErrors, UserController.login);     //  loginValidator, handleValidationErrors,
 app.post('/check-user', UserController.checkUser);
 app.patch('/auth-data', checkAuth, UserController.update);
+app.patch('/rsvp-date', checkAuth, UserController.updateRsvpDate);
+app.patch('/rsvp-status', checkAuth, UserController.updateRsvpStatus);
 app.patch('/auth-nick', nicknameValidator, handleValidationErrors, checkAuth, UserController.updateNick);
 app.patch('/auth-email', emailValidator, handleValidationErrors, checkAuth, UserController.updateEmail);
 app.patch('/auth-pass', passwordValidator, handleValidationErrors, checkAuth, UserController.updatePassword);
 app.get('/auth', checkAuth,  UserController.getMe);       // checkAuth,
+app.get('/find-user/:name', checkAuth,  UserController.getUser);
+app.get('/add-friend/:id', checkAuth,  UserController.addFriend);
+app.get('/conf-req/:id', checkAuth,  UserController.consfirmRequest);
+app.get('/reject-req/:id', checkAuth,  UserController.rejectRequest);
+app.delete('/request/:id', checkAuth,  UserController.deleteRequest);
+app.post('/friends', checkAuth,  UserController.getFriends);
+app.delete('/friends/:id', checkAuth,  UserController.removeFriend); 
 app.delete('/auth/:id', checkAuth, UserController.remove);  // checkAuth,
 
 app.patch('/payment', checkAuth, PaymentController.create);
@@ -78,19 +85,18 @@ app.get('/answer/:id', checkAuth, AnsweredController.getAnwereds);
 app.delete('/answer/:id', checkAuth, AnsweredController.remove);
 
 app.post('/message', checkAuth, MessageController.create);
-app.get('/message/:id', checkAuth, MessageController.getMessages);
+app.get('/messages/:id', checkAuth, MessageController.getMessages);
 app.delete('/message/:id', checkAuth, MessageController.remove);
 
-app.post('/question', checkAuth, QuestionController.create);
 app.post('/questions', checkAuth, QuestionController.getQuestions);
-app.delete('/question/:id', checkAuth, QuestionController.remove);
+app.get('/all-quest', checkAuth, QuestionController.getAll);
 
 app.post('/new-game', checkAuth, GameController.create);
-app.get('/my-games', checkAuth, GameController.getMyGames);
-app.get('/app-games', checkAuth, GameController.getAppGames);
+app.post('/games', checkAuth, GameController.getGames);
+app.post('/begin-game/:id', checkAuth, GameController.begin);
 app.get('/game/:id', checkAuth, GameController.getGame);
-app.post('/join-game', checkAuth, GameController.acceptGame);
-app.delete('/game/:id', checkAuth, GameController.remove);
+app.get('/join/:id', checkAuth, GameController.acceptGame);
+app.delete('/game/:id', checkAuth, GameController.removeGame);
 
 const checkout = new YooCheckout({
     shopId: process.env.YOOKASSA_SHOP_ID,

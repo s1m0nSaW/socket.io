@@ -1,16 +1,16 @@
 import mongoose from "mongoose";
 
 const MessageSchema = new mongoose.Schema({
-    senderId: {
-        type: String,
-        default: 'none',
+    senderId: { 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: "User" 
     },
     content: { 
         type: String,
     },
     gameId: { 
-        type: String,
-        default: 'none', 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: "Game" 
     },
 },{
     timestamps:true,

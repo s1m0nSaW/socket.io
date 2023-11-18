@@ -1,6 +1,8 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
+import sharp from 'sharp';
+import fs from 'fs';
 
 import UserModel from "../models/User.js";
 
@@ -12,10 +14,48 @@ export const register = async (req, res) => {
     try {
         const promoter = await UserModel.findOne({ nickname: req.body.promoter });
         if(promoter){
-            
-        }
+            const password = req.body.password;
+            const salt = await bcrypt.genSalt(10);
+            const hash = await bcrypt.hash(password, salt);
 
-        const password = req.body.password;
+            const doc = new UserModel({
+                email: req.body.email,
+                nickname: req.body.nickname,
+                passwordHash: hash,
+                friends: [promoter._id]
+            });
+
+            const user = await doc.save();
+
+            await UserModel.findOneAndUpdate(
+                {
+                    _id: promoter._id,
+                },
+                {
+                    $push: {friends: user._id},
+                    $inc: {rsvp: 3},
+                },
+                { returnDocument: "after" }
+            );
+
+            const token = jwt.sign(
+                {
+                    _id: user._id,
+                },
+                secret,
+                {
+                    expiresIn: "30d",
+                }
+            );
+
+            const { passwordHash, ...userData } = user._doc;
+
+            res.json({
+                ...userData,
+                token,
+            });
+        } else {
+            const password = req.body.password;
             const salt = await bcrypt.genSalt(10);
             const hash = await bcrypt.hash(password, salt);
 
@@ -43,6 +83,7 @@ export const register = async (req, res) => {
                 ...userData,
                 token,
             });
+        }
         
     } catch (err) {
         console.log(err);
@@ -211,6 +252,15 @@ export const getUser = async (req, res) => {
             });
         }
         const { 
+            rsvpStatus,
+            dailyRsvp,
+            rsvpDate,
+            friends,
+            reqIn,
+            reqOut,
+            games,
+            gamesIn,
+            gamesOut,
             passwordHash,
             ...userData } = user._doc;
 
@@ -256,6 +306,156 @@ export const getAll = async (req, res) => {
     }
 };
 
+export const getFriends = async (req, res) => {
+    try {
+        const friends = req.body.friends
+
+        const users = await UserModel.find({ _id: { $in: friends } });
+
+        if (!users) {
+            return res.status(404).json({
+                message: "Не удалось найти",
+            });
+        }
+
+        res.json(users);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: 'Ошибка при поиске пользователей',
+        });
+    }
+};
+
+export const removeFriend = async (req, res) => {
+    const user = req.userId
+    const friend = req.params.id
+    try {
+        await UserModel.findOneAndUpdate({ _id: req.params.id },
+            { $pull: { friends: user}}, { new:true})
+            .catch((err) => console.log(err));
+
+        await UserModel.findOneAndUpdate({ _id:req.userId },
+            { $pull: { friends: friend}}, { new:true})
+            .catch((err) => console.log(err));
+
+        res.json({
+            success: true,
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: 'Ошибка при удалении друга',
+        });
+    }
+};
+
+export const addFriend = async (req, res) => {
+    const user = req.userId
+    const friend = req.params.id
+    try {
+        await UserModel.findOneAndUpdate({ _id: req.params.id },
+            { $push: { reqIn: user}}, { new:true})
+            .catch((err) => console.log(err));
+
+        await UserModel.findOneAndUpdate({ _id:req.userId },
+            { $push: { reqOut: friend}}, { new:true})
+            .catch((err) => console.log(err));
+
+        res.json({
+            success: true,
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: 'Ошибка при удалении друга',
+        });
+    }
+};
+
+export const consfirmRequest = async (req, res) => {
+    const user = req.userId
+    const friend = req.params.id
+    try {
+        await UserModel.findOneAndUpdate({ _id: req.params.id },
+            { 
+                $push: { friends: user},
+                $pull: { reqOut: user}
+            }, { new:true})
+            .catch((err) => console.log(err));
+
+        await UserModel.findOneAndUpdate({ _id:req.userId },
+            { 
+                $push: { friends: friend},
+                $pull: { reqIn: friend}
+            }, { new:true})
+            .catch((err) => console.log(err));
+
+        res.json({
+            success: true,
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: 'Ошибка при принятии заявки',
+        });
+    }
+};
+
+export const rejectRequest = async (req, res) => {
+    const user = req.userId
+    const friend = req.params.id
+    try {
+        await UserModel.findOneAndUpdate({ _id: req.params.id },
+            { 
+                $pull: { reqOut: user}
+            }, { new:true})
+            .catch((err) => console.log(err));
+
+        await UserModel.findOneAndUpdate({ _id:req.userId },
+            { 
+                $pull: { reqIn: friend}
+            }, { new:true})
+            .catch((err) => console.log(err));
+
+        res.json({
+            success: true,
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: 'Ошибка при удалении заявки',
+        });
+    }
+};
+
+export const deleteRequest = async (req, res) => {
+    const user = req.userId
+    const friend = req.params.id
+    try {
+        await UserModel.findOneAndUpdate({ _id: req.params.id },
+            { 
+                $pull: { reqIn: user}
+            }, { new:true})
+            .catch((err) => console.log(err));
+
+        await UserModel.findOneAndUpdate({ _id:req.userId },
+            { 
+                $pull: { reqOut: friend}
+            }, { new:true})
+            .catch((err) => console.log(err));
+
+        res.json({
+            success: true,
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: 'Ошибка при удалении заявки',
+        });
+    }
+};
+
 export const remove = async (req, res) => {
     try {
         UserModel.findOneAndDelete(
@@ -293,7 +493,7 @@ export const update = async (req, res) => {
     try {
         const user = await UserModel.findOneAndUpdate(
             {
-                _id: req.params.id,
+                _id: req.userId,
             },
             {
                 $set: {
@@ -311,6 +511,111 @@ export const update = async (req, res) => {
         console.log(err);
         res.status(500).json({
             message: "Проблема с удалением",
+        });
+    }
+};
+
+const savePic = async (id, path) => {
+    const user = await UserModel.findById(id);
+    if(user.pic !== 'none'){
+        fs.unlink(`.${user.pic}`, (error) => {
+            if (error) {
+                console.error('Ошибка при удалении старого изображения:', error);
+            } else {
+                console.log('Старое изображение успешно удалено');
+            }
+        });
+    }
+    await UserModel.findOneAndUpdate(
+        {
+            _id: id
+        },
+        {
+            $set: {
+                pic: path,
+            },
+        },
+        { returnDocument: "after" }
+    ).then(()=>console.log('OK')).catch((err)=> console.log(err));
+}
+
+export const updatePic = async (req, res) => {
+
+    const pathToImage = `./uploads/${req.file.originalname}`;
+    
+    // Путь для сохранения конвертированного изображения в формате WebP
+    const pathToWebPImage = `./uploads/webp-${req.file.originalname}.webp`;
+
+    // Конвертирование изображения в формат WebP
+    sharp(pathToImage)
+    .toFormat('webp')
+    .resize({ width: 500,height: 500 })
+    .toFile(pathToWebPImage)
+    .then(() => {
+        console.log('Изображение успешно конвертировано в формат WebP');
+        savePic( req.userId, `/uploads/webp-${req.file.originalname}.webp`)
+        res.sendStatus(200);
+        // Удаление исходного изображения
+        fs.unlink(pathToImage, (error) => {
+        if (error) {
+            console.error('Ошибка при удалении исходного изображения:', error);
+        } else {
+            console.log('Исходное изображение успешно удалено');
+        }
+        });
+    })
+    .catch((error) => {
+        console.error('Ошибка при конвертировании изображения:', error);
+        res.status(500).json({
+            message: "Не удалось обновить данные",
+        });
+    });
+};
+
+export const updateRsvpDate = async (req, res) => {
+    try {
+        const user = await UserModel.findOneAndUpdate(
+            {
+                _id: req.userId,
+            },
+            {
+                $set: {
+                    rsvpDate: req.body.rsvpDate,
+                    rsvpStatus: false,
+                    dailyRsvp: 3,
+                },
+            },
+            { returnDocument: "after" }
+        );
+        if(user){res.sendStatus(200);}
+
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: "Не удалось обновить данные",
+        });
+    }
+};
+
+export const updateRsvpStatus = async (req, res) => {
+    try {
+        const user = await UserModel.findOneAndUpdate(
+            {
+                _id: req.userId,
+            },
+            {
+                $set: {
+                    rsvpStatus: true,
+                },
+            },
+            { returnDocument: "after" }
+        );
+        if(user){res.sendStatus(200);}
+
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: "Не удалось обновить данные",
         });
     }
 };

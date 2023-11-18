@@ -22,6 +22,25 @@ export const create = async (req,res) => {
     }
 }
 
+export const getAll = async (req, res) => {
+    try {
+        const messages = await QuestionModel.find();
+
+        if (!messages) {
+            return res.status(404).json({
+                message: "Вопрос не найден",
+            });
+        }
+
+        res.json(messages);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: "Нет доступа",
+        });
+    }
+};
+
 export const getQuestions = async (req, res) => {
     try {
         const messages = await QuestionModel.find({ theme: req.body.theme, });

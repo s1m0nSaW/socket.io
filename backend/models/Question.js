@@ -9,6 +9,10 @@ const QuestionSchema = new mongoose.Schema({
         type: String,
         default: 'none',
     },
+    raiting: {
+        type: String,
+        default: 'none',
+    },
     answer1: {
         type: String,
         default: 'none',
