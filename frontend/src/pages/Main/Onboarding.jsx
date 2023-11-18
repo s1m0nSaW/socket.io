@@ -6,13 +6,13 @@ import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 
 import React from 'react'
 
-import registration from '../img/registration.png'
-import lk1 from '../img/lk1.png'
-import lk2 from '../img/lk2.png'
-import lk3 from '../img/lk3.png'
-import lk4 from '../img/lk4.png'
-import lk5 from '../img/lk5.png'
-import lk6 from '../img/lk6.png'
+import registration from '../../img/registration.png'
+import lk1 from '../../img/lk1.png'
+import lk2 from '../../img/lk2.png'
+import lk3 from '../../img/lk3.png'
+import lk4 from '../../img/lk4.png'
+import lk5 from '../../img/lk5.png'
+import lk6 from '../../img/lk6.png'
 
 const images = [
     {

@@ -8,6 +8,10 @@ import { Info } from './pages/Info';
 import { Login, Main, Profile, Admin } from "./pages";
 import { fetchAuthMe } from "./redux/slices/auth";
 import { Typography, Link, Snackbar, Button } from '@mui/material';
+import Intro from './pages/Intro';
+import Friends from './pages/Friends';
+import GamePage from './pages/Game';
+import Games from './pages/Games';
 
 
 
@@ -39,12 +43,16 @@ function App() {
 
   return (
     <React.Fragment>
-      
       <Container disableGutters maxWidth="lg" sx={{ minHeight: '100vh', width:'100vw' }}>
         <Routes>
-          <Route path="/" element={<Main />} />
-          <Route path="/:referal" element={<Main />} />
-          <Route path="/profile/:nickname" element={<Profile />} />
+          <Route path="/" element={<Intro/>} />
+          <Route path="/:referal" element={<Intro />} />
+          <Route path="/main" element={<Main />} />
+          <Route path="/fnds" element={<Friends />} />
+          <Route path="/main/:referal" element={<Main />} />
+          <Route path="/prfl/:nickname" element={<Profile />} />
+          <Route path="/game/:id" element={<GamePage />} />
+          <Route path="/gams" element={<Games />} />
           <Route path="/logi" element={<Login />} />
           <Route path="/info" element={<Info />} />
           <Route path="/admi" element={<Admin />} />

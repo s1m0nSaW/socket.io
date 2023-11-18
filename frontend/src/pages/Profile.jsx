@@ -1,90 +1,266 @@
-import { Backdrop, BottomNavigation, BottomNavigationAction, CircularProgress, Grid, Paper } from '@mui/material';
-import React from 'react'
-import { useSelector } from 'react-redux';
+import React from "react";
+import { Avatar, Badge, Button, Chip, Grid, Stack, Toolbar, Typography } from "@mui/material";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-import HomeIcon from '@mui/icons-material/Home';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
-import AccountBoxIcon from '@mui/icons-material/AccountBox';
-import NewspaperIcon from '@mui/icons-material/Newspaper';
+import GroupsIcon from '@mui/icons-material/Groups';
+import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
+import SettingsIcon from '@mui/icons-material/Settings';
+import PersonIcon from '@mui/icons-material/Person';
+import RsvpIcon from '@mui/icons-material/Rsvp';
+import UpdateIcon from '@mui/icons-material/Update';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
-import Home from './Fragments/Home.jsx';
-import News from './Fragments/News.jsx';
-import Account from './Fragments/Account.jsx';
-import Finance from './Fragments/Finance.jsx';
-import Cart from './Fragments/Cart.jsx';
-import SuccessSnack from '../components/SuccessSnack.jsx';
-import { selectIsAuth, authStatus } from '../redux/slices/auth.js';
-import ProfileHeader from '../components/ProfileHeader.jsx';
+import Header from "../components/Header";
+import EditInfoDialog from './Profile/EditInfoDialog';
+import SuccessSnack from "../components/SuccessSnack";
+import { fetchAuthMe, setData, selectIsAuth, authStatus } from "../redux/slices/auth";
+import axios from '../axios.js';
+import BuyRsvpDialog from "./Profile/BuyRsvpDialog";
+import SettingsDialog from "./Profile/SettingsDialog";
+import NewGameDialog from "./Profile/NewGameDialog";
 
 export const Profile = () => {
-  const navigate = useNavigate()
-  const isAuth = useSelector(selectIsAuth)
-  const status = useSelector(authStatus)
-  const user = useSelector((state) => state.auth.data)
-  const [value, setValue] = React.useState(2);
-  const [disabled, setDisabled] = React.useState(true);
-  const [snackMessage, setSnackMessage] = React.useState('');
-  const [snack, setSnack] = React.useState(false);
-  const [severity, setSeverity] = React.useState('info');
-  const [backdrop, setBackdrop] = React.useState(true);
+    const user = useSelector((state) => state.auth.data);
+    const isAuth = useSelector(selectIsAuth);
+    const status = useSelector(authStatus);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const [editInfo, setEditInfo] = React.useState(false);
+    const [successSnack, setSuccessSnack] = React.useState(false);
+    const [successMessage, setSuccessMessage] = React.useState('');
+    const [severity, setSeverity] = React.useState('info');
+    const [openBuyDialog, setOpenBuyDialog] = React.useState(false);
+    const [openSettingsDialog, setOpenSettingsDialog] = React.useState(false);
+    const [openNewGameDialog, setOpenNewGameDialog] = React.useState(false);
 
-  const handleSnackClose = () => {
-    setSnack(false)
-  }
+    const handleCloseEditInfo = () => {
+        setEditInfo(false)
+    }
 
-  React.useEffect(()=>{
-    if(status !== 'loading'){
-      setBackdrop(false)
-      if (!isAuth) {
-          navigate(`/`);
+    const handleCloseBuyDialog = () => {
+        setOpenBuyDialog(false)
+    }
+
+    const handleCloseSettingsDialog = () => {
+        setOpenSettingsDialog(false)
+    }
+
+    const handleCloseNewGameDialog = () => {
+        setOpenNewGameDialog(false)
+    }
+
+    const handleSuccessOpen = (message, severity) => {
+        setSuccessMessage(message)
+        setSeverity(severity)
+        setSuccessSnack(true)
+    }
+
+    const handleSuccessClose = () => {
+        setSuccessSnack(false)
+    }
+
+    function parseMillisecondsIntoReadableTime(milliseconds){
+        //Get hours from milliseconds
+        var hours = milliseconds / (1000*60*60);
+        var absoluteHours = Math.floor(hours);
+        var h = absoluteHours > 9 ? absoluteHours : '0' + absoluteHours;
+      
+        //Get remainder from hours and convert to minutes
+        var minutes = (hours - absoluteHours) * 60;
+        var absoluteMinutes = Math.floor(minutes);
+        var m = absoluteMinutes > 9 ? absoluteMinutes : '0' +  absoluteMinutes;
+      
+        return h + ' часов ' + m + ' минут';
       }
-    } else {
-      setBackdrop(true)
-    }
-    if (user?.paymentStatus === "succeeded"){
-      setDisabled(false)
-    }
-  },[user, status, isAuth, navigate])
 
-  return (
-    <Grid container>
-      <ProfileHeader/>
-      {value===0&&<Home/>}
-      {value===1&&<News/>}
-      {value===2&&<Account/>}
-      {value===3&&<Finance/>}
-      {value===4&&<Cart/>}
-      <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
-        <BottomNavigation
-          showLabels
-          value={value}
-          onChange={(event, newValue) => {
-            if(disabled === true){
-              setSeverity('error')
-              setSnackMessage('Аккаунт не оплачен')
-              setSnack(true)
-            } else {
-              setValue(newValue);
+    const handleFreeRsvp = async () => {
+        if(user.rsvpStatus){
+            const date = +new Date()
+            const data = { rsvpDate: date + 86400000 }
+            await axios.patch('/rsvp-date', data).catch((err)=>{
+                console.warn(err); 
+            });
+            dispatch(fetchAuthMe())
+        } else {
+            const date = +new Date()
+            const timeToTrue = parseMillisecondsIntoReadableTime(user.rsvpDate - date)
+            handleSuccessOpen(`Ежедневные бесплатные rsvp через ${timeToTrue}`, 'info')
+        }
+        
+    } 
+
+    const updateRsvpStatus = async () => {
+        await axios.patch('/rsvp-status').catch((err)=>{
+            console.warn(err); 
+        });
+    }
+
+    React.useEffect(() => {
+        if(status !== 'loading'){
+            const interval = setInterval(() => {
+                const date = +new Date()
+                if(date > user.rsvpDate) {
+                    const fields = {
+                        ...user,
+                        rsvpStatus: true,
+                    }
+                    dispatch(setData(fields));
+                    updateRsvpStatus();
+                }
+            },100)
+            return () => {
+                clearInterval(interval)
             }
-          }}
-        >
-          <BottomNavigationAction icon={<HomeIcon />} />
-          <BottomNavigationAction icon={<NewspaperIcon />} />
-          <BottomNavigationAction icon={<AccountBoxIcon />} />
-          <BottomNavigationAction icon={<AccountBalanceWalletIcon />} />
-          <BottomNavigationAction icon={<ShoppingCartIcon />} />
-        </BottomNavigation>
-      <SuccessSnack open={snack} handleClose={handleSnackClose} message={snackMessage} severity={severity}/>
-      <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1, opacity: 1, backgroundColor:(theme) => theme.palette.common.black }}
-        open={backdrop}
-      >
-        <CircularProgress color='primary' />
-      </Backdrop>
-      </Paper>
-    </Grid>
-  )
-}
+        }
+    }, [ dispatch, user, status ])
 
+    React.useEffect(()=>{
+        if(status !== 'loading'){
+            if (!isAuth) {
+                navigate(`/main`);
+            }
+        }
+    },[ isAuth, user, navigate, status ])
+
+    return (
+        <React.Fragment>
+            <Header profile={false} onSuccess={handleSuccessOpen}/>
+            <Toolbar />
+            <Toolbar />
+            {user && (
+                <Grid
+                    container
+                    direction="column"
+                    justifyContent="center"
+                    alignItems="center"
+                    spacing={1}
+                >
+                    <Grid item>
+                        <Badge
+                            overlap="circular"
+                            anchorOrigin={{
+                                vertical: "bottom",
+                                horizontal: "right",
+                            }}
+                            badgeContent={""}
+                        >
+                            {user.pic === "none" ? (
+                                <Avatar onClick={() => setEditInfo(true)}>
+                                    <PersonIcon />
+                                </Avatar>
+                            ) : (
+                                <Avatar
+                                    alt={user.nickname}
+                                    src={`http://localhost:5000${user.pic}`}
+                                    sx={{ width: 56, height: 56 }}
+                                    onClick={() => setEditInfo(true)}
+                                />
+                            )}
+                        </Badge>
+                    </Grid>
+                    <Grid item>
+                        <Stack
+                            direction="column"
+                            justifyContent="center"
+                            alignItems="center"
+                        >
+                            {user.fullname === "none" ? (
+                                <Typography>Укажите данные</Typography>
+                            ) : (
+                                <Typography>{user.fullname}</Typography>
+                            )}
+                            {user.city !== "none" && (
+                                <Typography variant="caption" align="center">
+                                    {user.city}
+                                </Typography>
+                            )}
+                        </Stack>
+                    </Grid>
+                    <Grid item sx={{ marginBottom: '15px', marginTop: '15px'}}>
+                        <Stack
+                            direction="row"
+                            spacing={4}
+                            justifyContent='center'
+                            alignItems="center"
+                            sx={{ width: "70vw" }}
+                        >
+                            <Chip
+                                label={` ${user.dailyRsvp}/3 `}
+                                color="primary"
+                                variant={user.rsvpStatus?'filled':'outlined'}
+                                deleteIcon={<RsvpIcon />}
+                                onClick={handleFreeRsvp}
+                                onDelete={handleFreeRsvp}
+                                icon={<UpdateIcon />}
+                            />
+                            <Chip
+                                label={` ${user.rsvp} `}
+                                color="primary"
+                                deleteIcon={<RsvpIcon />}
+                                onClick={() => setOpenBuyDialog(true)}
+                                onDelete={() => setOpenBuyDialog(true)}
+                                icon={<AddCircleOutlineIcon />}
+                            />
+                        </Stack>
+                    </Grid>
+                    <Grid item xs={8}>
+                        <Button onClick={()=>setOpenNewGameDialog(true)}>
+                            <Typography variant="h6">
+                                <b>Новая игра</b>
+                            </Typography>
+                        </Button>
+                    </Grid>
+                    <Grid item xs={8}>
+                        <Button endIcon={<GroupsIcon fontSize="small" />} onClick={()=>navigate(`/fnds`)}>
+                            <b>Друзья</b>
+                        </Button>
+                    </Grid>
+                    <Grid item xs={8}>
+                        <Button
+                            endIcon={<SportsEsportsIcon fontSize="small" />}
+                            onClick={()=>navigate(`/gams`)}
+                        >
+                            <b>Мои игры</b>
+                        </Button>
+                    </Grid>
+                    <Grid item xs={8}>
+                        <Button onClick={()=>setOpenSettingsDialog(true)} endIcon={<SettingsIcon fontSize="small" />}>
+                            <b>Настройки</b>
+                        </Button>
+                    </Grid>
+                </Grid>
+            )}
+            <EditInfoDialog
+                open={editInfo}
+                handleClose={handleCloseEditInfo}
+                onSuccess={handleSuccessOpen}
+                user={user}
+            />
+            <BuyRsvpDialog
+                open={openBuyDialog}
+                handleClose={handleCloseBuyDialog}
+                onSuccess={handleSuccessOpen}
+                user={user}
+            />
+            <SettingsDialog
+                open={openSettingsDialog}
+                handleClose={handleCloseSettingsDialog}
+                onSuccess={handleSuccessOpen}
+                user={user}
+            />
+            <NewGameDialog
+                open={openNewGameDialog}
+                handleClose={handleCloseNewGameDialog}
+                onSuccess={handleSuccessOpen}
+                user={user}
+            />
+            <SuccessSnack
+                open={successSnack}
+                handleClose={handleSuccessClose}
+                message={successMessage}
+                severity={severity}
+            />
+        </React.Fragment>
+    );
+};

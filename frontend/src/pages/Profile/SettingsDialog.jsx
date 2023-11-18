@@ -1,8 +1,9 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, ListItem, ListItemText, Slide, TextField, Typography } from '@mui/material'
 import React from 'react'
 import { useDispatch } from 'react-redux'
-import { fetchAuthMe } from '../redux/slices/auth.js'
-import axios from '../axios.js'
+
+import { fetchAuthMe } from '../../redux/slices/auth.js'
+import axios from '../../axios.js'
 
 import EditIcon from '@mui/icons-material/Edit';
 import CheckIcon from '@mui/icons-material/Check';
@@ -11,7 +12,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="left" ref={ref} {...props} />;
 });
 
-const EditInfoDialog = ({ open, handleClose, onSuccess, user }) => {
+const SettingsDialog = ({ open, handleClose, onSuccess, user }) => {
     const dispatch = useDispatch()
 
     const [nickname, setNickname] = React.useState('');
@@ -110,14 +111,13 @@ const EditInfoDialog = ({ open, handleClose, onSuccess, user }) => {
     return (
         <Dialog
             fullScreen
-            PaperProps={{ style: { backgroundColor: "#141414" } }}
             open={open}
             TransitionComponent={Transition}
             keepMounted
             onClose={onExit}
             aria-describedby="alert-dialog-slide-description"
         >
-            <DialogTitle>Редактировать</DialogTitle>
+            <DialogTitle>Настройки</DialogTitle>
             <DialogContent sx={{width:'100%'}}>
                 {edit === 1 ? 
                 <ListItem
@@ -231,30 +231,4 @@ const EditInfoDialog = ({ open, handleClose, onSuccess, user }) => {
     )
 }
 
-export default EditInfoDialog
-
-/*
-const onEditable = async (values, nickname, email) => {
-        const fields = { nickname, email, values }
-        await axios.patch(`/auth`,fields).catch((err)=>{
-            console.warn(err)
-        });
-        dispatch(fetchAuthMe())
-        handleClose()
-
-    }
-
-    const onSubmit = async (values) => {
-        const {nickname, email, ...valuesData} = values;
-        const fields = { nickname, email }
-        await axios.post(`/check-user`,fields).then((data) => {
-            if(data.data.email){setEmailOk(true)} else setEmailOk(false)
-            if(data.data.nickname){setNicknameOk(true)} else setNicknameOk(false)
-            if(!data.data.email && !data.data.nickname){
-                onEditable(valuesData, nickname, email)
-            }
-        }).catch((err)=>{
-            console.warn(err)
-        });
-    };
-*/
+export default SettingsDialog

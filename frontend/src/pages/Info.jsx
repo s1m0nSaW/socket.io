@@ -8,12 +8,12 @@ import {
     Toolbar,
 } from "@mui/material";
 import React from "react";
-import { Header } from "../components/Header";
 
 import {Offer} from "./Info/Offer.jsx";
 import {Privacy} from "./Info/Privacy.jsx";
 import {Reff} from "./Info/Reff.jsx";
 import {Terms} from "./Info/Terms.jsx";
+import Header from "../components/Header.jsx";
 
 export const Info = () => {
     const [value, setValue] = React.useState("privacy");
@@ -24,11 +24,12 @@ export const Info = () => {
 
     return (
         <>
-            <Header />
+        <Header profile={true}/>
+        <Toolbar/>
             <Grid container spacing={2}>
             <Paper sx={{ width: "100%", marginBottom:'15px' }}>
                 <Stack
-                    sx={{ width: "100%" }}
+                    sx={{ width: "100%", padding: "15px" }}
                     alignItems="center"
                     justifyContent="center"
                 >

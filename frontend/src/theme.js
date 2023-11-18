@@ -8,7 +8,7 @@ export const theme = createTheme({
       fontWeight: 300,
     },
     body1: {
-      fontWeight: 300,
+      fontWeight: 400,
       fontFamily: 'Montserrat',
       userSelect: 'none'
     },
@@ -17,15 +17,20 @@ export const theme = createTheme({
       fontFamily: 'Montserrat',
       userSelect: 'none'
     },
+    h3: {
+      fontFamily: 'Henny Penny',
+      userSelect: 'none',
+    },
     h61: {
       fontWeight:300,
       fontStyle:'italic',
       fontFamily: 'Montserrat',
     },
-    h4: {
-      fontFamily: 'Henny Penny',
-    },
     h5: {
+      fontFamily: 'Henny Penny',
+      userSelect: 'none',
+    },
+    h4: {
       fontWeight: 400,
       fontFamily: 'Montserrat',
     },
