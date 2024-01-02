@@ -9,6 +9,10 @@ const AnsweredSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId, 
         ref: "Game"
     },
+    turn: { 
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User" 
+    },
     user1: { 
         type: mongoose.Schema.Types.ObjectId,
         ref: "User" 

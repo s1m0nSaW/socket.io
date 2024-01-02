@@ -12,15 +12,21 @@ import axios from "../../axios.js"
 import { selectIsAuth, authStatus } from "../../redux/slices/auth";
 
 const GameItem = ({ game, page, remove, accept, play }) => {
-    
+    const deleteGame = async (game) => {
+        if (window.confirm('Вы действительно хотите удалить игру?')) {
+            remove(game);
+            await axios.delete(`/message/${game._id}`).catch((err)=>{console.warn(err);});
+            await axios.delete(`/answer/${game._id}`).catch((err)=>{console.warn(err);});
+        };
+    }
     return (
         <React.Fragment>
             <ListItem 
             alignItems="flex-start" 
             secondaryAction={<>
-                {page === 'games' && <IconButton edge="end" onClick={()=>remove(game._id)}><ClearIcon/></IconButton>}
-                {page === 'gamesIn' && <IconButton edge="end" onClick={()=>remove(game._id)}><ClearIcon/></IconButton>}
-                {page === 'gamesOut' && <IconButton edge="end" onClick={()=>remove(game._id)}><ClearIcon/></IconButton>}
+                {page === 'games' && <IconButton edge="end" onClick={()=>deleteGame(game)}><ClearIcon/></IconButton>}
+                {page === 'gamesIn' && <IconButton edge="end" onClick={()=>remove(game)}><ClearIcon/></IconButton>}
+                {page === 'gamesOut' && <IconButton edge="end" onClick={()=>remove(game)}><ClearIcon/></IconButton>}
             </>
             }>
                 {page === 'games' &&
@@ -28,7 +34,7 @@ const GameItem = ({ game, page, remove, accept, play }) => {
                     <PlayArrowIcon />
                 </ListItemIcon>}
                 {page === 'gamesIn' &&
-                <ListItemIcon onClick={()=>accept(game._id)}>
+                <ListItemIcon onClick={()=>accept(game)}>
                     <CheckIcon />
                 </ListItemIcon>}
                 <ListItemText
@@ -41,7 +47,7 @@ const GameItem = ({ game, page, remove, accept, play }) => {
     )
 }
 
-const GamesList = ({ content, page, onSuccess }) => {
+const GamesList = ({ content, page, onSuccess, onUpdate, socket }) => {
     const user = useSelector((state) => state.auth.data);
     const isAuth = useSelector(selectIsAuth);
     const status = useSelector(authStatus);
@@ -59,10 +65,16 @@ const GamesList = ({ content, page, onSuccess }) => {
         });
     }
     
-    const removeGame = async (id) => {
-        await axios.delete(`/game/${id}`).then((data)=>{
+    const removeGame = async (game) => {
+        socket.emit("removeGame", { gameID: game._id});
+        await axios.delete(`/game/${game._id}`).then((data)=>{
             if(data) {
                 onSuccess('Игра удалена', 'success')
+                if(user._id === game.user1){
+                    onUpdate(game.user2, `${user.nickname} удалил игру`, 'error')
+                } else {
+                    onUpdate(game.user1, `${user.nickname} удалил игру`, 'error')
+                }
                 getGames()
             }
         }).catch((err)=>{
@@ -70,10 +82,15 @@ const GamesList = ({ content, page, onSuccess }) => {
         });
     }
 
-    const acceptGame = async (id) => {
-        await axios.get(`/join/${id}`).then((data)=>{
+    const acceptGame = async (game) => {
+        await axios.get(`/join/${game._id}`).then((data)=>{
             if(data) {
                 onSuccess('Игра принята', 'success')
+                if(user._id === game.user1){
+                    onUpdate(game.user2, `${user.nickname} согласен играть`, 'success')
+                } else {
+                    onUpdate(game.user1, `${user.nickname} согласен играть`, 'success')
+                }
                 getGames()
             }
         }).catch((err)=>{
@@ -86,8 +103,7 @@ const GamesList = ({ content, page, onSuccess }) => {
     }
 
     React.useEffect(()=>{
-        
-        const getFriends = async () => {
+        const getGames = async () => {
             const fields = {
                 games: content
             }
@@ -102,7 +118,7 @@ const GamesList = ({ content, page, onSuccess }) => {
             if (!isAuth) {
                 navigate(`/main`);
             } else {
-                getFriends()
+                getGames()
             }
         }
     },[ isAuth, user, navigate, status, content ])

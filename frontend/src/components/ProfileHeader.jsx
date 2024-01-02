@@ -1,6 +1,7 @@
 import { Avatar, Box, IconButton, ListItem, ListItemAvatar, ListItemIcon, ListItemText, Menu, MenuItem, Paper, Typography } from "@mui/material";
 import React from "react";
 import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from "react-router-dom";
 
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import MoneyOffIcon from '@mui/icons-material/MoneyOff';
@@ -21,8 +22,9 @@ import SuccessSnack from "../components/SuccessSnack.jsx";
 import axios from '../axios.js';
 
 const ProfileHeader = () => {
-    const dispatch = useDispatch()
-    const user = useSelector((state) => state.auth.data)
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const user = useSelector((state) => state.auth.data);
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [openRequisDialog, setOpenRequisDialog] = React.useState(false);
     const [partnerDialog, setPartnerDialog] = React.useState(false);
@@ -38,41 +40,42 @@ const ProfileHeader = () => {
     };
 
     const handleSuccessOpen = (message, severity) => {
-        setSuccessMessage(message)
-        setSeverity(severity)
-        setSuccessSnack(true)
-    }
+        setSuccessMessage(message);
+        setSeverity(severity);
+        setSuccessSnack(true);
+    };
 
     const handleMenuClose = () => {
         setAnchorEl(null);
     };
 
     const handleCloseRequisDialog = () => {
-        setOpenRequisDialog(false)
-    }
+        setOpenRequisDialog(false);
+    };
 
     const openPartnerDialog = () => {
         if(user.partner === 'no'){
-            setPartnerDialog(true)
+            setPartnerDialog(true);
         } else {
-            handleSuccessOpen('Вы уже отправили заявку', 'info')
-        }
-    }
+            handleSuccessOpen('Вы уже отправили заявку', 'info');
+        };
+    };
 
     const handleClosePartnerDialog = () => {
-        setPartnerDialog(false)
-    }
+        setPartnerDialog(false);
+    };
 
     const handleCloseEditInfo = () => {
-        setEditInfo(false)
-    }
+        setEditInfo(false);
+    };
 
     const onClickLogout = () => {
             if (window.confirm('Вы действительно хотите выйти?')) {
             dispatch(logout());
             window.localStorage.removeItem('token');
-        }
-    }
+            navigate('/');
+        };
+    };
 
     const onLinkCopy = () => {
         setSuccessMessage("Ссылка скопирована")

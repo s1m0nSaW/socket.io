@@ -1,4 +1,5 @@
 import {
+    Divider,
     FormControlLabel,
     Grid,
     Paper,
@@ -11,8 +12,6 @@ import React from "react";
 
 import {Offer} from "./Info/Offer.jsx";
 import {Privacy} from "./Info/Privacy.jsx";
-import {Reff} from "./Info/Reff.jsx";
-import {Terms} from "./Info/Terms.jsx";
 import Header from "../components/Header.jsx";
 
 export const Info = () => {
@@ -24,7 +23,7 @@ export const Info = () => {
 
     return (
         <>
-        <Header profile={true}/>
+        <Header profile={true} back={false}/>
         <Toolbar/>
             <Grid container spacing={2}>
             <Paper sx={{ width: "100%", marginBottom:'15px' }}>
@@ -41,29 +40,18 @@ export const Info = () => {
                             <FormControlLabel
                                 value="privacy"
                                 control={<Radio />}
-                                label="Политика в отношении обработки данных"
+                                label="ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ ПЕРСОНАЛЬНЫХ ДАННЫХ"
                             />
-                            <FormControlLabel
-                                value="terms"
-                                control={<Radio />}
-                                label="Условия использования партнёрской сети"
-                            />
-                            <FormControlLabel
-                                value="reff"
-                                control={<Radio />}
-                                label="Правила реферальной программы"
-                            />
+                            <Divider/>
                             <FormControlLabel
                                 value="offer"
                                 control={<Radio />}
-                                label="Договор-оферта на оказание услуг по привлечению клиентов"
+                                label="ДОГОВОР-ОФЕРТА О ПРЕДОСТАВЛЕНИИ ИНФОРМАЦИОННЫХ УСЛУГ"
                             />
                         </RadioGroup>
                 </Stack>
                 </Paper>
                 {value === 'privacy' && <Privacy/>}
-                {value === 'terms' && <Terms/>}
-                {value === 'reff' && <Reff/>}
                 {value === 'offer' && <Offer/>}
                 <Toolbar/>
             </Grid>

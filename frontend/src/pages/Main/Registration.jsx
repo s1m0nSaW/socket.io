@@ -4,10 +4,12 @@ import { useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { useParams, useNavigate } from "react-router-dom";
 
+import InfoIcon from '@mui/icons-material/Info';
+
 import { fetchRegister } from "../../redux/slices/auth";
 import axios from '../../axios.js'
 
-const Registration = () => {
+const Registration = ({ handleOpenDialog }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { referal } = useParams();
@@ -63,9 +65,14 @@ const Registration = () => {
         <Grid item xs={12} md={8} lg={8} justifyContent="center" alignItems="center">
             <Card sx={{ height: "100%" }} elevation={3}>
                 <CardHeader
-                    title={<Typography align="center" variant="h6">Регистрация</Typography>}
+                    title={<Typography align="center" variant="h4" color='dodgerblue'>Регистрация</Typography>}
                 />
                 <CardContent>
+                    <Typography variant="caption" color="text.secondary">
+                        Укажите никнейм друга и получите 5 RSVP за регистрацию. <br/>
+                        Это бета-версия нашего сайта, и мы будем благодарны за ваш отзыв. Ваша обратная связь поможет сделать сервис лучше.<br/>
+                        Также рекомендуем добавить сайт на главный экран.<InfoIcon fontSize="small" color="primary" onClick={handleOpenDialog}/><br/><br/>
+                    </Typography>
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <Stack spacing={2} sx={{ marginTop: "10px" }}>
                             <TextField

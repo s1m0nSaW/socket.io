@@ -110,7 +110,6 @@ const SettingsDialog = ({ open, handleClose, onSuccess, user }) => {
 
     return (
         <Dialog
-            fullScreen
             open={open}
             TransitionComponent={Transition}
             keepMounted

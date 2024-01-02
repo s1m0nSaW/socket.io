@@ -1,0 +1,16 @@
+ .emoji {
+    width: 40px;
+    cursor: pointer;
+    position: relative;
+  }
+  
+  .emoji img {
+    vertical-align: middle;
+  }
+  
+  .emojies {
+    position: absolute;
+    left: 100%;
+    transform: translateX(-87%);
+    bottom: 100%;
+  }

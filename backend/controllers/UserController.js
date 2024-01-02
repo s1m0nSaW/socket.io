@@ -21,6 +21,7 @@ export const register = async (req, res) => {
             const doc = new UserModel({
                 email: req.body.email,
                 nickname: req.body.nickname,
+                rsvp: 5,
                 passwordHash: hash,
                 friends: [promoter._id]
             });
@@ -33,7 +34,7 @@ export const register = async (req, res) => {
                 },
                 {
                     $push: {friends: user._id},
-                    $inc: {rsvp: 3},
+                    $inc: {rsvp: 5},
                 },
                 { returnDocument: "after" }
             );
@@ -226,14 +227,24 @@ export const getMe = async (req, res) => {
     try {
         const user = await UserModel.findById(req.userId);
 
+        const date = +new Date();
+
         if (!user) {
             return res.status(404).json({
                 message: "Пользователь не найден",
             });
         }
-        const { passwordHash, ...userData } = user._doc;
 
-        res.json(userData);
+        if(date > user.statusDate) {
+            user.status = 'none';
+            user.statusDate = 0;
+            await user.save();
+            const { passwordHash, ...userData } = user._doc;
+            res.json(userData);
+        } else {
+            const { passwordHash, ...userData } = user._doc;
+            res.json(userData);
+        }
     } catch (err) {
         console.log(err);
         res.status(500).json({
@@ -245,6 +256,37 @@ export const getMe = async (req, res) => {
 export const getUser = async (req, res) => {
     try {
         const user = await UserModel.findOne({ nickname: req.params.name, });
+
+        if (!user) {
+            return res.status(404).json({
+                message: "Пользователь не найден",
+            });
+        }
+        const { 
+            rsvpStatus,
+            dailyRsvp,
+            rsvpDate,
+            friends,
+            reqIn,
+            reqOut,
+            games,
+            gamesIn,
+            gamesOut,
+            passwordHash,
+            ...userData } = user._doc;
+
+        res.json(userData);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: "Нет доступа",
+        });
+    }
+};
+
+export const getGameUser = async (req, res) => {
+    try {
+        const user = await UserModel.findById(req.params.id);
 
         if (!user) {
             return res.status(404).json({
@@ -574,20 +616,16 @@ export const updatePic = async (req, res) => {
 
 export const updateRsvpDate = async (req, res) => {
     try {
-        const user = await UserModel.findOneAndUpdate(
-            {
-                _id: req.userId,
-            },
-            {
-                $set: {
-                    rsvpDate: req.body.rsvpDate,
-                    rsvpStatus: false,
-                    dailyRsvp: 3,
-                },
-            },
-            { returnDocument: "after" }
-        );
-        if(user){res.sendStatus(200);}
+        const user = await UserModel.findById(req.userId);
+        if (user.status === 'sponsor') {
+            user.dailyRsvp = 10;
+        } else if (user.status === 'none') {
+            user.dailyRsvp = 3;
+        }
+        user.rsvpDate = req.body.rsvpDate;
+        user.rsvpStatus = false;
+        await user.save();
+        res.sendStatus(200);
 
     } catch (err) {
         console.log(err);

@@ -12,6 +12,9 @@ const MessageSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId, 
         ref: "Game" 
     },
+    date: {
+        type: Number
+    }
 },{
     timestamps:true,
 },

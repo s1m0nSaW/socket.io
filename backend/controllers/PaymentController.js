@@ -7,6 +7,8 @@ export const create = async (req,res) => {
             paymentId: req.body.paymentId,
             paymentStatus: req.body.status,
             user: req.userId,
+            type: req.body.type,
+            count: req.body.count,
         });
 
         await doc.save();
@@ -39,16 +41,25 @@ export const payments = async (req, res) => {
                 { returnDocument: "after" }
             );
 
-            if(payment) {
+            if(payment.type === 'retail') {
                 await User.findOneAndUpdate(
                     {
                         _id: payment.user,
                     },
                     {
-                        $inc: {rsvp: 10},
+                        $inc: {rsvp: payment.count},
                     },
                     { returnDocument: "after" }
                 );
+            } else if(payment.type === 'sponsor') {
+                const user = await User.findById(payment.user);
+                if (user.status === 'sponsor') {
+                    user.statusDate += payment.count;
+                } else if (user.status === 'none') {
+                    user.status = 'sponsor';
+                    user.statusDate = +new Date() + payment.count;
+                }
+                await user.save();
             }
 
             res.sendStatus(200);

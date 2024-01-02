@@ -12,6 +12,14 @@ const PaymentSchema = new mongoose.Schema({
     user:{ 
         type: mongoose.Schema.Types.ObjectId, 
         ref: "User" 
+    },
+    type: {
+        type: String,
+        required: true,
+    },
+    count: {
+        type: Number,
+        required: true,
     }
 },{
     timestamps:true,

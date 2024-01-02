@@ -6,6 +6,7 @@ export const create = async (req,res) => {
             senderId: req.body.senderId,
             content: req.body.content,
             gameId: req.body.gameId,
+            date: req.body.date,
         });
 
         const message = await doc.save();

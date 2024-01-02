@@ -7,7 +7,7 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 
 import axios from '../../axios.js';
 
-const SearchPage = ({ onSuccess }) => {
+const SearchPage = ({ onSuccess, onUpdate }) => {
     const me = useSelector((state) => state.auth.data);
     const [ nick, setNick ] = React.useState('');
     const [ user, setUser ] = React.useState('none');
@@ -33,6 +33,7 @@ const SearchPage = ({ onSuccess }) => {
     const addFriend = async (id) => {
         await axios.get(`/add-friend/${id}`)
         .then(()=>{
+            onUpdate(id, `${me.nickname} хочет добавить вас в друзья`, 'info');
             onSuccess('Заявка на добавление в друзья отправлена', 'success')
         })
         .catch((err)=>{

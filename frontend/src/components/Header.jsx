@@ -11,9 +11,10 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import InfoIcon from '@mui/icons-material/Info';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import CopyToClipboard from 'react-copy-to-clipboard'
+import CopyToClipboard from 'react-copy-to-clipboard';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 
-const Header = ({ profile, onSuccess }) => {
+const Header = ({ profile, onSuccess, back }) => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const isAuth = useSelector(selectIsAuth);
@@ -48,6 +49,28 @@ const Header = ({ profile, onSuccess }) => {
         <Box sx={{ width: "100%" }}>
             <AppBar position="static">
                 <Toolbar>
+                    {back === true && 
+                    <IconButton
+                        size="large"
+                        edge="start"
+                        color="inherit"
+                        aria-label="menu"
+                        sx={{ mr: 2 }}
+                        onClick={() => handleNav(`/prfl/${user.nickname}`)}
+                    >
+                        <ArrowBackIosIcon />
+                    </IconButton>}
+                    {back === 'gams' && 
+                    <IconButton
+                        size="large"
+                        edge="start"
+                        color="inherit"
+                        aria-label="menu"
+                        sx={{ mr: 2 }}
+                        onClick={() => handleNav(`/gams`)}
+                    >
+                        <ArrowBackIosIcon />
+                    </IconButton>}
                     <Typography
                         variant="h5"
                         component="div"

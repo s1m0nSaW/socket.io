@@ -6,10 +6,11 @@ import { useNavigate } from "react-router-dom";
 import GroupsIcon from '@mui/icons-material/Groups';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import SettingsIcon from '@mui/icons-material/Settings';
-import PersonIcon from '@mui/icons-material/Person';
 import RsvpIcon from '@mui/icons-material/Rsvp';
 import UpdateIcon from '@mui/icons-material/Update';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import MonetizationOnSharpIcon from '@mui/icons-material/MonetizationOnSharp';
+import PersonIcon from '@mui/icons-material/Person';
 
 import Header from "../components/Header";
 import EditInfoDialog from './Profile/EditInfoDialog';
@@ -19,8 +20,9 @@ import axios from '../axios.js';
 import BuyRsvpDialog from "./Profile/BuyRsvpDialog";
 import SettingsDialog from "./Profile/SettingsDialog";
 import NewGameDialog from "./Profile/NewGameDialog";
+import SponsorDialog from "./Profile/SponsorDialog.jsx";
 
-export const Profile = () => {
+export const Profile = ({ socket }) => {
     const user = useSelector((state) => state.auth.data);
     const isAuth = useSelector(selectIsAuth);
     const status = useSelector(authStatus);
@@ -31,6 +33,7 @@ export const Profile = () => {
     const [successMessage, setSuccessMessage] = React.useState('');
     const [severity, setSeverity] = React.useState('info');
     const [openBuyDialog, setOpenBuyDialog] = React.useState(false);
+    const [openSponsorDialog, setOpenSponsorDialog] = React.useState(false);
     const [openSettingsDialog, setOpenSettingsDialog] = React.useState(false);
     const [openNewGameDialog, setOpenNewGameDialog] = React.useState(false);
 
@@ -42,12 +45,21 @@ export const Profile = () => {
         setOpenBuyDialog(false)
     }
 
+    const handleCloseSponsorDialog = () => {
+        setOpenSponsorDialog(false)
+    }
+
     const handleCloseSettingsDialog = () => {
         setOpenSettingsDialog(false)
     }
 
     const handleCloseNewGameDialog = () => {
         setOpenNewGameDialog(false)
+    }
+
+    const onOpenGamesPage = () => {
+        dispatch(fetchAuthMe())
+        navigate(`/gams`)
     }
 
     const handleSuccessOpen = (message, severity) => {
@@ -119,13 +131,16 @@ export const Profile = () => {
         if(status !== 'loading'){
             if (!isAuth) {
                 navigate(`/main`);
+            } else {
+                const searchParams = { userId: user._id };
+                socket.emit('joinUser', searchParams);
             }
         }
-    },[ isAuth, user, navigate, status ])
+    },[ isAuth, user, navigate, status, socket ])
 
     return (
         <React.Fragment>
-            <Header profile={false} onSuccess={handleSuccessOpen}/>
+            <Header profile={false} onSuccess={handleSuccessOpen} back={false}/>
             <Toolbar />
             <Toolbar />
             {user && (
@@ -137,27 +152,44 @@ export const Profile = () => {
                     spacing={1}
                 >
                     <Grid item>
-                        <Badge
-                            overlap="circular"
-                            anchorOrigin={{
-                                vertical: "bottom",
-                                horizontal: "right",
-                            }}
-                            badgeContent={""}
-                        >
-                            {user.pic === "none" ? (
-                                <Avatar onClick={() => setEditInfo(true)}>
-                                    <PersonIcon />
-                                </Avatar>
-                            ) : (
-                                <Avatar
-                                    alt={user.nickname}
-                                    src={`http://localhost:5000${user.pic}`}
-                                    sx={{ width: 56, height: 56 }}
-                                    onClick={() => setEditInfo(true)}
-                                />
-                            )}
-                        </Badge>
+                        {user.status === 'sponsor' ? 
+                            <Badge
+                                sx={{margin:'10px'}}
+                                overlap='circular'
+                                anchorOrigin={{
+                                    vertical: "top",
+                                    horizontal: "right",
+                                }}
+                                badgeContent={<MonetizationOnSharpIcon fontSize='small' color="primary" sx={{ backgroundColor:'white', borderRadius:'50%'}}/>}
+                            >
+                                {user.pic === "none" ? (
+                                    <Avatar onClick={() => setEditInfo(true)}>
+                                        <PersonIcon />
+                                    </Avatar>
+                                ) : (
+                                    <Avatar
+                                        alt={user.nickname}
+                                        src={`http://localhost:5000${user.pic}`}
+                                        onClick={() => setEditInfo(true)}
+                                        sx={{ width: 56, height: 56 }}
+                                    />
+                                )}
+                            </Badge>:
+                            <>
+                                {user.pic === "none" ? (
+                                    <Avatar onClick={() => setEditInfo(true)} sx={{margin:'10px'}}>
+                                        <PersonIcon />
+                                    </Avatar>
+                                ) : (
+                                    <Avatar
+                                        alt={user.nickname}
+                                        src={`http://localhost:5000${user.pic}`}
+                                        sx={{ margin:'10px', width: 56, height: 56 }}
+                                        onClick={() => setEditInfo(true)}
+                                    />
+                                )}
+                            </>
+                            }
                     </Grid>
                     <Grid item>
                         <Stack
@@ -165,15 +197,11 @@ export const Profile = () => {
                             justifyContent="center"
                             alignItems="center"
                         >
+                            <Typography variant="caption">{user.nickname}</Typography>
                             {user.fullname === "none" ? (
-                                <Typography>Укажите данные</Typography>
+                                <Typography onClick={() => setEditInfo(true)}>Укажите данные</Typography>
                             ) : (
-                                <Typography>{user.fullname}</Typography>
-                            )}
-                            {user.city !== "none" && (
-                                <Typography variant="caption" align="center">
-                                    {user.city}
-                                </Typography>
+                                <Typography onClick={() => setEditInfo(true)}>{user.fullname}</Typography>
                             )}
                         </Stack>
                     </Grid>
@@ -186,7 +214,7 @@ export const Profile = () => {
                             sx={{ width: "70vw" }}
                         >
                             <Chip
-                                label={` ${user.dailyRsvp}/3 `}
+                                label={user.status === 'sponsor' ? ` ${user.dailyRsvp}/10 `:` ${user.dailyRsvp}/3 `}
                                 color="primary"
                                 variant={user.rsvpStatus?'filled':'outlined'}
                                 deleteIcon={<RsvpIcon />}
@@ -219,7 +247,7 @@ export const Profile = () => {
                     <Grid item xs={8}>
                         <Button
                             endIcon={<SportsEsportsIcon fontSize="small" />}
-                            onClick={()=>navigate(`/gams`)}
+                            onClick={onOpenGamesPage}
                         >
                             <b>Мои игры</b>
                         </Button>
@@ -229,6 +257,11 @@ export const Profile = () => {
                             <b>Настройки</b>
                         </Button>
                     </Grid>
+                    {user.status !== 'sponsor' && <Grid item xs={8}>
+                        <Button onClick={()=>setOpenSponsorDialog(true)} endIcon={<MonetizationOnSharpIcon fontSize="small" />}>
+                            <b>Стать спонсором</b>
+                        </Button>
+                    </Grid>}
                 </Grid>
             )}
             <EditInfoDialog
@@ -243,6 +276,12 @@ export const Profile = () => {
                 onSuccess={handleSuccessOpen}
                 user={user}
             />
+            <SponsorDialog
+                open={openSponsorDialog}
+                handleClose={handleCloseSponsorDialog}
+                onSuccess={handleSuccessOpen}
+                user={user}
+            />
             <SettingsDialog
                 open={openSettingsDialog}
                 handleClose={handleCloseSettingsDialog}
@@ -254,6 +293,9 @@ export const Profile = () => {
                 handleClose={handleCloseNewGameDialog}
                 onSuccess={handleSuccessOpen}
                 user={user}
+                socket={socket}
+                inGams={false}
+                mate={false}
             />
             <SuccessSnack
                 open={successSnack}

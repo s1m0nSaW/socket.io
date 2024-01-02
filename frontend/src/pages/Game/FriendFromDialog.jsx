@@ -1,19 +1,17 @@
-import { Avatar, Divider, ListItem, ListItemAvatar, ListItemText } from "@mui/material";
+import { Divider, ListItem, ListItemAvatar, ListItemText } from "@mui/material";
 import React from "react";
+import UserAvatar from "../../components/UserAvatar";
 
 const FriendFromDialog = ({ friend, setFriend }) => {
     return (
         <React.Fragment>
-            <ListItem alignItems="flex-start" onClick={()=>setFriend(friend)} >
+            <ListItem alignItems="flex-start" onClick={()=>setFriend(friend)} disableGutters>
                 <ListItemAvatar>
-                    <Avatar
-                        alt={friend.nickname}
-                        src={`http://localhost:5000${friend.pic}`}
-                    />
+                    <UserAvatar user={friend}/>
                 </ListItemAvatar>
                 <ListItemText
-                    primary={friend.fullname}
-                    secondary={friend.city}
+                    primary={friend.fullname !== 'none' ? friend.fullname : 'Имя не указано'}
+                    secondary={friend.nickname}
                 />
             </ListItem>
             <Divider />

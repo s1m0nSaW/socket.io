@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Dialog, DialogContent, DialogTitle, Grid, List, ListItem, ListItemAvatar, ListItemText, Slide, Stack, Step, StepLabel, Stepper, Toolbar, Typography } from "@mui/material";
+import { Box, Button, Dialog, DialogContent, DialogTitle, Grid, List, ListItem, ListItemAvatar, ListItemText, Slide, Stack, Step, StepLabel, Stepper, Toolbar, Typography } from "@mui/material";
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -9,6 +9,7 @@ import axios from '../../axios.js'
 import { authStatus, fetchAuthMe } from "../../redux/slices/auth.js";
 import FriendFromDialog from "../Game/FriendFromDialog.jsx";
 import ThemeFromDialog from "../Game/ThemeFromDialog.jsx";
+import UserAvatar from "../../components/UserAvatar.jsx";
 
 const steps = [
     'Выберите друга',
@@ -20,7 +21,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="left" ref={ref} {...props} />;
 });
 
-const NewGameDialog = ({ open, handleClose, onSuccess, user }) => {
+const NewGameDialog = ({ open, handleClose, onSuccess, user, socket, inGams, mate }) => {
     const [themes, setThemes] = React.useState();
     const [friends, setFriends] = React.useState();
     const [theme, setTheme] = React.useState('');
@@ -49,17 +50,25 @@ const NewGameDialog = ({ open, handleClose, onSuccess, user }) => {
 
     const createNewGame = async () => {
         const fields = {
-            gameName: `Игра ${user.fullname} с ${friend.fullname}`,
+            gameName: `Игра ${user.nickname} & ${friend.nickname}`,
             theme: theme.theme,
             user2: friend._id,
         }
         await axios.post('/new-game', fields).then((data)=>{
             dispatch(fetchAuthMe());
-            navigate(`/gams`)
+            socket.emit("upGames", { userId: friend._id });
+            const fields = {
+                userId: friend._id,
+                message:`${user.nickname} пригласил поиграть`, 
+                severity: 'info',
+            }
+            socket.emit("socketNotification", fields);
+            if(inGams === false) {navigate(`/gams`)} else { onExit() }
             onSuccess('Игра создана', 'success')
         }).catch((err)=>{
             console.warn(err); 
             onSuccess('Не удалось создать игру', 'error')
+            onExit()
         });
     }
 
@@ -105,6 +114,12 @@ const NewGameDialog = ({ open, handleClose, onSuccess, user }) => {
 
     },[ user, status ])
 
+    React.useEffect(()=>{
+        if(mate !== false){
+            handleChangeFriend(mate)
+        }
+    },[mate])
+
     return (
         <Dialog
             fullWidth
@@ -115,7 +130,9 @@ const NewGameDialog = ({ open, handleClose, onSuccess, user }) => {
             onClose={onExit}
             aria-describedby="alert-dialog-slide-description"
         >
-            <DialogTitle sx={{ paddingBottom:'10px'}}>Новая игра</DialogTitle>
+            <DialogTitle sx={{ paddingBottom:'10px'}}>
+                Новая игра за 1 RSVP
+            </DialogTitle>
             <Box sx={{ width: '100%' }}>
                 <Stepper activeStep={activeStep} alternativeLabel>
                     {steps.map((label) => (
@@ -180,14 +197,11 @@ const NewGameDialog = ({ open, handleClose, onSuccess, user }) => {
                     <Typography variant='caption'>Вы будете играть с</Typography>
                     <ListItem alignItems="flex-start" disableGutters>
                         <ListItemAvatar>
-                            <Avatar
-                                alt={friend.nickname}
-                                src={`http://localhost:5000${friend.pic}`}
-                            />
+                            <UserAvatar user={friend}/>
                         </ListItemAvatar>
                         <ListItemText
-                            primary={friend.fullname}
-                            secondary={friend.city}
+                            primary={friend.fullname !== 'none' ? friend.fullname : 'Имя не указано'}
+                            secondary={friend.nickname}
                         />
                     </ListItem>
                 </>}

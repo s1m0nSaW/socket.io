@@ -3,7 +3,11 @@ import React from 'react'
 
 const SuccessSnack = ({open, handleClose, message, severity}) => {
     return (
-        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+        <Snackbar 
+        anchorOrigin={{vertical: 'top', horizontal: 'center',}} 
+        open={open} 
+        autoHideDuration={6000} 
+        onClose={handleClose}>
             <Alert
                 onClose={handleClose}
                 severity={severity}

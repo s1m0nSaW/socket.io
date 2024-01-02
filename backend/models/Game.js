@@ -5,6 +5,14 @@ const GameSchema = new mongoose.Schema({
         type: String, 
         trim: true 
     },
+    activeStep:{
+        type: Number,
+        default: 0,
+    },
+    answered: { 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: "Answered"
+    },
     turn: { 
         type: mongoose.Schema.Types.ObjectId, 
         ref: "User"

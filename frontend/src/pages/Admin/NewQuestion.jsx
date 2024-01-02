@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, ListItem, Slide, TextField } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, IconButton, InputLabel, ListItem, MenuItem, Select, Slide, TextField } from '@mui/material';
 import React from 'react';
 
 import CheckIcon from '@mui/icons-material/Check';
@@ -7,7 +7,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="left" ref={ref} {...props} />;
 });
 
-const NewQuestion = ({ open, handleClose, newQuestion }) => {
+const NewQuestion = ({ open, handleClose, newQuestion, ratings }) => {
     const [theme, setTheme] = React.useState('');
     const [text, setText] = React.useState('');
     const [answer1, setAnswer1] = React.useState('');
@@ -84,13 +84,21 @@ const NewQuestion = ({ open, handleClose, newQuestion }) => {
         >
             <DialogTitle>Новый вопрос</DialogTitle>
             <DialogContent sx={{width:'100%'}}>
-                <TextField 
-                    fullWidth 
-                    name='theme' 
-                    value={theme} 
+                {ratings && 
+                <FormControl fullWidth sx={{ marginTop:'15px'}}>
+                    <InputLabel id="theme-select-label">Тема</InputLabel>
+                    <Select
+                    labelId="theme-select-label"
+                    id="theme-select"
+                    value={theme}
+                    label="Тема"
                     onChange={handleChangeTheme}
-                    label='Тема'
-                />
+                    >
+                    {ratings.map((raiting, index) =>
+                        <MenuItem key={index} value={raiting.theme}>{raiting.theme}</MenuItem>
+                    )}
+                </Select>
+                </FormControl>}
                 <TextField 
                     fullWidth 
                     name='answer1' 

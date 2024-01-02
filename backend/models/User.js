@@ -35,6 +35,18 @@ const UserSchema = new mongoose.Schema({
         type: String,
         default: 'none',
     },
+    status:{
+        type: String,
+        default: 'none',
+    },
+    statusDate:{
+        type: Number,
+        default: 0,
+    },
+    createGamesCount:{
+        type: Number,
+        default: 0,
+    },
     rsvp:{
         type: Number,
         default: 0,

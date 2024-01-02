@@ -3,6 +3,7 @@ import React from 'react';
 
 import axios from "../axios.js";
 import NewQuestion from './Admin/NewQuestion.jsx';
+import NewRating from './Admin/NewRating.jsx';
 
 export const Admin = () => {
     const [ pass1, setPass1 ] = React.useState('');
@@ -12,9 +13,15 @@ export const Admin = () => {
     const [ questions, setQuestions ] = React.useState();
     const [ themes, setThemes ] = React.useState();
     const [ openDialog, setOpenDialog ] = React.useState(false);
+    const [ openNewRating, setOpenNewRating ] = React.useState(false);
+    const [ ratings, setRatings ] = React.useState();
 
     const handleCloseDialog = () => {
         setOpenDialog(false)
+    };
+
+    const handleCloseNewRaiting = () => {
+        setOpenNewRating(false)
     };
 
     const handleChangeWord1 = (e) => {
@@ -32,7 +39,20 @@ export const Admin = () => {
         setPass3(w)
     };
 
-    const paids = users?.filter(obj => obj.paymentStatus === "succeeded");
+    const getRatings = async () => {
+        const fields = {
+            pass1: pass1,
+            pass2: pass2,
+            pass3: pass3,
+        }
+        await axios.post('/ratings', fields).then((data) => setRatings(data.data)).catch(err => console.warn(err))
+    }
+
+    const openRating = async () => {
+        getRatings()
+        setOpenNewRating(true)
+    }
+
     const mans = users?.filter(obj => obj.gender === "Мужской");
     const womans = users?.filter(obj => obj.gender === "Женский");
     const users18 = users?.filter(obj => obj.age === "18‑24 года");
@@ -79,6 +99,40 @@ export const Admin = () => {
         })
         .catch(err => console.warn(err));
     };
+
+    const newRaiting = async (data) => {
+        const fields = {
+            ...data,
+            pass1: pass1,
+            pass2: pass2,
+            pass3: pass3,
+        }
+        await axios.post('/rating', fields)
+        .then((data) => {
+            if(data){
+                getRatings()
+                handleCloseNewRaiting()
+            }
+        })
+        .catch(err => console.warn(err));
+    };
+
+    const handleDeleteRating = async (id) => {
+        if (window.confirm('Вы действительно хотите удалить?')) {
+            const fields = {
+                pass1: pass1,
+                pass2: pass2,
+                pass3: pass3,
+            }
+            await axios.post(`/del-rating/${id}`, fields)
+            .then((data) => {
+                if(data){
+                    getRatings()
+                }
+            })
+            .catch(err => console.warn(err));
+        };
+    }
 
     const removeQuestion = async (id) => {
         if (window.confirm('Вы действительно хотите удалить?')) {
@@ -158,7 +212,6 @@ export const Admin = () => {
                 sx={{width:'100vw', margin:'15px'}}
             >
                 <Typography color="text.secondary">Пользователи: <b>{users.length}</b></Typography>
-                <Typography color="text.secondary">Оплаченные: <b>{paids.length}</b></Typography>
                 <Typography color="text.secondary">Мужской: <b>{mans.length}</b>&nbsp;&nbsp; Женский: <b>{womans.length}</b></Typography>
                 <Typography color="text.secondary">18‑24 года: <b>{users18.length}</b>&nbsp;&nbsp;
                 25‑34 года: <b>{users25.length}</b>&nbsp;&nbsp;
@@ -173,6 +226,7 @@ export const Admin = () => {
                 spacing={1}
                 sx={{width:'100vw', marginBottom:'15px'}}
             >
+                <Button variant="contained" onClick={openRating}>New rating</Button>
                 <Button variant="contained" onClick={()=>setOpenDialog(true)}>New question</Button>
                 <Button variant="contained" onClick={()=>getQuests()}>Reset Quests</Button>
                 <Button variant="contained" onClick={()=>getUsers()}>Get Users</Button>
@@ -246,7 +300,8 @@ export const Admin = () => {
                     </Table>
                 )}
             </TableContainer>
-            <NewQuestion open={openDialog} handleClose={handleCloseDialog} newQuestion={newQuestion}/>
+            <NewQuestion open={openDialog} handleClose={handleCloseDialog} newQuestion={newQuestion} ratings={ratings}/>
+            <NewRating open={openNewRating} handleClose={handleCloseNewRaiting} newRaiting={newRaiting} ratings={ratings} handleDelete={handleDeleteRating}/>
         </Grid>
     );
 }

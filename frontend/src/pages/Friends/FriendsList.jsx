@@ -1,4 +1,4 @@
-import { Avatar, Divider, Grid, List, ListItem, ListItemAvatar, ListItemText, Stack, Toolbar, Typography } from "@mui/material";
+import { Divider, Grid, List, ListItem, ListItemAvatar, ListItemText, Stack, Toolbar, Typography } from "@mui/material";
 import React from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -7,36 +7,27 @@ import GroupsIcon from '@mui/icons-material/Groups';
 
 import axios from "../../axios.js"
 import { selectIsAuth, authStatus } from "../../redux/slices/auth";
-import FriendInfoDialog from "./FriendInfoDialog.jsx";
+import UserAvatar from "../../components/UserAvatar.jsx";
 
-const FriendItem = ({ friend, page, onSuccess }) => {
-    const [ openInfo, setOpenInfo ] = React.useState(false);
-
-    const handleCloseInfo = () => {
-        setOpenInfo(false)
-    }
+const FriendItem = ({ friend, page, onInfoDilog }) => {
     
     return (
         <React.Fragment>
-            <ListItem alignItems="flex-start" onClick={() => setOpenInfo(true)}>
+            <ListItem alignItems="flex-start" onClick={() => onInfoDilog(friend, page)}>
                 <ListItemAvatar>
-                    <Avatar
-                        alt={friend.nickname}
-                        src={`http://localhost:5000${friend.pic}`}
-                    />
+                    <UserAvatar user={friend} />
                 </ListItemAvatar>
                 <ListItemText
-                    primary={friend.fullname}
-                    secondary={friend.city}
+                    primary={friend.fullname !== 'none' ? friend.fullname : 'Имя не указано'}
+                    secondary={friend.nickname}
                 />
             </ListItem>
             <Divider />
-            <FriendInfoDialog open={openInfo} handleClose={handleCloseInfo} friend={friend} page={page} onSuccess={onSuccess}/>
         </React.Fragment>
-    )
+    );
 }
 
-const FriendsList = ({ content, page, onSuccess }) => {
+const FriendsList = ({ content, page, onInfoDialog }) => {
     const user = useSelector((state) => state.auth.data);
     const isAuth = useSelector(selectIsAuth);
     const status = useSelector(authStatus);
@@ -72,7 +63,14 @@ const FriendsList = ({ content, page, onSuccess }) => {
                 {friends.length !== 0 ? (
                     <Grid container>
                         <List sx={{ width: "100%" }}>
-                            {friends.map((friend) => (<FriendItem key={friend._id} friend={friend} page={page} onSuccess={onSuccess}/>))}
+                            {friends.map((friend) => (
+                                <FriendItem 
+                                key={friend._id} 
+                                friend={friend} 
+                                page={page} 
+                                onInfoDilog={onInfoDialog}
+                                />
+                                ))}
                         </List>
                     </Grid>
                 ):

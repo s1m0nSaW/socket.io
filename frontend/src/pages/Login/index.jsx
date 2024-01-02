@@ -10,6 +10,7 @@ import { useForm } from "react-hook-form";
 
 import { fetchAuth, selectIsAuth } from "../../redux/slices/auth";
 import { Grid, Stack, Toolbar } from "@mui/material";
+import Header from "../../components/Header";
 
 export const Login = () => {
     const navigate = useNavigate();
@@ -46,56 +47,55 @@ export const Login = () => {
     }
 
     return (
-        <Grid container justifyContent="center" alignItems="center">
+        <Grid container justifyContent="center" alignItems="center" direction='column' sx={{width:'100%'}}>
+            <Header back={false} profile={false}/>
             <Toolbar />
-            <Grid item xs={12} md={12} justifyContent="center">
-                <Paper
-                    elevation={3}
-                    sx={{ padding: "10px", maxWidth: "500px" }}
-                >
-                    <Typography variant="h5">Вход в аккаунт</Typography>
-                    <form onSubmit={handleSubmit(onSubmit)}>
-                        <Stack sx={{ marginTop: "15px" }} spacing={2}>
-                            <TextField
-                                label="E-Mail"
-                                error={Boolean(errors.email?.message)}
-                                helperText={errors.email?.message}
-                                type="email"
-                                {...register("email", {
-                                    required: "Укажите почту",
-                                })}
-                                fullWidth
-                            />
-                            <TextField
-                                label="Пароль"
-                                error={Boolean(errors.password?.message)}
-                                helperText={errors.password?.message}
-                                type="password"
-                                {...register("password", {
-                                    required: "Укажите пароль",
-                                })}
-                                fullWidth
-                            />
-                            <Button
-                                disabled={!isValid}
-                                type="submit"
-                                size="large"
-                                variant="contained"
-                            >
-                                Войти
-                            </Button>
-                            <Button
-                                onClick={() => navigate(`/register`)}
-                                size="small"
-                                variant="text"
-                                color="error"
-                            >
-                                <u>Регистрация</u>
-                            </Button>
-                        </Stack>
-                    </form>
-                </Paper>
-            </Grid>
+            <Paper
+                elevation={3}
+                sx={{ padding: "10px", width: "350px" }}
+            >
+                <Typography variant="h6">Вход в аккаунт</Typography>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <Stack sx={{ marginTop: "15px" }} spacing={2}>
+                        <TextField
+                            label="E-Mail"
+                            error={Boolean(errors.email?.message)}
+                            helperText={errors.email?.message}
+                            type="email"
+                            {...register("email", {
+                                required: "Укажите почту",
+                            })}
+                            fullWidth
+                        />
+                        <TextField
+                            label="Пароль"
+                            error={Boolean(errors.password?.message)}
+                            helperText={errors.password?.message}
+                            type="password"
+                            {...register("password", {
+                                required: "Укажите пароль",
+                            })}
+                            fullWidth
+                        />
+                        <Button
+                            disabled={!isValid}
+                            type="submit"
+                            size="large"
+                            variant="contained"
+                        >
+                            Войти
+                        </Button>
+                        <Button
+                            onClick={() => navigate(`/main`)}
+                            size="small"
+                            variant="text"
+                            color="error"
+                        >
+                            <u>Регистрация</u>
+                        </Button>
+                    </Stack>
+                </form>
+            </Paper>
         </Grid>
     );
 };
