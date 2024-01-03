@@ -23,7 +23,7 @@ const UserAvatar = ({ user, onClickAva }) => {
             ) : (
                 <Avatar
                     alt={user.nickname}
-                    src={`/api${user.pic}`}
+                    src={`http://localhost:5000${user.pic}`}
                     onClick={onClickAva}
                 />
             )}
