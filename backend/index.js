@@ -17,7 +17,7 @@ const url1 = `mongodb://mongo:27017/ochem`; //нужно поменять пер
 
 mongoose.set("strictQuery", false);
 mongoose
-    .connect(mongooseUrl, { useNewUrlParser: true, useUnifiedTopology: true })
+    .connect(url1, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('DB ok'))
     .catch((err) => console.log('DB error ' + err));
   

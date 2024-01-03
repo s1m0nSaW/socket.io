@@ -1,9 +1,9 @@
 import axios from "axios";
-//const api = '/api'; // нужно поменять перед деплоем
-const local = 'http://localhost:5000';
+const api = '/api'; // нужно поменять перед деплоем
+//const local = 'http://localhost:5000';
 
 const instance = axios.create({
-    baseURL: local,
+    baseURL: api,
     headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json'
