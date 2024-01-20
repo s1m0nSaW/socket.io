@@ -52,11 +52,11 @@ const EditInfoDialog = ({ open, handleClose, onSuccess, user }) => {
       }
 
     const handleChangeFile = async (event) => {
+        const formData = new FormData();
+        const file = event.target.files[0];
+        formData.append('image', file);
         try {
-            const formData = new FormData();
-            const file = event.target.files[0];
-            formData.append('image', file);
-            axios.post('/upload', formData).then((data) => {
+            await axios.post('/upload', formData).then((data) => {
                 if(data){
                     onSuccess('Аватар загружен', 'success')
                     dispatch(fetchAuthMe())
