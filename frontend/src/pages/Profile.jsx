@@ -139,7 +139,7 @@ export const Profile = ({ socket }) => {
     },[ isAuth, user, navigate, status, socket ])
 
     // const src = `http://localhost:5000${user.pic}`
-    const src=`https://ochem.ru/api${user.pic}`
+    // const src=`https://ochem.ru/api${user.pic}` 
 
     return (
         <React.Fragment>
@@ -172,7 +172,7 @@ export const Profile = ({ socket }) => {
                                 ) : (
                                     <Avatar
                                         alt={user.nickname}
-                                        src={src}
+                                        src={`https://ochem.ru/api${user.pic}`}
                                         onClick={() => setEditInfo(true)}
                                         sx={{ width: 56, height: 56 }}
                                     />
@@ -186,7 +186,7 @@ export const Profile = ({ socket }) => {
                                 ) : (
                                     <Avatar
                                         alt={user.nickname}
-                                        src={src}
+                                        src={`https://ochem.ru/api${user.pic}`}
                                         sx={{ margin:'10px', width: 56, height: 56 }}
                                         onClick={() => setEditInfo(true)}
                                     />

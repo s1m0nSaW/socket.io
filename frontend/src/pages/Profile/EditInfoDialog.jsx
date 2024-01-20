@@ -109,7 +109,7 @@ const EditInfoDialog = ({ open, handleClose, onSuccess, user }) => {
     };
 
     // const src = `http://localhost:5000${user.pic}`
-    const src=`https://ochem.ru/api${user.pic}`
+    // const src=`https://ochem.ru/api${user.pic}` 
 
     return (
         <Dialog
@@ -127,7 +127,7 @@ const EditInfoDialog = ({ open, handleClose, onSuccess, user }) => {
                 </Stack>:
                 <CardMedia
                 sx={{ height: 300 }}
-                image={src}
+                image={`https://ochem.ru/api${user.pic}`}
             />}</>}
             {user && (
                 <List>

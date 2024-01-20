@@ -7,7 +7,7 @@ import PersonIcon from '@mui/icons-material/Person';
 
 const UserAvatar = ({ user, onClickAva }) => {
     // const src = `http://localhost:5000${user.pic}`
-    const src=`https://ochem.ru/api${user.pic}`
+    // const src=`https://ochem.ru/api${user.pic}`
     return (<>
         {user.status === 'sponsor' ? 
         <Badge
@@ -26,7 +26,7 @@ const UserAvatar = ({ user, onClickAva }) => {
             ) : (
                 <Avatar
                     alt={user.nickname}
-                    src={src}
+                    src={`https://ochem.ru/api${user.pic}`}
                     onClick={onClickAva}
                 />
             )}
@@ -39,7 +39,7 @@ const UserAvatar = ({ user, onClickAva }) => {
             ) : (
                 <Avatar
                     alt={user.nickname}
-                    src={src}
+                    src={`https://ochem.ru/api${user.pic}`}
                     sx={{ margin:'10px' }}
                     onClick={onClickAva}
                 />
