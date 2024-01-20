@@ -4,12 +4,35 @@ import { useSelector } from "react-redux";
 
 import AccountCircle from '@mui/icons-material/AccountCircle';
 
+import axios from '../../axios.js'
+
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="left" ref={ref} {...props} />;
 });
 
 const FriendInfoDialog = ({ open, handleClose, friend, page, newGame, onFriendsOfFriend, remove, confirm, reject, deleteFriend, add }) => {
     const user = useSelector((state) => state.auth.data);
+    const [ mutualFriends, setMutualFriends ] = React.useState([])
+
+    React.useEffect(() => {
+        const getFriends = async () => {
+            const fields = {
+                friends: friend.friends
+            }
+            if(user){
+                await axios.post('/friends', fields).then((data)=>{
+                    if(data){
+                        setMutualFriends(data.data.filter(obj => user.friends.includes(obj._id)))
+                    }
+                }).catch((err)=>{
+                    console.warn(err); 
+                });
+            }
+        }
+        if(friend){
+            getFriends()
+        }
+    },[friend, user])
 
     return (
         <Dialog
@@ -36,7 +59,7 @@ const FriendInfoDialog = ({ open, handleClose, friend, page, newGame, onFriendsO
                                                 ? "Имя не указано"
                                                 : friend.fullname}
                     </Typography>
-                    {friend && <Button size="small" onClick={onFriendsOfFriend}>{friend.friends.length} друзей</Button>}
+                    {friend && friend._id !== user._id && <Button size="small" onClick={onFriendsOfFriend}>{friend.friends.length} друзей ( общих {mutualFriends.length} )</Button>}
                     <Typography variant="body2">
                         {friend.age === "none"
                             ? "Возраст не указан"

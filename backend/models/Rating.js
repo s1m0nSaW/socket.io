@@ -9,9 +9,13 @@ const RatingSchema = new mongoose.Schema({
         type: Number,
         default: 0,
     },
-    rating:{ 
+    rating:{
         type: Number,
         default: 0,
+    },
+    forSponsor:{
+        type: Boolean,
+        default: false,
     },
     games:[{ type: mongoose.Schema.Types.ObjectId, ref: "Game" }],
 },{

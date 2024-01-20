@@ -16,6 +16,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 const EditInfoDialog = ({ open, handleClose, onSuccess, user }) => {
     const [content, setContent] = React.useState('info')
     const [ username, setFullname ] = React.useState('');
+    const [ status, setStatus ] = React.useState('');
     const [ userage, setAge ] = React.useState('');
     const [ usergender, setGender ] = React.useState('');
     const [ usercity, setCity ] = React.useState('');
@@ -24,6 +25,10 @@ const EditInfoDialog = ({ open, handleClose, onSuccess, user }) => {
 
     const handleChangeName = (event) => {
         setFullname(event.target.value);
+    };
+
+    const handleChangeStatus = (event) => {
+        setStatus(event.target.value);
     };
 
     const handleChangeAge = (event) => {
@@ -37,6 +42,14 @@ const EditInfoDialog = ({ open, handleClose, onSuccess, user }) => {
     const handleChangeCity = (event) => {
         setCity(event.target.value);
     };
+
+    function formatDate(milliseconds) {
+        const date = new Date(milliseconds);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Месяц начинается с 0, поэтому добавляем 1
+        const year = date.getFullYear();
+        return `${day}.${month}.${year}`;
+      }
 
     const handleChangeFile = async (event) => {
         try {
@@ -63,15 +76,17 @@ const EditInfoDialog = ({ open, handleClose, onSuccess, user }) => {
 
     const onSubmit = async () => {
         let fullname = user.fullname
+        let profileStatus = user.profileStatus
         let age = user.age
         let gender = user.gender
         let city = user.city
         if(username !== '') fullname = username
+        if(status !== '') profileStatus = status
         if(userage !== '') age = userage
         if(usergender !== '') gender = usergender
         if(usercity !== '') city = usercity
 
-        const fields = { fullname, age, gender, city } 
+        const fields = { fullname, profileStatus, age, gender, city } 
         
         await axios.patch(`/auth-data`, fields).then((data) => {
             if(data){
@@ -85,6 +100,7 @@ const EditInfoDialog = ({ open, handleClose, onSuccess, user }) => {
             }
         });
         setFullname('')
+        setStatus('')
         setAge('')
         setGender('')
         setCity('')
@@ -115,6 +131,8 @@ const EditInfoDialog = ({ open, handleClose, onSuccess, user }) => {
                     <Stack alignItems='center' justifyContent='center'>
                         <Button variant='outlined' onClick={() => inputFileRef.current.click()}>{user.pic === 'none' ? 'Загрузить аватар':'Обновить аватар'}</Button>
                     </Stack>
+                    {user.status === 'sponsor' && 
+                        <Typography variant='body2' align='center'><br/>Спонсор до {formatDate(user.statusDate)}</Typography>}
                     <input
                         ref={inputFileRef}
                         type='file'
@@ -159,6 +177,53 @@ const EditInfoDialog = ({ open, handleClose, onSuccess, user }) => {
                                     </Typography>:
                                     <Typography variant="body1">
                                         {username}
+                                    </Typography>
+                                    }
+                            />
+                        </ListItem>
+                    )}
+                    {content === "editStatus" ? (
+                        <ListItem
+                        secondaryAction={
+                            <IconButton edge="end" onClick={() => setContent('info')}>
+                                <DoneIcon/>
+                            </IconButton>
+                        }
+                        >
+                            <TextField
+                                label="Сведения"
+                                helperText="до 150 символов"
+                                value={status}
+                                onChange={handleChangeStatus}
+                                fullWidth
+                                multiline
+                                maxRows={3}
+                                inputProps={{ maxLength: 150 }}
+                            />
+                        </ListItem>
+                        ) : (
+                        <ListItem
+                        secondaryAction={
+                            <IconButton edge="end" onClick={() => setContent('editStatus')}>
+                                <EditOutlinedIcon/>
+                            </IconButton>
+                        }>
+                            <ListItemText
+                                primary={
+                                    <Typography variant="caption">
+                                        Текущие сведения
+                                        <br />
+                                    </Typography>
+                                }
+                                secondary={
+                                status === '' ?
+                                    <Typography variant="body1">
+                                        {user.profileStatus === "none"
+                                            ? "Нет сведений"
+                                            : <i>{user.profileStatus}</i>}
+                                    </Typography>:
+                                    <Typography variant="body1">
+                                        <i>{status}</i>
                                     </Typography>
                                     }
                             />

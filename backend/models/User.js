@@ -19,6 +19,10 @@ const UserSchema = new mongoose.Schema({
         type: String,
         default: 'none',
     },
+    profileStatus:{
+        type: String,
+        default: 'none',
+    },
     fullname:{
         type: String,
         default: 'none',
@@ -40,6 +44,10 @@ const UserSchema = new mongoose.Schema({
         default: 'none',
     },
     statusDate:{
+        type: Number,
+        default: 0,
+    },
+    invited:{
         type: Number,
         default: 0,
     },

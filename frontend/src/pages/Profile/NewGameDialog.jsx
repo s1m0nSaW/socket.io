@@ -1,14 +1,14 @@
-import { Box, Button, Dialog, DialogContent, DialogTitle, Grid, List, ListItem, ListItemAvatar, ListItemText, Slide, Stack, Step, StepLabel, Stepper, Toolbar, Typography } from "@mui/material";
+import { Box, Button, Dialog, DialogContent, DialogTitle, Divider, Grid, List, ListItem, ListItemAvatar, ListItemText, Rating, Slide, Stack, Step, StepLabel, Stepper, Toolbar, Typography } from "@mui/material";
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import GroupsIcon from '@mui/icons-material/Groups';
+import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 
 import axios from '../../axios.js'
 import { authStatus, fetchAuthMe } from "../../redux/slices/auth.js";
 import FriendFromDialog from "../Game/FriendFromDialog.jsx";
-import ThemeFromDialog from "../Game/ThemeFromDialog.jsx";
 import UserAvatar from "../../components/UserAvatar.jsx";
 
 const steps = [
@@ -23,6 +23,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const NewGameDialog = ({ open, handleClose, onSuccess, user, socket, inGams, mate }) => {
     const [themes, setThemes] = React.useState();
+    const [rates, setRates] = React.useState();
     const [friends, setFriends] = React.useState();
     const [theme, setTheme] = React.useState('');
     const [friend, setFriend] = React.useState('');
@@ -38,9 +39,25 @@ const NewGameDialog = ({ open, handleClose, onSuccess, user, socket, inGams, mat
         handleClose()
     }
 
+    const questionsCount = (t) => {
+        const themeObj = themes.find((obj) => obj.theme === t);
+
+        // Если объект найден, возвращаем значение count, иначе возвращаем null или другое значение по умолчанию
+        return themeObj ? themeObj.count : null;
+    }
+
     const handleChangeTheme = (theme) => {
-        setTheme(theme);
-        setActiveStep(2)
+        if(theme.forSponsor){
+            if(user.status === 'sponsor'){
+                setTheme(theme);
+                setActiveStep(2)
+            } else {
+                onSuccess('Игра только для спонсоров', 'error')
+            }
+        } else {
+            setTheme(theme);
+            setActiveStep(2)
+        }
     };
 
     const handleChangeFriend = (friend) => {
@@ -73,6 +90,16 @@ const NewGameDialog = ({ open, handleClose, onSuccess, user, socket, inGams, mat
     }
 
     React.useEffect(()=>{
+        const getRates = async () => {
+            try {
+                const _rates = await axios.get('/all-rates')
+                if(_rates) {
+                    setRates(_rates.data)
+                }
+            } catch (err) {
+                console.warn(err)
+            }
+        }
         const getThemes = async () => {
             await axios.get('/all-quest')
             .then((data) => {
@@ -94,6 +121,7 @@ const NewGameDialog = ({ open, handleClose, onSuccess, user, socket, inGams, mat
             .catch(err => console.warn(err));
         };
         getThemes();
+        getRates();
 
         const getFriends = async () => {
             const fields = {
@@ -164,11 +192,27 @@ const NewGameDialog = ({ open, handleClose, onSuccess, user, socket, inGams, mat
                 </>}
             </DialogContent>}
             {activeStep === 1 && <DialogContent sx={{width:'100%'}}>
-                {themes && <>
-                    {themes.length !== 0 ? (
+                {rates && <>
+                    {rates.length !== 0 ? (
                         <Grid container>
-                            <List sx={{ width: "100%", maxHeight: 300, }}>
-                                {themes.map((theme) => (<ThemeFromDialog key={theme.theme} theme={theme} setTheme={handleChangeTheme}/>))}
+                            <List sx={{ width: "100%", maxHeight: 300 }}>
+                                {rates?.map((rate) => (
+                                    <div key={rate._id}>
+                                        <ListItem alignItems="flex-start" onClick={()=>handleChangeTheme(rate)} >
+                                            <ListItemText
+                                                primary={<Typography>
+                                                    {rate.theme}&nbsp; 
+                                                    {rate.forSponsor && <MonetizationOnIcon fontSize="small" color="primary"/>}
+                                                </Typography>}
+                                                secondary={<Typography>Количество вопросов: {questionsCount(rate.theme)}</Typography>}
+                                            />
+                                        </ListItem>
+                                        <Stack direction='row' justifyContent='center' alignItems='flex-start' sx={{ marginBottom:'10px'}}>
+                                            <Rating name="read-only" value={rate.rating} readOnly size="small"/>
+                                        </Stack>
+                                        <Divider />
+                                    </div>
+                                ))}
                             </List>
                         </Grid>
                     ):
@@ -236,21 +280,3 @@ const NewGameDialog = ({ open, handleClose, onSuccess, user, socket, inGams, mat
 };
 
 export default NewGameDialog;
-
-/*
-const getThemes = async () => {
-            await axios.get('/all-quest')
-            .then((data) => {
-                let quests = data.data;
-                let uniqueThemes = [];
-                quests.reduce((acc, obj) => {
-                    if (!uniqueThemes.includes(obj.theme)) {
-                      uniqueThemes.push(obj.theme);
-                    }
-                    return acc;
-                  }, []);
-                setThemes(uniqueThemes)
-            })
-            .catch(err => console.warn(err));
-        };
-        */

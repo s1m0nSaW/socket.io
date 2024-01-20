@@ -9,10 +9,6 @@ const QuestionSchema = new mongoose.Schema({
         type: String,
         default: 'none',
     },
-    raiting: {
-        type: String,
-        default: 'none',
-    },
     answer1: {
         type: String,
         default: 'none',
@@ -26,6 +22,14 @@ const QuestionSchema = new mongoose.Schema({
         default: 'none', 
     },
     answer4: { 
+        type: String,
+        default: 'none', 
+    },
+    sponsor: { 
+        type: String,
+        default: 'none', 
+    },
+    correct: { 
         type: String,
         default: 'none', 
     },

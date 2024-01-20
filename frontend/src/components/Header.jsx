@@ -77,7 +77,7 @@ const Header = ({ profile, onSuccess, back }) => {
                         sx={{ flexGrow: 1, marginTop: "10px" }}
                         onClick={() => handleNav("/main")}
                     >
-                        Ochem!
+                        ochem.ru
                     </Typography>
                     <IconButton
                         size="large"

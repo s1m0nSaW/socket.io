@@ -1,6 +1,43 @@
 import Payment from "../models/Payment.js";
 import User from "../models/User.js";
 
+const updateStat = async (data) => {
+    const today = new Date(); // Получаем текущую дату
+    today.setHours(0, 0, 0, 0); // Устанавливаем время в полночь
+
+    let count
+    if(data === 2592000000) count = 299;
+    if(data === 77760000000) count = 1990;
+    if(data === 10) count = 99;
+    if(data === 30) count = 199;
+    if(data === 100) count = 499;
+    
+    StatModel.findOne({ date: today }, (err, stat) => {
+        if (err) {
+            console.error('Ошибка при поиске статистики:', err);
+        } else {
+            if (stat) {
+                // Нашли объект статистики для сегодняшней даты
+                // Теперь мы можем вносить изменения
+                //stat.newGames.push(user_id); // Добавляем новую строку в массив strings
+                stat.payments.push(count); // Добавляем число 42 в массив numbers
+                // Сохраняем изменения в базе данных
+                stat.save();
+            } else {
+                // Объект статистики для сегодняшней даты не найден, создаем новый объект статистики
+                const newStatistic = new StatModel({
+                    date: today,
+                    // newGames: [user_id],
+                    payments: [count],
+                });
+
+                // Сохраняем новый объект статистики в базе данных
+                newStatistic.save();
+            }
+        }
+    });
+}
+
 export const create = async (req,res) => {
     try {
         const doc = new Payment({
@@ -40,6 +77,8 @@ export const payments = async (req, res) => {
                 },
                 { returnDocument: "after" }
             );
+
+            updateStat(payment.count);
 
             if(payment.type === 'retail') {
                 await User.findOneAndUpdate(

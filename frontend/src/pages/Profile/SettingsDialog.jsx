@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, ListItem, ListItemText, Slide, TextField, Typography } from '@mui/material'
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, ListItem, ListItemText, Paper, Slide, TextField, Typography } from '@mui/material'
 import React from 'react'
 import { useDispatch } from 'react-redux'
 
@@ -218,6 +218,11 @@ const SettingsDialog = ({ open, handleClose, onSuccess, user }) => {
                     />
                 </ListItem>
                 }
+                <Paper sx={{padding:'10px', borderColor:'red', marginTop:'15px'}} variant="outlined">
+                    <Typography variant="caption" color="text.secondary">
+                        При возникновении проблем с сервисом напишите письмо на почту info@ochem.ru
+                    </Typography>
+                </Paper>
             </DialogContent>
             <DialogActions>
                 <Button

@@ -5,10 +5,41 @@ import sharp from 'sharp';
 import fs from 'fs';
 
 import UserModel from "../models/User.js";
+import StatModel from "../models/Stat.js";
 
 dotenv.config();
 
 const secret = process.env.SECRET;
+
+const updateStat = async (user_id) => {
+    const today = new Date(); // Получаем текущую дату
+    today.setHours(0, 0, 0, 0); // Устанавливаем время в полночь
+    StatModel.findOne({ date: today }, (err, stat) => {
+        if (err) {
+            console.error('Ошибка при поиске статистики:', err);
+        } else {
+            if (stat) {
+                // Нашли объект статистики для сегодняшней даты
+                // Теперь мы можем вносить изменения
+                stat.newUsers.push(user_id); // Добавляем новую строку в массив strings
+                // stat.numbers.push(42); // Добавляем число 42 в массив numbers
+
+                // Сохраняем изменения в базе данных
+                stat.save();
+            } else {
+                // Объект статистики для сегодняшней даты не найден, создаем новый объект статистики
+                const newStatistic = new StatModel({
+                    date: today,
+                    newUsers: [user_id],
+                    // numbers: [42],
+                });
+
+                // Сохраняем новый объект статистики в базе данных
+                newStatistic.save();
+            }
+        }
+    });
+}
 
 export const register = async (req, res) => {
     try {
@@ -27,17 +58,24 @@ export const register = async (req, res) => {
             });
 
             const user = await doc.save();
+            updateStat(promoter._id);
 
-            await UserModel.findOneAndUpdate(
-                {
-                    _id: promoter._id,
-                },
-                {
-                    $push: {friends: user._id},
-                    $inc: {rsvp: 5},
-                },
-                { returnDocument: "after" }
-            );
+            promoter.friends.push(user._id);
+            promoter.rsvp += 5;
+            promoter.invited += 1;
+
+            if(promoter.invited === 10){
+                if (promoter.status === 'sponsor') {
+                    promoter.statusDate += 2592000000;
+                    promoter.invited = 0;
+                } else if (user.status === 'none') {
+                    promoter.status = 'sponsor';
+                    promoter.statusDate = +new Date() + 2592000000;
+                    promoter.invited = 0;
+                }
+            }
+
+            await promoter.save();
 
             const token = jwt.sign(
                 {
@@ -67,6 +105,7 @@ export const register = async (req, res) => {
             });
 
             const user = await doc.save();
+            updateStat('none');
 
             const token = jwt.sign(
                 {
@@ -297,7 +336,6 @@ export const getGameUser = async (req, res) => {
             rsvpStatus,
             dailyRsvp,
             rsvpDate,
-            friends,
             reqIn,
             reqOut,
             games,
@@ -532,6 +570,10 @@ export const remove = async (req, res) => {
 };
 
 export const update = async (req, res) => {
+    let status = req.body.profileStatus;
+    if (status.length > 150) {
+        status = status.slice(0, 150);
+    }
     try {
         const user = await UserModel.findOneAndUpdate(
             {
@@ -540,6 +582,7 @@ export const update = async (req, res) => {
             {
                 $set: {
                     fullname: req.body.fullname,
+                    profileStatus: status,
                     age: req.body.age,
                     gender: req.body.gender,
                     city: req.body.city,
@@ -654,6 +697,30 @@ export const updateRsvpStatus = async (req, res) => {
         console.log(err);
         res.status(500).json({
             message: "Не удалось обновить данные",
+        });
+    }
+};
+
+export const updateSponsor = async (req, res) => {
+    try {
+        const user = await UserModel.findOneAndUpdate(
+            {
+                _id: req.params.id,
+            },
+            {
+                $set: {
+                    status: 'sponsor',
+                    statusDate: +new Date() + 2592000000,
+                },
+            },
+            { returnDocument: "after" }
+        );
+
+        res.json(user);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: "Проблема с удалением",
         });
     }
 };

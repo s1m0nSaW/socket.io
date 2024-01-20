@@ -1,6 +1,6 @@
 import axios from "axios";
 const api = '/api'; // нужно поменять перед деплоем
-//const local = 'http://localhost:5000';
+//const api = 'http://localhost:5000';
 
 const instance = axios.create({
     baseURL: api,

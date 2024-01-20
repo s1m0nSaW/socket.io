@@ -1,4 +1,4 @@
-import { CircularProgress, Grid, Toolbar, Typography } from "@mui/material";
+import { CircularProgress, Grid } from "@mui/material";
 import React from "react";
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -34,10 +34,6 @@ const Intro = () => {
             spacing={2}
             sx={{ height: '100vh'}}
         >
-            <Typography variant="h3" sx={{ color: 'primary.main' }}>
-                Ochem!
-            </Typography>
-            <Toolbar/>
             <CircularProgress/>
         </Grid>
     );

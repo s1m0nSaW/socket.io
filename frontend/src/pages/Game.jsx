@@ -16,6 +16,7 @@ import WhoIsFirst from "./Game/WhoIsFirst";
 import TheEnd from "./Game/TheEnd";
 import icon from '../img/emoji.svg';
 import styles from '../styles/Chat.module.css';
+import InfoDialog from "./Game/InfoDialog.jsx";
 
 const GamePage = ({ socket }) => {
     const { id } = useParams();
@@ -32,6 +33,8 @@ const GamePage = ({ socket }) => {
     const [ value, setValue ] = React.useState('');
     const [ rateGame, setRateGame ] = React.useState(false);
     const [ isOpen, setOpen ] = React.useState(false);
+    const [ openInfoDialog, setOpenInfoDialog ] = React.useState(false);
+    const [ infoDialogFriend, setInfoDialogFriend ] = React.useState();
 
     const nextQuestion = () => {
         if(game.turn === user._id){
@@ -39,6 +42,15 @@ const GamePage = ({ socket }) => {
         } else {
             setTurn(user._id, game.activeStep + 1)
         }
+    }
+
+    const handleOpenInfo = (_friend) => {
+        setInfoDialogFriend(_friend);
+        setOpenInfoDialog(true);
+    }
+
+    const handleCloseInfoDialog = () => {
+        setOpenInfoDialog(false);
     }
 
     const onEmojiClick = ({ emoji }) => setValue(`${value} ${emoji}`)
@@ -76,17 +88,28 @@ const GamePage = ({ socket }) => {
         socket.emit("updateGame", { gameId: id });
     }
 
-    const updateAnswered = async ( userId, answer ) => {
-        if (userId === answered.user1){
-            const fields = { answer1: answer, answer2: 'none' }
-            await axios.post(`/up-answer/${answered._id}`, fields).catch((err)=>{console.warn(err);});
-            socket.emit("upAnswered", { gameId: id, answeredId: answered._id })
-        } else if (userId === answered.user2){
-            const fields = { answer2: answer, answer1: 'none' }
-            await axios.post(`/up-answer/${answered._id}`, fields).catch((err)=>{console.warn(err);});
-            socket.emit("upAnswered", { gameId: id, answeredId: answered._id })
+    const updateAnswered = async ( userId, answer, correct ) => {
+        if (correct === 'none' || correct === '' || !correct){
+            if (userId === answered.user1){
+                const fields = { answer1: answer, answer2: 'none', correct: 'none' }
+                await axios.post(`/up-answer/${answered._id}`, fields).catch((err)=>{console.warn(err);});
+                socket.emit("upAnswered", { gameId: id, answeredId: answered._id })
+            } else if (userId === answered.user2){
+                const fields = { answer2: answer, answer1: 'none', correct: 'none' }
+                await axios.post(`/up-answer/${answered._id}`, fields).catch((err)=>{console.warn(err);});
+                socket.emit("upAnswered", { gameId: id, answeredId: answered._id })
+            }
+        } else {
+            if (userId === answered.user1){
+                const fields = { answer1: answer, answer2: 'none', correct: correct }
+                await axios.post(`/up-answer/${answered._id}`, fields).catch((err)=>{console.warn(err);});
+                socket.emit("upAnswered", { gameId: id, answeredId: answered._id })
+            } else {
+                const fields = { answer2: answer, answer1: 'none', correct: correct }
+                await axios.post(`/up-answer/${answered._id}`, fields).catch((err)=>{console.warn(err);});
+                socket.emit("upAnswered", { gameId: id, answeredId: answered._id })
+            }
         }
-        ;
     }
 
     const sendMessage = async () => {
@@ -189,7 +212,7 @@ const GamePage = ({ socket }) => {
 
     React.useEffect(() => {
         socket.on("deleteGame", ({ data }) => {
-            navigate(`/prfl/${user.nickname}`)
+            if(user){ navigate(`/prfl/${user.nickname}`) }
         });
     },[socket, user, navigate]);
 
@@ -229,7 +252,8 @@ const GamePage = ({ socket }) => {
                     <WhoIsFirst user={user} friend={friend} setTurn={setTurn} game={game}/>
                     :
                     <Grid item>
-                    {answered && game && rateGame === false ? <ActiveStep 
+                    {answered && game && rateGame === false ? 
+                    <ActiveStep 
                         question={questions[game.activeStep]}
                         answered={answered} 
                         user={user}
@@ -239,6 +263,7 @@ const GamePage = ({ socket }) => {
                         next={nextQuestion}
                         rateTheGame={rateTheGame}
                         questions={questions}
+                        friendInfo={handleOpenInfo}
                     />: <TheEnd user={user} friend={friend} game={game} socket={socket}/>}
                     </Grid>}
                     <Stack 
@@ -265,13 +290,14 @@ const GamePage = ({ socket }) => {
                         </Stack>
                     </Paper>
                 </Grid>
-                    <Stack direction="column"
-                        justifyContent="flex-start"
-                        alignItems="stretch"
-                        spacing={2} 
-                        sx={{ overflow: 'auto', flex: 1, padding:'10px'}}>
-                        <Chat messages={messages} user={user}/>
-                    </Stack>
+                <Stack direction="column"
+                    justifyContent="flex-start"
+                    alignItems="stretch"
+                    spacing={2} 
+                    sx={{ overflow: 'auto', flex: 1, padding:'10px'}}>
+                    <Chat messages={messages} user={user}/>
+                </Stack>
+                {infoDialogFriend && <InfoDialog open={openInfoDialog} friend={infoDialogFriend} handleClose={handleCloseInfoDialog}/>}
             </Grid>
         }
         </>);

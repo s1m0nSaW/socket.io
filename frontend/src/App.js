@@ -15,7 +15,8 @@ import GamePage from './pages/Game';
 import Games from './pages/Games';
 import SuccessSnack from './components/SuccessSnack';
 
-const socket = io.connect('http://5.35.90.128/api')
+const socket = io.connect('http://5.35.90.128/api') // поменять перед деплоем
+//const socket = io.connect('http://localhost:5000')
 
 function App() {
   const dispatch = useDispatch();

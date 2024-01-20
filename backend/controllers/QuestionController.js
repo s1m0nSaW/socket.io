@@ -9,6 +9,8 @@ export const create = async (req,res) => {
             answer2: req.body.answer2,
             answer3: req.body.answer3,
             answer4: req.body.answer4,
+            sponsor: req.body.sponsor,
+            correct: req.body.correct,
         });
 
         const chat = await doc.save();

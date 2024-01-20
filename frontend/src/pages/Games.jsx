@@ -11,6 +11,7 @@ import { fetchAuthMe, authStatus, selectIsAuth } from "../redux/slices/auth";
 import axios from '../axios.js';
 
 import AddIcon from '@mui/icons-material/Add';
+import AllGames from "./Games/AllGames.jsx";
 
 const Games = ({ socket }) => {
     const dispatch = useDispatch();
@@ -104,6 +105,7 @@ const Games = ({ socket }) => {
             variant="scrollable"
             scrollButtons="auto"
             >
+                <Tab value="zero" label="Все игры" />
                 <Tab value="one" label="Игры" />
                 <Tab value="two" label={
                     <Badge badgeContent={incomingRequestsCount} color="primary">
@@ -117,6 +119,7 @@ const Games = ({ socket }) => {
                 } />
             </Tabs>
             {user && <>
+            {value === 'zero' && <AllGames/>}
             {value === 'one' && <GamesList content={user.games} page={'games'} onSuccess={handleSuccessOpen} onUpdate={onUpdateUserGames} socket={socket}/>}
             {value === 'two' && <GamesList 
                 content={user.gamesIn}

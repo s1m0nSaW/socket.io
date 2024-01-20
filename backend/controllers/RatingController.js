@@ -4,6 +4,7 @@ export const create = async (req,res) => {
     try {
         const doc = new Rating({
             theme: req.body.theme,
+            forSponsor: req.body.forSponsor,
         });
 
         await doc.save();
@@ -62,7 +63,7 @@ export const update = async (req, res) => {
         const rating = await Rating.findById(req.params.id);
 
         if(rating){
-            const newRating = Math.round((req.body.rate + (rating.rating * rating.count))/(rating.count + 1));
+            const newRating = Math.ceil((req.body.rate + (rating.rating * rating.count))/(rating.count + 1));
             const updatedRating = await Rating.findOneAndUpdate(
                 {
                     _id: req.params.id,

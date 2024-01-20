@@ -19,9 +19,21 @@ const TheEnd = ({ user, friend, game, socket }) => {
         try {
             let count = 0;
             answereds?.forEach((answered) => {
-                if (answered.turn !== personId) {
-                    if (answered.answer1 === answered.answer2) {
-                        count++;
+                if(answered.correct === 'none'){
+                    if (answered.turn !== personId) {
+                        if (answered.answer1 === answered.answer2) {
+                            count++;
+                        }
+                    }
+                } else {
+                    if (answered.user1 === personId) {
+                        if (answered.answer1 === answered.correct) {
+                            count++;
+                        }
+                    } else {
+                        if (answered.answer2 === answered.correct) {
+                            count++;
+                        }
                     }
                 }
             });
@@ -112,7 +124,7 @@ const TheEnd = ({ user, friend, game, socket }) => {
         </Stack>:<>
             {rating !== undefined && 
             <Grid item>
-            <IconButton color="warning" sx={{ position: 'absolute', right:'15px'}} onClick={removeGame}>
+            <IconButton color="warning" sx={{ position: 'absolute', right:'10px'}} onClick={removeGame}>
                 <DeleteIcon />
             </IconButton>
                 <Stack direction='column' justifyContent='center' alignItems='center' spacing={2} sx={{padding:'20px'}}>

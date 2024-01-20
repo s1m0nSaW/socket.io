@@ -6,24 +6,24 @@ export const theme = createTheme({
     button: {
       textTransform: "none",
       fontWeight: 300,
-      fontFamily: 'Poiret One',
+      fontFamily: 'Raleway',
     },
     body1: {
       fontWeight: 400,
-      fontFamily: 'Poiret One, Noto Color Emoji',
+      fontFamily: 'Raleway, Noto Color Emoji',
       userSelect: 'none'
     },
     body2: {
       fontWeight: 300,
-      fontFamily: 'Poiret One',
+      fontFamily: 'Raleway',
       userSelect: 'none'
     },
     h3: {
-      fontFamily: 'Henny Penny',
+      fontFamily: 'Raleway',
       userSelect: 'none',
     },
     h5: {
-      fontFamily: 'Henny Penny',
+      fontFamily: 'Raleway',
       userSelect: 'none',
     },
     h4: {

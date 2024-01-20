@@ -4,7 +4,10 @@ import React from "react";
 import MonetizationOnSharpIcon from '@mui/icons-material/MonetizationOnSharp';
 import PersonIcon from '@mui/icons-material/Person';
 
+
 const UserAvatar = ({ user, onClickAva }) => {
+    // const src = `http://localhost:5000${user.pic}`
+    const src=`http://5.35.90.128/api${user.pic}`
     return (<>
         {user.status === 'sponsor' ? 
         <Badge
@@ -23,7 +26,7 @@ const UserAvatar = ({ user, onClickAva }) => {
             ) : (
                 <Avatar
                     alt={user.nickname}
-                    src={`http://5.35.90.128/api${user.pic}`}
+                    src={src}
                     onClick={onClickAva}
                 />
             )}
@@ -36,7 +39,7 @@ const UserAvatar = ({ user, onClickAva }) => {
             ) : (
                 <Avatar
                     alt={user.nickname}
-                    src={`http://5.35.90.128/api${user.pic}`}
+                    src={src}
                     sx={{ margin:'10px' }}
                     onClick={onClickAva}
                 />

@@ -138,6 +138,9 @@ export const Profile = ({ socket }) => {
         }
     },[ isAuth, user, navigate, status, socket ])
 
+    // const src = `http://localhost:5000${user.pic}`
+    const src=`http://5.35.90.128/api${user.pic}`
+
     return (
         <React.Fragment>
             <Header profile={false} onSuccess={handleSuccessOpen} back={false}/>
@@ -169,7 +172,7 @@ export const Profile = ({ socket }) => {
                                 ) : (
                                     <Avatar
                                         alt={user.nickname}
-                                        src={`http://localhost:5000${user.pic}`}
+                                        src={src}
                                         onClick={() => setEditInfo(true)}
                                         sx={{ width: 56, height: 56 }}
                                     />
@@ -183,7 +186,7 @@ export const Profile = ({ socket }) => {
                                 ) : (
                                     <Avatar
                                         alt={user.nickname}
-                                        src={`http://localhost:5000${user.pic}`}
+                                        src={src}
                                         sx={{ margin:'10px', width: 56, height: 56 }}
                                         onClick={() => setEditInfo(true)}
                                     />
@@ -196,12 +199,16 @@ export const Profile = ({ socket }) => {
                             direction="column"
                             justifyContent="center"
                             alignItems="center"
+                            sx={{ padding: '15px'}}
                         >
                             <Typography variant="caption">{user.nickname}</Typography>
                             {user.fullname === "none" ? (
                                 <Typography onClick={() => setEditInfo(true)}>Укажите данные</Typography>
                             ) : (
                                 <Typography onClick={() => setEditInfo(true)}>{user.fullname}</Typography>
+                            )}
+                            {user.profileStatus !== "none" && (
+                                <Typography align="center" variant="caption"><i>{user.profileStatus}</i></Typography>
                             )}
                         </Stack>
                     </Grid>

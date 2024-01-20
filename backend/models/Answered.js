@@ -28,6 +28,10 @@ const AnsweredSchema = new mongoose.Schema({
     answer2: {
         type: String,
         default: 'none',
+    },
+    correct: {
+        type: String,
+        default: 'none',
     }
 },{
     timestamps:true,

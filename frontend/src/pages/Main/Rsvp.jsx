@@ -21,14 +21,14 @@ const Rsvp = () => {
                 alignItems="center"
                 spacing={1}
                 >
-                    <Typography variant="h4" color='dodgerblue' component="div">
+                    <Typography variant="h4" color='dodgerblue' component="div" sx={{ textShadow: "1px 1px 2px #ba68c8" }}>
                         RSVP
                     </Typography>
                     <Typography variant='body1' align='center'>
                     <b>RSVP</b> - игровая валюта, необходимая для создания игры. Приглашенные в игру пользователи ничего не теряют.<br/><br/> Обычные пользователи получают <b>3 бесплатных RSVP ежедневно</b>, в то время как пользователи со статусом "<b>спонсор</b>" - <b>10 RSVP ежедневно</b>.
                     </Typography>
                     <Toolbar/>
-                    <Typography variant="h4" color='dodgerblue' component="div">
+                    <Typography variant="h4" color='dodgerblue' component="div" sx={{ textShadow: "1px 1px 2px #ba68c8" }}>
                         Как получить RSVP?
                     </Typography>
                 </Stack>

@@ -14,6 +14,7 @@ const NewQuestion = ({ open, handleClose, newQuestion, ratings }) => {
     const [answer2, setAnswer2] = React.useState('');
     const [answer3, setAnswer3] = React.useState('');
     const [answer4, setAnswer4] = React.useState('');
+    const [correct, setCorrect] = React.useState('');
 
     const handleChangeTheme = (e) => {
         const message = e.target.value
@@ -45,6 +46,11 @@ const NewQuestion = ({ open, handleClose, newQuestion, ratings }) => {
         setAnswer4(message)
     }
 
+    const handleChangeCorrect = (e) => {
+        const message = e.target.value
+        setCorrect(message)
+    }
+
     const onExit = () => {
         setTheme('');
         setText('');
@@ -52,16 +58,11 @@ const NewQuestion = ({ open, handleClose, newQuestion, ratings }) => {
         setAnswer2('');
         setAnswer3('');
         setAnswer4('');
+        setCorrect('')
         handleClose();
     }
 
     const updateData = async () => {
-        setTheme('');
-        setText('');
-        setAnswer1('');
-        setAnswer2('');
-        setAnswer3('');
-        setAnswer4('');
         const fields = {
             theme: theme,
             text: text,
@@ -69,8 +70,10 @@ const NewQuestion = ({ open, handleClose, newQuestion, ratings }) => {
             answer2: answer2,
             answer3: answer3,
             answer4: answer4,
+            correct,
         }
         newQuestion(fields)
+        onExit()
     }
 
     return (
@@ -127,6 +130,13 @@ const NewQuestion = ({ open, handleClose, newQuestion, ratings }) => {
                     onChange={handleChangeAnswer4}
                     label='ответ 4'
                 />
+                <TextField
+                    fullWidth 
+                    name='correct' 
+                    value={correct} 
+                    onChange={handleChangeCorrect}
+                    label='Правильный ответ'
+                />
                 <ListItem
                     disableGutters
                     secondaryAction={
@@ -142,7 +152,7 @@ const NewQuestion = ({ open, handleClose, newQuestion, ratings }) => {
                         name='text' 
                         value={text} 
                         onChange={handleChangeText}
-                        label='Пост'
+                        label='Вопрос'
                     />
                 </ListItem>
             </DialogContent>

@@ -16,6 +16,7 @@ import * as QuestionController from './controllers/QuestionController.js';
 import * as MessageController from './controllers/MessageController.js';
 import * as AnsweredController from './controllers/AnsweredController.js';
 import * as RaitingController from './controllers/RatingController.js';
+import * as StatController from './controllers/StatController.js';
 
 const router = express.Router();
 
@@ -50,7 +51,8 @@ router.post('/upload', checkAuth, upload.single('image'), UserController.updateP
 
 router.post('/user/:name', UserController.getUser);
 router.post('/get-all', checkAdmin, UserController.getAll);
-router.delete('/admin/:id', checkAdmin, UserController.remove);
+router.post('/admin/:id', checkAdmin, UserController.remove);
+router.post('/sponsor/:id', checkAdmin, UserController.updateSponsor);
 router.post('/quests', checkAdmin, QuestionController.getAll);
 router.post('/theme', checkAdmin, QuestionController.getQuestions);
 router.post('/question', checkAdmin, QuestionController.create);
@@ -58,6 +60,7 @@ router.post('/del-quest/:id', checkAdmin, QuestionController.remove);
 router.post('/rating', checkAdmin, RaitingController.create);
 router.post('/ratings', checkAdmin, RaitingController.getAll);
 router.post('/del-rating/:id', checkAdmin, RaitingController.remove);
+router.post('/stats', checkAdmin, StatController.getAll);
 
 router.post('/auth/register', registerValidator, handleValidationErrors, UserController.register);    //  registerValidator, handleValidationErrors,
 router.post('/auth/login', loginValidator, handleValidationErrors, UserController.login);     //  loginValidator, handleValidationErrors,
@@ -102,6 +105,7 @@ router.delete('/game/:id', checkAuth, GameController.removeGame);
 
 router.post('/get-rating', checkAuth, RaitingController.getRating);
 router.post('/up-rating/:id', checkAuth, RaitingController.update);
+router.get('/all-rates', checkAuth, RaitingController.getAll);
 
 router.patch('/payment', checkAuth, PaymentController.create);
 router.post('/payment-notification', PaymentController.payments);   //    checkIp,

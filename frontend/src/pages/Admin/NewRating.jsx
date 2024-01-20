@@ -1,4 +1,4 @@
-import { Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle, Slide, TextField } from '@mui/material';
+import { Button, Checkbox, Chip, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Slide, TextField } from '@mui/material';
 import React from 'react';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -7,11 +7,16 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const NewRating = ({ open, handleClose, newRaiting, ratings, handleDelete }) => {
     const [theme, setTheme] = React.useState('');
+    const [forSponsor, setForSponsor] = React.useState(false);
 
     const handleChangeTheme = (e) => {
         const message = e.target.value
         setTheme(message)
     }
+
+    const handleChangeForSponsor = (event) => {
+        setForSponsor(event.target.checked);
+      };
 
     const onExit = () => {
         setTheme('');
@@ -21,6 +26,7 @@ const NewRating = ({ open, handleClose, newRaiting, ratings, handleDelete }) => 
     const updateData = async () => {
         const fields = {
             theme: theme,
+            forSponsor,
         }
         newRaiting(fields)
         setTheme('');
@@ -46,6 +52,16 @@ const NewRating = ({ open, handleClose, newRaiting, ratings, handleDelete }) => 
                     value={theme} 
                     onChange={handleChangeTheme}
                     label='Тема'
+                />
+                <FormControlLabel
+                    label="Платная тема"
+                    control={
+                        <Checkbox
+                            checked={forSponsor}
+                            onChange={handleChangeForSponsor}
+                            inputProps={{ 'aria-label': 'controlled' }}
+                        />
+                    }
                 />
             </DialogContent>
             <DialogActions>

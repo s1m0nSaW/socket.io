@@ -1,4 +1,4 @@
-import { Avatar, Badge, Button, Dialog, DialogActions, DialogContent, DialogTitle, Slide, Stack, Typography } from '@mui/material'
+import { Avatar, Badge, Button, Dialog, DialogActions, DialogContent, DialogTitle, Paper, Slide, Stack, Typography } from '@mui/material'
 import React from 'react'
 
 import MonetizationOnSharpIcon from '@mui/icons-material/MonetizationOnSharp';
@@ -100,6 +100,13 @@ const SponsorDialog = ({ open, handleClose, onSuccess, user }) => {
                     <Button fullWidth variant='contained' onClick={()=>handleBuyRsvp(299, 2592000000)}>Ежемесячно 299,00 ₽ в месяц (30 дней)</Button>
                 </Stack>
             </DialogContent>
+            {user && user.invited !== null && <DialogContent>
+                <Paper sx={{padding:'10px', borderColor:'red'}} variant="outlined">
+                    <Typography align='center' variant='body2'>
+                        <b>До 29 февраля 2024</b><br/>Пригласи <b>{10 - user.invited}</b> Друзей и получи статус спонсора на <b>30 дней БЕСПЛАТНО</b>.
+                    </Typography>
+                </Paper>
+            </DialogContent>}
             <DialogActions>
                 <Button onClick={handleClose}>Отмена</Button>
             </DialogActions>

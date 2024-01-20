@@ -40,9 +40,8 @@ export const Main = () => {
                     >
                         <Toolbar/>
                         <Typography align='center' variant='h4'  color='dodgerblue' sx={{ textShadow: "1px 1px 2px #ba68c8" }}>
-                        Если не о чем поговорить, заходи в ochem.ru
+                        Когда не о чем поговорить, заходите в ochem.ru
                         </Typography>
-                    
                         <Toolbar/>
                     </Stack>
                     <Stack

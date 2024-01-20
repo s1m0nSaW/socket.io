@@ -66,6 +66,7 @@ export const update = async (req, res) => {
         if(req.body.answer1 === 'none' ){
             await AnsweredModel.findOneAndUpdate({ _id: req.params.id }, { 
                 answer2: req.body.answer2,
+                correct: req.body.correct,
             }, { new: true }).catch(error => {
                 console.log(error);
                 res.status(500).json({ error: 'Something went wrong' });
@@ -76,6 +77,7 @@ export const update = async (req, res) => {
         } else if (req.body.answer2 === 'none' ){
             await AnsweredModel.findOneAndUpdate({ _id: req.params.id }, { 
                 answer1: req.body.answer1,
+                correct: req.body.correct,
             }, { new: true }).catch(error => {
                 console.log(error);
                 res.status(500).json({ error: 'Something went wrong' });

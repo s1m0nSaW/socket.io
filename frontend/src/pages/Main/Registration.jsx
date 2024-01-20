@@ -1,4 +1,4 @@
-import { Button, Card, CardContent, CardHeader, Checkbox, FormControlLabel, Grid, Link, Stack, TextField, Typography } from "@mui/material";
+import { Button, Card, CardContent, CardHeader, Checkbox, FormControlLabel, Grid, Link, Paper, Stack, TextField, Toolbar, Typography } from "@mui/material";
 import React from "react";
 import { useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
@@ -65,16 +65,17 @@ const Registration = ({ handleOpenDialog }) => {
         <Grid item xs={12} md={8} lg={8} justifyContent="center" alignItems="center">
             <Card sx={{ height: "100%" }} elevation={3}>
                 <CardHeader
-                    title={<Typography align="center" variant="h4" color='dodgerblue'>Регистрация</Typography>}
+                    title={<Typography align="center" variant="h4" color='dodgerblue' sx={{ textShadow: "1px 1px 2px #ba68c8" }}>Регистрация</Typography>}
                 />
                 <CardContent>
-                    <Typography variant="caption" color="text.secondary">
-                        Укажите никнейм друга и получите 5 RSVP за регистрацию. <br/>
-                        Это бета-версия нашего сайта, и мы будем благодарны за ваш отзыв. Ваша обратная связь поможет сделать сервис лучше.<br/>
-                        Также рекомендуем добавить сайт на главный экран.<InfoIcon fontSize="small" color="primary" onClick={handleOpenDialog}/><br/><br/>
-                    </Typography>
+                    <Paper sx={{padding:'10px', borderColor:'red'}} variant="outlined">
+                        <Typography variant="caption" color="text.secondary">
+                            Укажите никнейм друга и получите 5 RSVP за регистрацию.<br/>
+                            Рекомендуем добавить сайт на главный экран.<InfoIcon fontSize="small" color="primary" onClick={handleOpenDialog}/>
+                        </Typography>
+                    </Paper>
                     <form onSubmit={handleSubmit(onSubmit)}>
-                        <Stack spacing={2} sx={{ marginTop: "10px" }}>
+                        <Stack spacing={2} sx={{ marginTop: "20px" }}>
                             <TextField
                                 label="Кто пригласил? (минимум 5 символов)"
                                 fullWidth
@@ -149,6 +150,7 @@ const Registration = ({ handleOpenDialog }) => {
                             </Button>
                         </Stack>
                     </form>
+                    <Toolbar/>
                 </CardContent>
             </Card>
         </Grid>
