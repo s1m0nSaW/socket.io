@@ -39,7 +39,7 @@ const UsersTable = ({ users, remove, update }) => {
                             {user.fullname}
                         </TableCell>
                         <TableCell align="right">
-                            {user.pic === 'none' ? 'Нет' : 'Есть'}
+                            {user.pic}
                         </TableCell>
                         <TableCell align="right">
                             {user.gender}
