@@ -139,7 +139,7 @@ export const Profile = ({ socket }) => {
     },[ isAuth, user, navigate, status, socket ])
 
     // const src = `http://localhost:5000${user.pic}`
-    const src=`/api${user.pic}`
+    const src=`https://5.35.90.128/api${user.pic}`
 
     return (
         <React.Fragment>
