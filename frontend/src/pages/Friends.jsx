@@ -238,6 +238,7 @@ const Friends = ({ socket }) => {
                 inGams={false}
                 mate={mate}
             />
+            {friend &&
             <FriendInfoDialog
                 open={openInfo}
                 handleClose={handleCloseInfo}
@@ -250,7 +251,7 @@ const Friends = ({ socket }) => {
                 deleteFriend={deleteRequest}
                 add={addFriend}
                 confirm={confirmRequest}
-            />
+            />}
             <FriendsOfFriends
                 friend={friend}
                 open={openFriendsOfFriend}
