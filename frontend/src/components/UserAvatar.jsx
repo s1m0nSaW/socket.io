@@ -7,7 +7,7 @@ import PersonIcon from '@mui/icons-material/Person';
 
 const UserAvatar = ({ user, onClickAva }) => {
     // const src = `http://localhost:5000${user.pic}`
-    const src=`http://5.35.90.128/api${user.pic}`
+    const src=`/api${user.pic}`
     return (<>
         {user.status === 'sponsor' ? 
         <Badge

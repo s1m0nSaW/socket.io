@@ -34,6 +34,9 @@ const FriendInfoDialog = ({ open, handleClose, friend, page, newGame, onFriendsO
         }
     },[friend, user])
 
+    // const src = `http://localhost:5000${friend.pic}`
+    const src=`/api${friend.pic}`
+
     return (
         <Dialog
             fullWidth
@@ -50,7 +53,7 @@ const FriendInfoDialog = ({ open, handleClose, friend, page, newGame, onFriendsO
                     </Stack>:
                     <CardMedia
                     sx={{ height: 300 }}
-                    image={`http://localhost:5000${friend.pic}`}
+                    image={src}
                 />}
                 <CardContent>
                     <Typography variant="caption">{friend.nickname}</Typography>
