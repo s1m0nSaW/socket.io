@@ -108,6 +108,9 @@ const EditInfoDialog = ({ open, handleClose, onSuccess, user }) => {
         handleClose()
     };
 
+    // const src = `http://localhost:5000${user.pic}`
+    const src=`https://ochem.ru/api${user.pic}`
+
     return (
         <Dialog
             fullWidth
@@ -124,7 +127,7 @@ const EditInfoDialog = ({ open, handleClose, onSuccess, user }) => {
                 </Stack>:
                 <CardMedia
                 sx={{ height: 300 }}
-                image={`http://localhost:5000${user.pic}`}
+                image={src}
             />}</>}
             {user && (
                 <List>
