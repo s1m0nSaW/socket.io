@@ -61,7 +61,7 @@ const EditInfoDialog = ({ open, handleClose, onSuccess, user }) => {
                     onSuccess('Аватар загружен', 'success')
                     dispatch(fetchAuthMe())
                 }
-            });
+            }).catch((err)=>console.log(err));
             
         } catch (err) {
             console.warn(err)
