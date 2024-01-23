@@ -81,7 +81,7 @@ const SponsorDialog = ({ open, handleClose, onSuccess, user }) => {
                         ) : (
                             <Avatar
                                 alt={user.nickname}
-                                src={`http://localhost:5000${user.pic}`}
+                                src={`https://ochem.ru/api${user.pic}`}
                                 sx={{ width: 86, height: 86}}
                             />
                         )}
