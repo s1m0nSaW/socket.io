@@ -15,8 +15,7 @@ import GamePage from './pages/Game';
 import Games from './pages/Games';
 import SuccessSnack from './components/SuccessSnack';
 
-const socket = io.connect('/', {
-  path: '/ws',
+const socket = io.connect('/api', {
   transports: ['websocket'],
   secure: true,
   rejectUnauthorized: false
