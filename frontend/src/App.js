@@ -17,7 +17,9 @@ import SuccessSnack from './components/SuccessSnack';
 
 const socket = io.connect('https://ochem.ru', {
   path: '/ws',
-  transports: ['websocket']
+  transports: ['websocket'],
+  secure: true,
+  rejectUnauthorized: false
 }); // поменять перед деплоем
 //const socket = io.connect('http://localhost:5000')
 
