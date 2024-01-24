@@ -34,6 +34,8 @@ const io = new Server(server,{
         origin: "*",
         methods: ["GET", "POST"],
     },
+    allowEIO4: true, // Попробуйте добавить эту настройку
+    transports: ['websocket'] // И эту настройку
 });
 
 io.on("connection", (socket) => {
