@@ -15,7 +15,7 @@ import GamePage from './pages/Game';
 import Games from './pages/Games';
 import SuccessSnack from './components/SuccessSnack';
 
-const socket = io.connect('https://ochem.ru', {
+const socket = io.connect('/', {
   path: '/ws',
   transports: ['websocket'],
   secure: true,
