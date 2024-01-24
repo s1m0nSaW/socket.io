@@ -15,11 +15,12 @@ import GamePage from './pages/Game';
 import Games from './pages/Games';
 import SuccessSnack from './components/SuccessSnack';
 
-const socket = io.connect('/api', {
+/*const socket = io.connect('https://ochem.ru/api', {
   transports: ['websocket'],
   secure: true,
   rejectUnauthorized: false
-}); // поменять перед деплоем
+}); // поменять перед деплоем*/
+const socket = io.connect('https://ochem.ru/ws', { path: '/ws' });
 //const socket = io.connect('http://localhost:5000')
 
 function App() {

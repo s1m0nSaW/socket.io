@@ -31,12 +31,11 @@ app.use('/uploads', express.static('uploads'));
 const server = http.createServer(app);
 const io = new Server(server,{
     path: '/ws',
+    serveClient: false,
     cors: {
         origin: "*",
         methods: ["GET", "POST"],
     },
-    allowEIO4: true, // Попробуйте добавить эту настройку
-    transports: ['websocket'] // И эту настройку
 });
 
 io.on("connection", (socket) => {
