@@ -3,7 +3,8 @@ import cors from 'cors';
 
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import http from 'http';
+import fs from 'fs';
+import https from 'https';
 import { Server } from 'socket.io';
 import route from './route.js'
 import { addUser } from './users.js';
@@ -28,7 +29,12 @@ app.use(cors());
 app.use(route);
 app.use('/uploads', express.static('uploads'));
 
-const server = http.createServer(app);
+const options = {
+    key: fs.readFileSync('./app/privkey.pem'),
+    cert: fs.readFileSync('./app/fullchain.pem')
+};
+
+const server = https.createServer(options, app);
 const io = new Server(server,{
     path: '/ws',
     serveClient: false,
@@ -36,6 +42,7 @@ const io = new Server(server,{
         origin: "*",
         methods: ["GET", "POST"],
     },
+    transports: ['websocket'] 
 });
 
 io.on("connection", (socket) => {
