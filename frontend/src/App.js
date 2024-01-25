@@ -15,7 +15,7 @@ import GamePage from './pages/Game';
 import Games from './pages/Games';
 import SuccessSnack from './components/SuccessSnack';
 
-const socket = io.connect('https://ochem.ru/api');
+const socket = io.connect('http://5.35.90.128:5000');
 //const socket = io.connect('http://localhost:5000')
 
 function App() {
