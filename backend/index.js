@@ -29,14 +29,9 @@ app.use(route);
 app.use('/uploads', express.static('uploads'));
 
 const server = http.createServer(app);
-const io = new Server(server,{
-    cors: {
-        origin: "*",
-        methods: ["GET", "POST"],
-    },
-});
+const io = new Server(server);
 
-io.on("connect", (socket) => {
+io.on("connection", (socket) => {
     socket.on("join", ({ userId, gameId }) => {
         socket.join(gameId);
         addUser({ userId, gameId })
