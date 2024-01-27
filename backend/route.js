@@ -44,7 +44,7 @@ const storage = multer.diskStorage({
 const upload = multer({storage});
 
 router.get("/", (req, res) => {
-    res.send("hello motherfucker")
+    res.send("Hello World!!!")
 })
 
 router.post('/upload', checkAuth, upload.single('image'), UserController.updatePic);
