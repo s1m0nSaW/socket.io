@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 import route from './route.js'
 import { addUser } from './users.js';
 
-import http from 'http';
+import { createServer } from 'node:http';
 import { Server } from 'socket.io';
 
 dotenv.config();
@@ -28,7 +28,7 @@ app.use(cors());
 app.use(route);
 app.use('/uploads', express.static('uploads'));
 
-const server = http.createServer(app);
+const server = createServer(app);
 const io = new Server(server);
 
 io.on("connection", (socket) => {
