@@ -1,12 +1,12 @@
 import express from 'express';
 import cors from 'cors';
-
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import http from 'http';
-import { Server } from 'socket.io';
 import route from './route.js'
 import { addUser } from './users.js';
+
+import http from 'http';
+import socketio from 'socket.io';
 
 dotenv.config();
 
@@ -29,14 +29,9 @@ app.use(route);
 app.use('/uploads', express.static('uploads'));
 
 const server = http.createServer(app);
-const io = new Server(server,{
-    cors: {
-        origin: "*",
-        methods: ["GET", "POST"],
-    },
-});
+const io = socketio(server);
 
-io.on("connection", (socket) => {
+io.on("connect", (socket) => {
     socket.on("join", ({ userId, gameId }) => {
         socket.join(gameId);
         addUser({ userId, gameId })
@@ -72,6 +67,10 @@ io.on("connection", (socket) => {
 
     socket.on("upAnswered", ({ gameId, answeredId }) => {
         io.to(gameId).emit("answered", { data: { aswId: answeredId } })
+    })
+
+    socket.on('disconnect', () => {
+        console.log('disconnect')
     })
 })
 
