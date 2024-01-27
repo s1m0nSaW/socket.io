@@ -2,7 +2,7 @@ import React from 'react';
 import Container from "@mui/material/Container";
 import { Route, Routes, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import io from 'socket.io-client';
+import { io } from 'socket.io-client';
 
 import { Info } from './pages/Info';
 
@@ -15,8 +15,11 @@ import GamePage from './pages/Game';
 import Games from './pages/Games';
 import SuccessSnack from './components/SuccessSnack';
 
-const socket = io.connect('wss://ochem.ru/ws');
-//const socket = io.connect('http://localhost:5000')
+//const socket = io.connect('https://ochem.ru/api');
+//const socket = io.connect('http://localhost:5000');
+const socket = io("https://ochem.ru/api", {
+  withCredentials: true,
+});
 
 function App() {
   const dispatch = useDispatch();
