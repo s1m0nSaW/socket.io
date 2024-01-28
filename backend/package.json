@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "@a2seven/yoo-checkout": "^1.1.4",
+    "@socket.io/admin-ui": "^0.5.1",
     "bcrypt": "^5.1.0",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",

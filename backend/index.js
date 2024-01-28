@@ -7,6 +7,7 @@ import { addUser } from './users.js';
 
 import { createServer } from 'node:http';
 import { Server } from 'socket.io';
+import { instrument } from "@socket.io/admin-ui";
 
 dotenv.config();
 
@@ -34,6 +35,11 @@ const io = new Server(server, {
         origin: "https://ochem.ru",
         credentials: true
     }
+});
+
+instrument(io, {
+    auth: false,
+    mode: "development",
 });
 
 io.on("connection", (socket) => {
