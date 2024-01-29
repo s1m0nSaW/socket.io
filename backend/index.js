@@ -34,7 +34,8 @@ const io = new Server(server, {
     cors: {
         origin: "https://ochem.ru",
         credentials: true
-    }
+    },
+    transports: ['websocket'],
 });
 
 instrument(io, {
