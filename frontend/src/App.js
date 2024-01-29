@@ -16,9 +16,18 @@ import Games from './pages/Games';
 import SuccessSnack from './components/SuccessSnack';
 
 //const socket = io.connect('http://localhost:5000');
-const socket = io("https://ochem.ru/api/", {
+const socket = io("https://ochem.ru/ws/", {
   withCredentials: true,
   transports: ["polling","websocket"]
+});
+
+socket.on("connect_error", (err) => {
+  // the reason of the error, for example "xhr poll error"
+  console.log(err.message);
+  // some additional description, for example the status code of the initial HTTP response
+  console.log(err.description);
+  // some additional context, for example the XMLHttpRequest object
+  console.log(err.context);
 });
 
 function App() {
