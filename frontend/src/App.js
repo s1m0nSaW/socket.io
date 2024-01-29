@@ -18,7 +18,7 @@ import SuccessSnack from './components/SuccessSnack';
 //const socket = io.connect('http://localhost:5000');
 const socket = io("https://ochem.ru/", {
   withCredentials: true,
-  transports: ["polling","websocket"]
+  transports: ["polling", "websocket", "xhr-polling"],
 });
 
 socket.on("connect_error", (err) => {
