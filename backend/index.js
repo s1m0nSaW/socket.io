@@ -31,7 +31,7 @@ app.use('/uploads', express.static('uploads'));
 
 const server = createServer(app);
 const io = new Server(server, {
-    path: "/ws/",
+    path: "/socket.io",
     cors: {
         origin: "https://ochem.ru",
         credentials: true
