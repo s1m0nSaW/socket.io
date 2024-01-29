@@ -16,7 +16,7 @@ import Games from './pages/Games';
 import SuccessSnack from './components/SuccessSnack';
 
 //const socket = io.connect('http://localhost:5000');
-const socket = io("https://ochem.ru/", {
+const socket = io("https://ochem.ru", {
   withCredentials: true,
   transports: ["polling", "websocket", "xhr-polling"],
 });
