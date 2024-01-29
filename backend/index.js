@@ -35,7 +35,7 @@ const io = new Server(server, {
         origin: "https://ochem.ru",
         credentials: true
     },
-    transports: ['polling', 'websocket', 'xhr-polling'],
+    transports: ['polling', 'xhr-polling'],
     secure: true
 });
 
