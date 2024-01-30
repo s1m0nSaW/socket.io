@@ -626,19 +626,19 @@ const savePic = async (id, path) => {
 
 export const updatePic = async (req, res) => {
 
-    const pathToImage = `./uploads/${req.file.originalname}`;
+    const pathToImage = `/root/uploads/${req.file.originalname}`;
     
     // Путь для сохранения конвертированного изображения в формате WebP
-    const pathToWebPImage = `./uploads/webp-${req.file.originalname}.webp`;
+    const pathToWebPImage = `/root/uploads/webp-${req.file.originalname}.webp`;
 
     // Конвертирование изображения в формат WebP
     sharp(pathToImage)
     .toFormat('webp')
-    .resize({ width: 500,height: 500 })
+    .resize({ width: 500, height: 500 })
     .toFile(pathToWebPImage)
     .then(() => {
         console.log('Изображение успешно конвертировано в формат WebP');
-        savePic( req.userId, `/uploads/webp-${req.file.originalname}.webp`)
+        savePic( req.userId, `/root/uploads/webp-${req.file.originalname}.webp`)
         res.sendStatus(200);
         // Удаление исходного изображения
         fs.unlink(pathToImage, (error) => {

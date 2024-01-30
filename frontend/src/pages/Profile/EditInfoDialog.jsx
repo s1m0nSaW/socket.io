@@ -224,7 +224,7 @@ const EditInfoDialog = ({ open, handleClose, onSuccess, user }) => {
                                     <Typography variant="body1">
                                         {user.profileStatus === "none"
                                             ? "Нет сведений"
-                                            : <i>{user.profileStatus}</i>}
+                                            : <i>"{user.profileStatus}"</i>}
                                     </Typography>:
                                     <Typography variant="body1">
                                         <i>{status}</i>

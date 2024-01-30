@@ -62,7 +62,7 @@ const FriendInfoDialog = ({ open, handleClose, friend, page, newGame, onFriendsO
                                                 ? "Имя не указано"
                                                 : friend.fullname}
                     </Typography>
-                    {friend.profileStatus !== 'none' && <Typography variant="body2"><i>{friend.profileStatus}</i></Typography>}
+                    {friend.profileStatus !== 'none' && <Typography variant="body2"><i>"{friend.profileStatus}"</i></Typography>}
                     {friend && friend._id !== user._id && <Button size="small" onClick={onFriendsOfFriend}>{friend.friends.length} друзей ( общих {mutualFriends.length} )</Button>}
                     <Typography variant="body2">
                         {friend.age === "none"
