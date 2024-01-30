@@ -208,7 +208,7 @@ export const Profile = ({ socket }) => {
                                 <Typography onClick={() => setEditInfo(true)}>{user.fullname}</Typography>
                             )}
                             {user.profileStatus !== "none" && (
-                                <Typography align="center" variant="caption"><i>{user.profileStatus}</i></Typography>
+                                <Typography align="center" variant="caption"><i>"{user.profileStatus}"</i></Typography>
                             )}
                         </Stack>
                     </Grid>

@@ -23,7 +23,7 @@ const InfoDialog = ({ open, friend, handleClose }) => {
                 </Stack>:
                 <CardMedia
                 sx={{ height: 300 }}
-                image={`http://localhost:5000${friend.pic}`}
+                image={`https://ochem.ru${friend.pic}`}
             />}
             <CardContent>
                 <Typography variant="caption">{friend.nickname}</Typography>

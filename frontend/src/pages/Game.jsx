@@ -26,7 +26,7 @@ const GamePage = ({ socket }) => {
     const user = useSelector((state) => state.auth.data);
     const [ friend, setFriend ] = React.useState(null);
     const [ answered, setAnswered ] = React.useState();
-    const [ connecting, setConnecting ] = React.useState(true);
+    const [ connecting, setConnecting ] = React.useState(false);
     const [ game, setGame ] = React.useState();
     const [ questions, setQuestions ] = React.useState();
     const [ messages, setMessages ] = React.useState();
@@ -170,7 +170,10 @@ const GamePage = ({ socket }) => {
             if(game.user1 === user._id){
                 friend = game.user2
             } else { friend = game.user1 }
-            await axios.get(`/get-user/${friend}`).then((data)=> setFriend(data.data)).catch((err)=>{console.warn(err);});
+            await axios.get(`/get-user/${friend}`).then((data)=>{
+                setConnecting(true);
+                setFriend(data.data)
+            }).catch((err)=>{console.warn(err);});
         };
 
         const getMessages = async () => {
@@ -192,7 +195,6 @@ const GamePage = ({ socket }) => {
             getMessages();
             getAnswered();
             getUser2();
-            setConnecting(true);
         };
     },[game, user]);
 
