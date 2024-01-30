@@ -131,8 +131,8 @@ const EditInfoDialog = ({ open, handleClose, onSuccess, user }) => {
             />}</>}
             {user && (
                 <List>
-                    <Stack alignItems='center' justifyContent='center'>
-                        <Typography variant='caption'>Рекомендуемое разрешение для изображений: не менее 500 × 500 px.</Typography>
+                    <Stack alignItems='center' justifyContent='center' sx={{padding: '10px'}}>
+                        <Typography variant='caption' align='center'>Рекомендуемое разрешение для изображений: не менее 500 × 500 px.</Typography>
                         <Button variant='outlined' onClick={() => inputFileRef.current.click()}>{user.pic === 'none' ? 'Загрузить аватар':'Обновить аватар'}</Button>
                     </Stack>
                     {user.status === 'sponsor' && 
