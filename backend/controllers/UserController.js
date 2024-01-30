@@ -603,7 +603,7 @@ export const update = async (req, res) => {
 const savePic = async (id, path) => {
     const user = await UserModel.findById(id);
     if(user.pic !== 'none'){
-        fs.unlink(`.${user.pic}`, (error) => {
+        fs.unlink(`${user.pic}`, (error) => {
             if (error) {
                 console.error('Ошибка при удалении старого изображения:', error);
             } else {

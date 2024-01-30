@@ -26,7 +26,7 @@ const UserAvatar = ({ user, onClickAva }) => {
             ) : (
                 <Avatar
                     alt={user.nickname}
-                    src={`https://ochem.ru/api${user.pic}`}
+                    src={`https://ochem.ru${user.pic}`}
                     onClick={onClickAva}
                 />
             )}
@@ -39,7 +39,7 @@ const UserAvatar = ({ user, onClickAva }) => {
             ) : (
                 <Avatar
                     alt={user.nickname}
-                    src={`https://ochem.ru/api${user.pic}`}
+                    src={`https://ochem.ru${user.pic}`}
                     sx={{ margin:'10px' }}
                     onClick={onClickAva}
                 />

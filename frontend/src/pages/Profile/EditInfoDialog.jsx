@@ -127,7 +127,7 @@ const EditInfoDialog = ({ open, handleClose, onSuccess, user }) => {
                 </Stack>:
                 <CardMedia
                 sx={{ height: 300 }}
-                image={`https://ochem.ru/api${user.pic}`}
+                image={`https://ochem.ru${user.pic}`}
             />}</>}
             {user && (
                 <List>

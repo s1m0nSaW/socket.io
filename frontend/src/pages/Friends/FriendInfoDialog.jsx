@@ -53,7 +53,7 @@ const FriendInfoDialog = ({ open, handleClose, friend, page, newGame, onFriendsO
                     </Stack>:
                     <CardMedia
                     sx={{ height: 300 }}
-                    image={`https://ochem.ru/api${friend.pic}`}
+                    image={`https://ochem.ru${friend.pic}`}
                 />}
                 <CardContent>
                     <Typography variant="caption">{friend.nickname}</Typography>

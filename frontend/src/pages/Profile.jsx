@@ -172,7 +172,7 @@ export const Profile = ({ socket }) => {
                                 ) : (
                                     <Avatar
                                         alt={user.nickname}
-                                        src={`https://ochem.ru/api${user.pic}`}
+                                        src={`https://ochem.ru${user.pic}`}
                                         onClick={() => setEditInfo(true)}
                                         sx={{ width: 56, height: 56 }}
                                     />
@@ -186,7 +186,7 @@ export const Profile = ({ socket }) => {
                                 ) : (
                                     <Avatar
                                         alt={user.nickname}
-                                        src={`https://ochem.ru/api${user.pic}`}
+                                        src={`https://ochem.ru${user.pic}`}
                                         sx={{ margin:'10px', width: 56, height: 56 }}
                                         onClick={() => setEditInfo(true)}
                                     />
