@@ -42,6 +42,8 @@ services:
     depends_on:
       - mongo
     container_name: backend
+    volumes:
+      - /root/uploads:/container/path
 
 networks:
   my-network:
