@@ -32,7 +32,7 @@ app.use('/uploads', express.static('uploads'));
 const server = createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: "https://ochem.ru",
+        origin: ["https://ochem.ru","https://www.ochem.ru"],
         credentials: true
     },
     transports: ['polling', 'xhr-polling'],
