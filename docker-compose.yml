@@ -43,7 +43,7 @@ services:
       - mongo
     container_name: backend
     volumes:
-      - /root/uploads:/container/path
+      - /app/uploads:/app/uploads
 
 networks:
   my-network:

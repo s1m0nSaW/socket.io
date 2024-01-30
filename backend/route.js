@@ -34,7 +34,7 @@ const checkout = new YooCheckout({
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, '/root/uploads'); // убедитесь, что папка uploads существует
+        cb(null, '/app/uploads'); // убедитесь, что папка uploads существует
     },
     filename: (req, file, cb) => {
         cb(null, file.originalname);
