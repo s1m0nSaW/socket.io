@@ -32,6 +32,7 @@ const InfoDialog = ({ open, friend, handleClose }) => {
                                             ? "Имя не указано"
                                             : friend.fullname}
                 </Typography>
+                {friend.profileStatus !== 'none' && <Typography variant="body2"><i>"{friend.profileStatus}"</i></Typography>}
                 {friend.friends && <Typography gutterBottom variant="body1">{friend.friends.length} друзей</Typography>}
                 <Typography variant="body2">
                     {friend.age === "none"

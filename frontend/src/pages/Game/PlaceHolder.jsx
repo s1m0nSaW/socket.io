@@ -12,7 +12,7 @@ const PlaceHolder = () => {
             sx={{ height: '100vh'}}
             >
             <Typography variant="h3" sx={{ color: 'primary.main' }}>
-                Ochem!
+                ochem.ru
             </Typography>
             <Toolbar/>
             <CircularProgress/>
