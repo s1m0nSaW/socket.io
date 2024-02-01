@@ -65,6 +65,7 @@ router.post('/stats', checkAdmin, StatController.getAll);
 router.post('/auth/register', registerValidator, handleValidationErrors, UserController.register);    //  registerValidator, handleValidationErrors,
 router.post('/auth/login', loginValidator, handleValidationErrors, UserController.login);     //  loginValidator, handleValidationErrors,
 router.post('/check-user', UserController.checkUser);
+router.patch('/patch-rsvp', checkAuth, UserController.patchRsvp);
 router.patch('/auth-data', checkAuth, UserController.update);
 router.patch('/rsvp-date', checkAuth, UserController.updateRsvpDate);
 router.patch('/rsvp-status', checkAuth, UserController.updateRsvpStatus);

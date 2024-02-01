@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Slide, Stack, Typography } from '@mui/material'
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Slide, Stack, Typography, unstable_ClassNameGenerator } from '@mui/material'
 import React from 'react'
 import axios from '../../axios.js'
 
@@ -8,21 +8,38 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const BuyRsvpDialog = ({ open, handleClose, onSuccess, user }) => {
 
-    const showAd = () => {
-        window.yaContextCb.push(() => {
-            window.Ya.Context.AdvManager.render({
-                "blockId": "R-A-5706352-1",
-                "type": "rewarded",
-                "platform": "touch",
-                onRewarded: (isRewarded) => {
-                    if (isRewarded) {
-                        console.log('условие получения награды выполнено')
-                    } else {
-                        console.log('условие получения награды не выполнено')
-                    }
-                }
-            });
+    const patchRsvp = async () => {
+        await axios.patch(`/patch-rsvp`).catch((err)=>{
+            if(err) {
+                onSuccess('Ошибка зачисления RSVP', 'error')
+            }
         });
+    }
+
+    const showAd = () => {
+        try {
+            window.yaContextCb.push(() => {
+                window.Ya.Context.AdvManager.render({
+                    "blockId": "R-A-5706352-1",
+                    "type": "rewarded",
+                    "platform": "touch",
+                    onRewarded: (isRewarded) => {
+                        if (isRewarded) {
+                            patchRsvp()
+                            onSuccess('За просмотр рекламы мы начислим Вам 1 RSVP', 'success');
+                            handleClose();
+                        } else {
+                            onSuccess('Необходимое время для получения RSVP просмотра рекламы 30 секунд', 'error');
+                            handleClose();
+                        }
+                    }
+                });
+            });
+        } catch (err) {
+            console.log(err);
+            onSuccess('Не удалось загрузить рекламу', 'error');
+            handleClose();
+        }
     };
     
     const updateUser = async ( paymentId, status, count ) => {

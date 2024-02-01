@@ -600,6 +600,20 @@ export const update = async (req, res) => {
     }
 };
 
+export const patchRsvp = async (req, res) => {
+    try {
+        const user = await UserModel.findById(req.userId);
+        user.rsvp += 1;
+        await user.save();
+        res.status(200);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: "Проблема с начислением rsvp",
+        });
+    }
+};
+
 const savePic = async (id, path) => {
     const user = await UserModel.findById(id);
     if(user.pic !== 'none'){
