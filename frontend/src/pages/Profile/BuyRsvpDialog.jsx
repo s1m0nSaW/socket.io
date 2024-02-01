@@ -74,9 +74,6 @@ const BuyRsvpDialog = ({ open, handleClose, onSuccess, user }) => {
             onClose={handleClose}
             aria-describedby="alert-dialog-slide-description"
         >
-            <script>window.yaContextCb=window.yaContextCb||[]</script>
-            <script src="https://yandex.ru/ads/system/context.js" async></script>
-
             <DialogTitle>Купить RSVP</DialogTitle>
             <DialogContent>
                 <Typography variant='body2'>Меньше 10 рублей за игру</Typography>
