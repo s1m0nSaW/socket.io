@@ -9,22 +9,20 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 const BuyRsvpDialog = ({ open, handleClose, onSuccess, user }) => {
 
     const showAd = () => {
-        if (window.yaContextCb && typeof window.yaContextCb.push === 'function') {
-            window.yaContextCb.push(() => {
-                window.Ya.Context.AdvManager.render({
-                    "blockId": "R-A-5706352-1",
-                    "type": "rewarded",
-                    "platform": "touch",
-                    onRewarded: (isRewarded) => {
-                        if (isRewarded) {
-                            console.log('условие получения награды выполнено')
-                        } else {
-                            console.log('условие получения награды не выполнено')
-                        }
+        window.yaContextCb.push(() => {
+            window.Ya.Context.AdvManager.render({
+                "blockId": "R-A-5706352-1",
+                "type": "rewarded",
+                "platform": "touch",
+                onRewarded: (isRewarded) => {
+                    if (isRewarded) {
+                        console.log('условие получения награды выполнено')
+                    } else {
+                        console.log('условие получения награды не выполнено')
                     }
-                });
+                }
             });
-        }
+        });
     };
     
     const updateUser = async ( paymentId, status, count ) => {
@@ -78,7 +76,7 @@ const BuyRsvpDialog = ({ open, handleClose, onSuccess, user }) => {
         >
             <script>window.yaContextCb=window.yaContextCb||[]</script>
             <script src="https://yandex.ru/ads/system/context.js" async></script>
-            
+
             <DialogTitle>Купить RSVP</DialogTitle>
             <DialogContent>
                 <Typography variant='body2'>Меньше 10 рублей за игру</Typography>
