@@ -1,12 +1,15 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Slide, Stack, Typography, unstable_ClassNameGenerator } from '@mui/material'
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Slide, Stack, Typography } from '@mui/material'
 import React from 'react'
 import axios from '../../axios.js'
+import { useDispatch } from 'react-redux';
+import { fetchAuthMe } from '../../redux/slices/auth.js';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="left" ref={ref} {...props} />;
 });
 
 const BuyRsvpDialog = ({ open, handleClose, onSuccess, user }) => {
+    const dispatch = useDispatch();
 
     const patchRsvp = async () => {
         await axios.patch(`/patch-rsvp`).catch((err)=>{
@@ -27,6 +30,7 @@ const BuyRsvpDialog = ({ open, handleClose, onSuccess, user }) => {
                         if (isRewarded) {
                             patchRsvp()
                             onSuccess('За просмотр рекламы мы начислим Вам 1 RSVP', 'success');
+                            dispatch(fetchAuthMe)
                             handleClose();
                         } else {
                             onSuccess('Необходимое время для получения RSVP просмотра рекламы 30 секунд', 'error');
