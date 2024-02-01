@@ -9,30 +9,23 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 const BuyRsvpDialog = ({ open, handleClose, onSuccess, user }) => {
 
     const showAd = () => {
-        return (
-          <div>
-            <!-- Yandex.RTB R-A-5706352-1 -->
-            <script>
-              window.yaContextCb.push(()=>{
-                Ya.Context.AdvManager.render({
-                  "blockId": "R-A-5706352-1",
-                  "type": "rewarded",
-                  "platform": "touch",
-                  onRewarded: (isRewarded) => {
+        if (window.yaContextCb && typeof window.yaContextCb.push === 'function') {
+            window.yaContextCb.push(() => {
+                window.Ya.Context.AdvManager.render({
+                    "blockId": "R-A-5706352-1",
+                    "type": "rewarded",
+                    "platform": "touch",
+                    onRewarded: (isRewarded) => {
                         if (isRewarded) {
-                            console.log("условие получения награды выполнено")
-                            // условие получения награды выполнено
+                            console.log('условие получения награды выполнено')
                         } else {
-                            console.log("условие получения награды не выполнено")
-                            // условие получения награды не выполнено
+                            console.log('условие получения награды не выполнено')
                         }
                     }
-                })
-              })
-            </script>
-          </div>
-        );
-      };
+                });
+            });
+        }
+    };
     
     const updateUser = async ( paymentId, status, count ) => {
         const fields = {
