@@ -7,6 +7,32 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 const BuyRsvpDialog = ({ open, handleClose, onSuccess, user }) => {
+
+    const showAd = () => {
+        return (
+          <div>
+            <!-- Yandex.RTB R-A-5706352-1 -->
+            <script>
+              window.yaContextCb.push(()=>{
+                Ya.Context.AdvManager.render({
+                  "blockId": "R-A-5706352-1",
+                  "type": "rewarded",
+                  "platform": "touch",
+                  onRewarded: (isRewarded) => {
+                        if (isRewarded) {
+                            console.log("условие получения награды выполнено")
+                            // условие получения награды выполнено
+                        } else {
+                            console.log("условие получения награды не выполнено")
+                            // условие получения награды не выполнено
+                        }
+                    }
+                })
+              })
+            </script>
+          </div>
+        );
+      };
     
     const updateUser = async ( paymentId, status, count ) => {
         const fields = {
@@ -47,7 +73,6 @@ const BuyRsvpDialog = ({ open, handleClose, onSuccess, user }) => {
                 console.log(err);
                 onSuccess('Непредвиденная ошибка при оплате', 'error')
             });
-        
     }
 
     return (
@@ -67,6 +92,11 @@ const BuyRsvpDialog = ({ open, handleClose, onSuccess, user }) => {
                     <Button fullWidth variant='contained' onClick={()=>handleBuyRsvp(99, 10)}>Купить 10 RSVP за 99 ₽</Button>
                     <Button fullWidth variant='contained' onClick={()=>handleBuyRsvp(199, 30)}>Купить 30 RSVP за 199 ₽</Button>
                     <Button fullWidth variant='contained' onClick={()=>handleBuyRsvp(499, 100)}>Купить 100 RSVP за 499 ₽</Button>
+                </Stack>
+            </DialogContent>
+            <DialogContent>
+                <Stack spacing={1}>
+                    <Button fullWidth variant='contained' onClick={()=>showAd()}>Смотреть рекламу за 1 RSVP </Button>
                 </Stack>
             </DialogContent>
             <DialogActions>
