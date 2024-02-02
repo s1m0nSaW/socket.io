@@ -40,7 +40,7 @@ const BuyRsvpDialog = ({ open, handleClose, onSuccess, user }) => {
                             dispatch(fetchAuthMe)
                             handleClose();
                         } else {
-                            onSuccess('Необходимое время для получения RSVP просмотра рекламы 30 секунд', 'error');
+                            onSuccess('Необходимое время для получения RSVP просмотра рекламы 59 секунд', 'error');
                             handleClose();
                         }
                     }
@@ -109,13 +109,13 @@ const BuyRsvpDialog = ({ open, handleClose, onSuccess, user }) => {
                     <Toolbar/>
                     <CircularProgress/>
                     <Typography variant='body2' align='center'>
-                        Если реклама не загружается, Ваш браузер блокирует её
+                        Если реклама не загружается,<br/> Ваш браузер блокирует её
                     </Typography>
                     <Toolbar/>
                 </Stack>
             </DialogContent>
             :<DialogContent>
-                <Stack spacing={2}>
+                <Stack spacing={3}>
                     <Typography variant='body2'>Меньше 10 рублей за игру</Typography>
                     <Stack spacing={1}>
                         <Button fullWidth variant='contained' onClick={()=>handleBuyRsvp(99, 10)}>Купить 10 RSVP за 99 ₽</Button>
