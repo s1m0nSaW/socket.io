@@ -20,6 +20,11 @@ const BuyRsvpDialog = ({ open, handleClose, onSuccess, user }) => {
         });
     }
 
+    const closeDialog = () => {
+        handleClose();
+        setLoading(false);
+    }
+
     const showAd = () => {
         setLoading(true);
         try {
@@ -94,7 +99,7 @@ const BuyRsvpDialog = ({ open, handleClose, onSuccess, user }) => {
             open={open}
             TransitionComponent={Transition}
             keepMounted
-            onClose={handleClose}
+            onClose={closeDialog}
             aria-describedby="alert-dialog-slide-description"
         >
             {loading ? <DialogTitle>Загрузка рекламы</DialogTitle>:<DialogTitle>Купить RSVP</DialogTitle>}
@@ -110,18 +115,20 @@ const BuyRsvpDialog = ({ open, handleClose, onSuccess, user }) => {
                 </Stack>
             </DialogContent>
             :<DialogContent>
-                <Typography variant='body2'>Меньше 10 рублей за игру</Typography>
-                <Stack spacing={1}>
-                    <Button fullWidth variant='contained' onClick={()=>handleBuyRsvp(99, 10)}>Купить 10 RSVP за 99 ₽</Button>
-                    <Button fullWidth variant='contained' onClick={()=>handleBuyRsvp(199, 30)}>Купить 30 RSVP за 199 ₽</Button>
-                    <Button fullWidth variant='contained' onClick={()=>handleBuyRsvp(499, 100)}>Купить 100 RSVP за 499 ₽</Button>
-                </Stack>
-                <Stack spacing={1}>
-                    <Button fullWidth variant='contained' onClick={()=>showAd()}>Смотреть рекламу за 1 RSVP </Button>
+                <Stack spacing={2}>
+                    <Typography variant='body2'>Меньше 10 рублей за игру</Typography>
+                    <Stack spacing={1}>
+                        <Button fullWidth variant='contained' onClick={()=>handleBuyRsvp(99, 10)}>Купить 10 RSVP за 99 ₽</Button>
+                        <Button fullWidth variant='contained' onClick={()=>handleBuyRsvp(199, 30)}>Купить 30 RSVP за 199 ₽</Button>
+                        <Button fullWidth variant='contained' onClick={()=>handleBuyRsvp(499, 100)}>Купить 100 RSVP за 499 ₽</Button>
+                    </Stack>
+                    <Stack spacing={1}>
+                        <Button fullWidth variant='contained' onClick={()=>showAd()}>Смотреть рекламу за 1 RSVP </Button>
+                    </Stack>
                 </Stack>
             </DialogContent>}
             <DialogActions>
-                <Button onClick={handleClose}>Отмена</Button>
+                <Button onClick={closeDialog}>Отмена</Button>
             </DialogActions>
         </Dialog>
     );
