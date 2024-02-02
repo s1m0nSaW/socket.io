@@ -14,7 +14,7 @@ const NewQuestion = ({ open, handleClose, newQuestion, ratings }) => {
     const [answer2, setAnswer2] = React.useState('');
     const [answer3, setAnswer3] = React.useState('');
     const [answer4, setAnswer4] = React.useState('');
-    const [correct, setCorrect] = React.useState('');
+    const [correct, setCorrect] = React.useState('none');
 
     const handleChangeTheme = (e) => {
         const message = e.target.value

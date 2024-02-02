@@ -11,7 +11,6 @@ const QuestionsTable = ({ questions, getTheme, remove }) => {
                         <TableCell align="right">Вопрос</TableCell>
                         <TableCell align="right">Ответы</TableCell>
                         <TableCell align="right">Правильный</TableCell>
-                        <TableCell align="right">Для спонсоров</TableCell>
                         <TableCell align="right">Действие</TableCell>
                     </TableRow>
                 </TableHead>
@@ -28,24 +27,27 @@ const QuestionsTable = ({ questions, getTheme, remove }) => {
                         >
                             <TableCell>{index + 1}</TableCell>
                             <TableCell component="th" scope="row">
-                                <Typography onClick={()=>getTheme(question.theme)}>
+                                <Typography variant="body2" onClick={()=>getTheme(question.theme)}>
                                     {question.theme}
                                 </Typography>
                             </TableCell>
                             <TableCell align="right">
+                                <Typography variant="body2">
                                 {question.text}
+                                </Typography>
                             </TableCell>
                             <TableCell align="right">
+                                <Typography variant="body2">
                                 {question.answer1}<br/>
                                 {question.answer2}<br/>
                                 {question.answer3}<br/>
                                 {question.answer4}<br/>
+                                </Typography>
                             </TableCell>
                             <TableCell align="right">
+                                <Typography variant="body2">
                                 {question.correct}
-                            </TableCell>
-                            <TableCell align="right">
-                                {question.sponsor}
+                                </Typography>
                             </TableCell>
                             <TableCell align="right">
                                 <Button
