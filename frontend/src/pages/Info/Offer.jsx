@@ -91,6 +91,7 @@ export const Offer = () => {
 Самозанятый <br/>
 Саввинов Семён Афанасьевич <br/>
 ИНН 140204032344<br/>
+e-mail: info@ochem.ru
                 </Typography>
             </Paper>
         
