@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Slide, Stack, Typography } from '@mui/material'
+import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Slide, Stack, Toolbar, Typography } from '@mui/material'
 import React from 'react'
 import axios from '../../axios.js'
 import { useDispatch } from 'react-redux';
@@ -10,6 +10,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const BuyRsvpDialog = ({ open, handleClose, onSuccess, user }) => {
     const dispatch = useDispatch();
+    const [ loading, setLoading ] = React.useState(false);
 
     const patchRsvp = async () => {
         await axios.patch(`/patch-rsvp`).catch((err)=>{
@@ -20,6 +21,7 @@ const BuyRsvpDialog = ({ open, handleClose, onSuccess, user }) => {
     }
 
     const showAd = () => {
+        setLoading(true);
         try {
             window.yaContextCb.push(() => {
                 window.Ya.Context.AdvManager.render({
@@ -95,22 +97,29 @@ const BuyRsvpDialog = ({ open, handleClose, onSuccess, user }) => {
             onClose={handleClose}
             aria-describedby="alert-dialog-slide-description"
         >
-            <DialogTitle>Купить RSVP</DialogTitle>
+            {loading ? <DialogTitle>Загрузка рекламы</DialogTitle>:<DialogTitle>Купить RSVP</DialogTitle>}
+            {loading ? 
             <DialogContent>
-                <Typography variant='body2'>Меньше 10 рублей за игру</Typography>
+                <Stack justifyContent='center' alignItems='center' spacing={2} direction='column'>
+                    <Toolbar/>
+                    <CircularProgress/>
+                    <Typography variant='body2' align='center'>
+                        Если реклама не загружается, Ваш браузер блокирует её
+                    </Typography>
+                    <Toolbar/>
+                </Stack>
             </DialogContent>
-            <DialogContent>
+            :<DialogContent>
+                <Typography variant='body2'>Меньше 10 рублей за игру</Typography>
                 <Stack spacing={1}>
                     <Button fullWidth variant='contained' onClick={()=>handleBuyRsvp(99, 10)}>Купить 10 RSVP за 99 ₽</Button>
                     <Button fullWidth variant='contained' onClick={()=>handleBuyRsvp(199, 30)}>Купить 30 RSVP за 199 ₽</Button>
                     <Button fullWidth variant='contained' onClick={()=>handleBuyRsvp(499, 100)}>Купить 100 RSVP за 499 ₽</Button>
                 </Stack>
-            </DialogContent>
-            <DialogContent>
                 <Stack spacing={1}>
                     <Button fullWidth variant='contained' onClick={()=>showAd()}>Смотреть рекламу за 1 RSVP </Button>
                 </Stack>
-            </DialogContent>
+            </DialogContent>}
             <DialogActions>
                 <Button onClick={handleClose}>Отмена</Button>
             </DialogActions>
