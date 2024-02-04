@@ -28,9 +28,11 @@ const AllGames = () => {
     }
 
     const onOpenQuestDialog = (_theme) => {
-        const themeObj = themes.filter((obj) => obj.theme === _theme);
-        setQuestions(themeObj.slice(0,5));
-        setOpenQuestionsDialog(true)
+        if(themes){
+            const themeObj = themes.filter((obj) => obj.theme === _theme);
+            setQuestions(themeObj.slice(0,5));
+            setOpenQuestionsDialog(true)
+        }
     }
 
     React.useEffect(()=>{
@@ -67,7 +69,7 @@ const AllGames = () => {
                                     {rate.theme}&nbsp; 
                                     {rate.forSponsor && <MonetizationOnIcon fontSize="small" color="primary"/>}
                                 </Typography>}
-                                secondary={<Typography>Количество вопросов: {questionsCount(rate.theme)}</Typography>}
+                                secondary={themes && <Typography>Количество вопросов: {questionsCount(rate.theme)}</Typography>}
                             />
                         </ListItem>
                         <Stack direction='row' justifyContent='center' alignItems='flex-start' sx={{ marginBottom:'10px'}}>
