@@ -135,6 +135,9 @@ const Registration = ({ handleOpenDialog }) => {
                                         Принимаю{" "}
                                         <Link variant="caption" href="/info">
                                             политику конфиденциальности
+                                        </Link>{" "}и{" "}
+                                        <Link variant="caption" href="/info">
+                                            договор-оферту
                                         </Link>
                                     </Typography>
                                 }
