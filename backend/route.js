@@ -20,17 +20,17 @@ import * as StatController from './controllers/StatController.js';
 
 const router = express.Router();
 
-/*const checkout = new YooCheckout({
+const checkout = new YooCheckout({
     shopId: process.env.YOOKASSA_SHOP_ID,
     secretKey: process.env.YOOKASSA_SECRET_KEY
-});*/
+});
 
 dotenv.config();
 
-const checkout = new YooCheckout({
+/*const checkout = new YooCheckout({
     shopId: "221233",
     secretKey: "test_mGh_5MA29l9hMycoiWrGNFKVWAgNbOclNpRy5h_HtY0"
-});
+});*/
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
