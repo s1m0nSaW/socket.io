@@ -109,7 +109,7 @@ router.post('/up-rating/:id', checkAuth, RaitingController.update);
 router.get('/all-rates', checkAuth, RaitingController.getAll);
 
 router.patch('/payment', checkAuth, PaymentController.create);
-router.post('/payment-notification', PaymentController.payments);   //    checkIp,
+router.post('/payment-notification',checkIp, PaymentController.payments);   //    checkIp,
 router.post('/create-payment', async (req, res) => {
     const createPayload = {
         amount: {

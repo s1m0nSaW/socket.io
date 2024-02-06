@@ -77,6 +77,7 @@ const BuyRsvpDialog = ({ open, handleClose, onSuccess, user }) => {
         await axios
             .post(`/create-payment`, fields)
             .then((data) => {
+                console.log(data);
                 if (data.data.confirmation.confirmation_url) {
                     updateUser(
                         data.data.id,
