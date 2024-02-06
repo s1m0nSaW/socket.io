@@ -122,7 +122,7 @@ router.post('/create-payment', async (req, res) => {
         capture:true,
         confirmation: {
             type: 'redirect',
-            return_url: `http://localhost:3000`
+            return_url: `https://ochem.ru`
         },
     };
 
