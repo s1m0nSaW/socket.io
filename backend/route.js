@@ -116,9 +116,6 @@ router.post('/create-payment', async (req, res) => {
             value: req.body.price,
             currency: 'RUB'
         },
-        payment_method_data: {
-            type: 'bank_card'
-        },
         capture:true,
         confirmation: {
             type: 'redirect',
