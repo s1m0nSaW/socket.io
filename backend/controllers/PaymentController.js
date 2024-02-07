@@ -1,5 +1,6 @@
 import Payment from "../models/Payment.js";
 import User from "../models/User.js";
+import StatModel from "../models/Stat.js";
 
 const updateStat = async (data) => {
     const today = new Date(); // Получаем текущую дату

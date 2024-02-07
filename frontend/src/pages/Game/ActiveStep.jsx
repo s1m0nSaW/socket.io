@@ -45,22 +45,22 @@ const ActiveStep = ({ question, answered, user, game, friend, updateAnswered, ne
                 <>
                 {answered.answer1 === answered.answer2 ?
                     <CardHeader
-                    title={<Typography variant="body1">{friend.nickname} отгадал</Typography>}
+                    title={<Typography variant="body1"><b>{friend.nickname} отгадал</b></Typography>}
                     subheader={<Typography variant="body2">Вопрос: {question?.text}</Typography>}
                 />:
                 <CardHeader
-                    title={<Typography variant="body1">{friend.nickname} не отгадал</Typography>}
+                    title={<Typography variant="body1"><b>{friend.nickname} не отгадал</b></Typography>}
                     subheader={<Typography variant="body2">Вопрос: {question?.text}</Typography>}
                 />
                 }
                 </>:<>
                 {answered.answer1 === answered.answer2 ?
                     <CardHeader
-                    title={<Typography variant="body1">Вы отгадали</Typography>}
+                    title={<Typography variant="body1"><b>Вы отгадали</b></Typography>}
                     subheader={<Typography variant="body2">Вопрос: {question?.text}</Typography>}
                 />:
                 <CardHeader
-                    title={<Typography variant="body1">Вы не отгадали</Typography>}
+                    title={<Typography variant="body1"><b>Вы не отгадали</b></Typography>}
                     subheader={<Typography variant="body2">Вопрос: {question?.text}</Typography>}
                 />
                 }
@@ -137,7 +137,7 @@ const ActiveStep = ({ question, answered, user, game, friend, updateAnswered, ne
             <UserAvatar user={user} onClickAva={()=>friendInfo(user)}/>
             <Stack direction='column' spacing={0}>
                 {question.correct === 'none' || question.correct === '' || !question.correct ? 
-                <Typography variant="body1">Вы отвечаете <br/></Typography>:
+                <Typography variant="body1"><b>Вы отвечаете</b> <br/></Typography>:
                 <Typography variant="body1">Отвечают оба игрока</Typography>}
                 {question.correct === 'none' || question.correct === '' || !question.correct ? 
                 <Typography variant="body2">{friend.nickname} отгадывает</Typography>: null }
@@ -154,13 +154,14 @@ const ActiveStep = ({ question, answered, user, game, friend, updateAnswered, ne
                 <Typography variant="body2">{friend.nickname} отвечает <br/></Typography>:
                 <Typography variant="body2">Отвечают оба игрока</Typography>}
                 {question.correct === 'none' || question.correct === '' || !question.correct ? 
-                <Typography variant="body1">Вы отгадываете</Typography> : null}
+                <Typography variant="body1"><b>Вы отгадываете</b></Typography> : null}
             </Stack>
             <UserAvatar user={user} onClickAva={()=>friendInfo(user)}/>
             </Stack>
             }</>}
             <CardContent>
-                <Typography variant="body2">{question.text}</Typography>
+                <Typography variant="body2">Вопрос {game.activeStep + 1}/{questions.length}:<br/>
+                <b>{question.text}</b></Typography>
             </CardContent>
             <CardContent>
                 <Stack
