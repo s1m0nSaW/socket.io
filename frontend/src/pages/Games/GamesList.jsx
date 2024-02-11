@@ -127,20 +127,18 @@ const GamesList = ({ content, page, onSuccess, onUpdate, socket }) => {
         <>
             {games && <>
                 {games.length !== 0 ? (
-                    <Grid container>
-                        <List sx={{ width: "100%" }} dense>
-                            {games.map((game) => (
-                                <GameItem 
-                                    key={game._id} 
-                                    game={game} 
-                                    page={page} 
-                                    remove={removeGame} 
-                                    accept={acceptGame} 
-                                    play={playGame}
-                                />
-                                ))}
-                        </List>
-                    </Grid>
+                    <List sx={{ width: "100%" }} dense>
+                        {games.map((game) => (
+                            <GameItem 
+                                key={game._id} 
+                                game={game} 
+                                page={page} 
+                                remove={removeGame} 
+                                accept={acceptGame} 
+                                play={playGame}
+                            />
+                            ))}
+                    </List>
                 ):
                 <Stack
                     direction="column"

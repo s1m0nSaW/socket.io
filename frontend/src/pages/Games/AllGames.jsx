@@ -59,26 +59,25 @@ const AllGames = () => {
     },[])
 
     return (
-        <>
-            <List sx={{ width: "100%" }} dense>
-                {rates?.map((rate) => (
-                    <div key={rate._id} onClick={()=>onOpenQuestDialog(rate.theme)}>
-                        <ListItem alignItems="flex-start">
-                            <ListItemText
-                                primary={<Typography>
-                                    {rate.theme}&nbsp; 
-                                    {rate.forSponsor && <MonetizationOnIcon fontSize="small" color="primary"/>}
-                                </Typography>}
-                                secondary={themes && <Typography>Количество вопросов: {questionsCount(rate.theme)}</Typography>}
-                            />
-                        </ListItem>
-                        <Stack direction='row' justifyContent='center' alignItems='flex-start' sx={{ marginBottom:'10px'}}>
-                            <Rating name="read-only" value={rate.rating} readOnly size="small"/>
-                        </Stack>
-                        <Divider />
-                    </div>
-                ))}
-            </List>
+        <List sx={{ width: "100%" }} dense>
+            {rates?.map((rate) => (
+                <div key={rate._id} onClick={()=>onOpenQuestDialog(rate.theme)}>
+                    <ListItem alignItems="flex-start">
+                        <ListItemText
+                            primary={<Typography>
+                                {rate.theme}&nbsp; 
+                                {rate.forSponsor && <MonetizationOnIcon fontSize="small" color="primary"/>}
+                            </Typography>}
+                            secondary={themes && <Typography>Количество вопросов: {questionsCount(rate.theme)}</Typography>}
+                        />
+                    </ListItem>
+                    <Stack direction='row' justifyContent='center' alignItems='flex-start' sx={{ marginBottom:'10px'}}>
+                        <Rating name="read-only" value={rate.rating} readOnly size="small"/>
+                    </Stack>
+                    <Divider />
+                </div>
+            ))}
+            
             <Dialog
             fullWidth
             maxWidth={'xs'}
@@ -106,7 +105,7 @@ const AllGames = () => {
                     </List>
                 </CardContent>
             </Dialog>
-        </>
+        </List>
     );
 };
 
