@@ -95,7 +95,7 @@ const Games = ({ socket }) => {
     },[socket, dispatch]);
 
     return (
-        <Box position='relative'>
+        <Box sx={{ position:'relative', height: '100vh'}}>
             <Header profile={true} back={true}/>
             <Tabs
             value={value}
