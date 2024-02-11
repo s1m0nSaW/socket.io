@@ -136,7 +136,7 @@ const Games = ({ socket }) => {
                 socket={socket}
             />}
             </>}
-            <Fab color="primary" aria-label="add" sx={{ position:'absolute', right:'16px', bottom: '16px'}} onClick={()=>setOpenNewGameDialog(true)}>
+            <Fab color="primary" sx={{ position:'fixed', right:'16px', bottom: '16px'}} onClick={()=>setOpenNewGameDialog(true)}>
                 <AddIcon />
             </Fab>
             <SuccessSnack
