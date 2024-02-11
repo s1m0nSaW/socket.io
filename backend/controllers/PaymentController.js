@@ -2,7 +2,7 @@ import Payment from "../models/Payment.js";
 import User from "../models/User.js";
 import StatModel from "../models/Stat.js";
 
-const updateStat = async (data, id) => {
+const updateStat = async (data, nick) => {
     const today = new Date(); // Получаем текущую дату
     today.setHours(0, 0, 0, 0); // Устанавливаем время в полночь
 
@@ -13,9 +13,11 @@ const updateStat = async (data, id) => {
     if(data === 30) count = 199;
     if(data === 100) count = 499;
 
-    const user = await User.findById(id);
-    user.raisedmoney += count;
-    await user.save();
+    const promoter = await UserModel.findOne({ nickname: nick });
+    if(promoter){
+        promoter.raisedmoney += count;
+        await promoter.save();
+    }
 
     StatModel.findOne({ date: today }, (err, stat) => {
         if (err) {

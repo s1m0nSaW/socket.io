@@ -55,7 +55,7 @@ export const register = async (req, res) => {
                 rsvp: 5,
                 passwordHash: hash,
                 friends: [promoter._id],
-                promoter: promoter._id,
+                promoter: promoter.nickname,
             });
 
             const user = await doc.save();
