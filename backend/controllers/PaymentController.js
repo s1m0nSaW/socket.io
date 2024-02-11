@@ -13,7 +13,7 @@ const updateStat = async (data, nick) => {
     if(data === 30) count = 199;
     if(data === 100) count = 499;
 
-    const promoter = await UserModel.findOne({ nickname: nick });
+    const promoter = await User.findOne({ nickname: nick });
     if(promoter){
         promoter.raisedmoney += count;
         await promoter.save();
