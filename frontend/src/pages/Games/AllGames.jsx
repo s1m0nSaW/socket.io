@@ -59,7 +59,7 @@ const AllGames = () => {
     },[])
 
     return (
-        <List sx={{ width: "100%" }} dense>
+        <List sx={{ width: "100%", overflow: 'auto' }} dense>
             {rates?.map((rate) => (
                 <div key={rate._id} onClick={()=>onOpenQuestDialog(rate.theme)}>
                     <ListItem alignItems="flex-start">

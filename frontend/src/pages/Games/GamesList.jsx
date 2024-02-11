@@ -1,4 +1,4 @@
-import { Divider, Grid, IconButton, List, ListItem, ListItemIcon, ListItemText, Stack, Toolbar, Typography } from "@mui/material";
+import { Divider, IconButton, List, ListItem, ListItemIcon, ListItemText, Stack, Toolbar, Typography } from "@mui/material";
 import React from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -127,7 +127,7 @@ const GamesList = ({ content, page, onSuccess, onUpdate, socket }) => {
         <>
             {games && <>
                 {games.length !== 0 ? (
-                    <List sx={{ width: "100%" }} dense>
+                    <List sx={{ width: "100%", overflow: 'auto' }} dense>
                         {games.map((game) => (
                             <GameItem 
                                 key={game._id} 
