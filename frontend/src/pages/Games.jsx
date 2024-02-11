@@ -1,5 +1,5 @@
 import React from "react";
-import { Badge, Fab, Tab, Tabs} from "@mui/material";
+import { Badge, Box, Fab, Tab, Tabs} from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
@@ -95,7 +95,7 @@ const Games = ({ socket }) => {
     },[socket, dispatch]);
 
     return (
-        <React.Fragment>
+        <Box position='relative'>
             <Header profile={true} back={true}/>
             <Tabs
             value={value}
@@ -154,7 +154,7 @@ const Games = ({ socket }) => {
                 inGams={true}
                 mate={false}
             />
-        </React.Fragment>
+        </Box>
     );
 };
 

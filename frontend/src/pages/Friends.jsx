@@ -1,5 +1,5 @@
 import React from "react";
-import { Badge, Tab, Tabs} from "@mui/material";
+import { Badge, Box, Tab, Tabs} from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
@@ -193,7 +193,7 @@ const Friends = ({ socket }) => {
     },[socket, dispatch]);
 
     return (
-        <React.Fragment>
+        <Box position='relative'>
             <Header profile={true} back={true}/>
             <Tabs
             value={value}
@@ -258,7 +258,7 @@ const Friends = ({ socket }) => {
                 handleClose={handleCloseFriendsOfFriends}
                 onInfoDialog={handleOpenInfoDialog}
             />
-        </React.Fragment>
+        </Box>
     );
 };
 
