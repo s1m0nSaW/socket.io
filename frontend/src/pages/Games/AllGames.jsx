@@ -4,7 +4,7 @@ import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import CancelIcon from '@mui/icons-material/Cancel';
 
 import axios from '../../axios.js'
-import { CardContent, Dialog, DialogTitle, Divider, Grid, IconButton, List, ListItem, ListItemText, Rating, Slide, Stack, Typography } from "@mui/material";
+import { CardContent, Dialog, DialogTitle, Divider, IconButton, List, ListItem, ListItemText, Rating, Slide, Stack, Typography } from "@mui/material";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="left" ref={ref} {...props} />;
@@ -59,7 +59,7 @@ const AllGames = () => {
     },[])
 
     return (
-        <Grid container>
+        <>
             <List sx={{ width: "100%" }} dense>
                 {rates?.map((rate) => (
                     <div key={rate._id} onClick={()=>onOpenQuestDialog(rate.theme)}>
@@ -86,27 +86,27 @@ const AllGames = () => {
             TransitionComponent={Transition}
             keepMounted
             onClose={handleCloseQuestDialog}
-        >
-            <IconButton color="primary" sx={{ position: 'fixed', right:'15px', top: '15px'}} onClick={handleCloseQuestDialog}>
-                <CancelIcon />
-            </IconButton>
-            <DialogTitle>Примеры вопросов</DialogTitle>
-            <CardContent>
-                <List sx={{ width: "100%" }} >
-                    {questions?.map((quest) => (
-                        <div key={quest._id}>
-                            <ListItem alignItems="flex-start" disableGutters>
-                                <ListItemText
-                                    primary={quest.text}
-                                />
-                            </ListItem>
-                            <Divider />
-                        </div>
-                    ))}
-                </List>
-            </CardContent>
-        </Dialog>
-        </Grid>
+            >
+                <IconButton color="primary" sx={{ position: 'fixed', right:'15px', top: '15px'}} onClick={handleCloseQuestDialog}>
+                    <CancelIcon />
+                </IconButton>
+                <DialogTitle>Примеры вопросов</DialogTitle>
+                <CardContent>
+                    <List sx={{ width: "100%" }} >
+                        {questions?.map((quest) => (
+                            <div key={quest._id}>
+                                <ListItem alignItems="flex-start" disableGutters>
+                                    <ListItemText
+                                        primary={quest.text}
+                                    />
+                                </ListItem>
+                                <Divider />
+                            </div>
+                        ))}
+                    </List>
+                </CardContent>
+            </Dialog>
+        </>
     );
 };
 
