@@ -14,8 +14,8 @@ const PaymentSchema = new mongoose.Schema({
         ref: "User" 
     },
     promoter:{ 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: "User" 
+        type: String,
+        default: 'none', 
     },
     type: {
         type: String,
