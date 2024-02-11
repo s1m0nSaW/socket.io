@@ -13,6 +13,10 @@ const PaymentSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId, 
         ref: "User" 
     },
+    promoter:{ 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: "User" 
+    },
     type: {
         type: String,
         required: true,

@@ -71,6 +71,11 @@ const UserSchema = new mongoose.Schema({
         type: Number,
         default: 0,
     },
+    raisedmoney:{
+        type: Number,
+        default: 0,
+    },
+    promoter:{ type: mongoose.Schema.Types.ObjectId, default:'none', ref: "User" },
     friends:[{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     reqIn:[{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     reqOut:[{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],

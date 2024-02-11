@@ -2,7 +2,7 @@ import Payment from "../models/Payment.js";
 import User from "../models/User.js";
 import StatModel from "../models/Stat.js";
 
-const updateStat = async (data) => {
+const updateStat = async (data, id) => {
     const today = new Date(); // Получаем текущую дату
     today.setHours(0, 0, 0, 0); // Устанавливаем время в полночь
 
@@ -12,15 +12,16 @@ const updateStat = async (data) => {
     if(data === 10) count = 99;
     if(data === 30) count = 199;
     if(data === 100) count = 499;
-    
+
+    const user = await User.findById(id);
+    user.raisedmoney += count;
+    await user.save();
+
     StatModel.findOne({ date: today }, (err, stat) => {
         if (err) {
             console.error('Ошибка при поиске статистики:', err);
         } else {
             if (stat) {
-                // Нашли объект статистики для сегодняшней даты
-                // Теперь мы можем вносить изменения
-                //stat.newGames.push(user_id); // Добавляем новую строку в массив strings
                 stat.payments.push(count); // Добавляем число 42 в массив numbers
                 // Сохраняем изменения в базе данных
                 stat.save();
@@ -31,8 +32,6 @@ const updateStat = async (data) => {
                     // newGames: [user_id],
                     payments: [count],
                 });
-
-                // Сохраняем новый объект статистики в базе данных
                 newStatistic.save();
             }
         }
@@ -40,26 +39,30 @@ const updateStat = async (data) => {
 }
 
 export const create = async (req,res) => {
-    try {
-        const doc = new Payment({
-            paymentId: req.body.paymentId,
-            paymentStatus: req.body.status,
-            user: req.userId,
-            type: req.body.type,
-            count: req.body.count,
-        });
-
-        await doc.save();
-
-        res.json({
-            success: "Платеж создан",
-        });
-
-    } catch (err) {
-        console.log(err);
-        res.status(500).json({
-            message: 'Не удалось создать заявку',
-        });
+    const user = await User.findById(req.userId);
+    if(user){
+        try {
+            const doc = new Payment({
+                paymentId: req.body.paymentId,
+                paymentStatus: req.body.status,
+                user: req.userId,
+                type: req.body.type,
+                count: req.body.count,
+                promoter: user.promoter,
+            });
+    
+            await doc.save();
+    
+            res.json({
+                success: "Платеж создан",
+            });
+    
+        } catch (err) {
+            console.log(err);
+            res.status(500).json({
+                message: 'Не удалось создать заявку',
+            });
+        }
     }
 }
 
@@ -79,7 +82,7 @@ export const payments = async (req, res) => {
                 { returnDocument: "after" }
             );
 
-            updateStat(payment.count);
+            updateStat(payment.count, payment.promoter);
 
             if(payment.type === 'retail') {
                 await User.findOneAndUpdate(

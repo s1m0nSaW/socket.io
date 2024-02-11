@@ -12,9 +12,9 @@ const UsersTable = ({ users, remove, update }) => {
                     <TableCell>Никнейм</TableCell>
                     <TableCell align="right">Имя</TableCell>
                     <TableCell align="right">Аватар</TableCell>
-                    <TableCell align="right">Пол</TableCell>
-                    <TableCell align="right">Возраст</TableCell>
-                    <TableCell align="right">Город</TableCell>
+                    <TableCell align="right">Пол, Возраст, Город</TableCell>
+                    <TableCell align="right">Промоутер</TableCell>
+                    <TableCell align="right">raisedmoney</TableCell>
                     <TableCell align="right">Статус</TableCell>
                     <TableCell align="right">Удалить</TableCell>
                     <TableCell align="right"><MonetizationOnIcon/></TableCell>
@@ -42,13 +42,13 @@ const UsersTable = ({ users, remove, update }) => {
                             {user.pic}
                         </TableCell>
                         <TableCell align="right">
-                            {user.gender}
+                            {user.gender}, {user.age}, {user.city}
                         </TableCell>
                         <TableCell align="right">
-                            {user.age}
+                            {user.promoter}
                         </TableCell>
                         <TableCell align="right">
-                            {user.city}
+                            {user.raisedmoney}
                         </TableCell>
                         <TableCell align="right">
                             {user.status}
