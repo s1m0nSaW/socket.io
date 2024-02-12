@@ -21,6 +21,10 @@ const GameSchema = new mongoose.Schema({
         type: String,
         default: 'none',
     },
+    forSponsor:{
+        type: Boolean,
+        default: false,
+    },
     status: { 
         type: String,
         default: 'inactive', 

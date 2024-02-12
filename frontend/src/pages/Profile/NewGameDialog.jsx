@@ -66,53 +66,29 @@ const NewGameDialog = ({ open, handleClose, onSuccess, user, socket, inGams, mat
     };
 
     const createNewGame = async () => {
-        if(theme.forSponsor === true){
-            const fields = {
-                gameName: `Игра ${user.nickname} & ${friend.nickname}`,
-                theme: theme.theme,
-                user2: friend._id,
-                turn: friend._id,
-            }
-            await axios.post('/new-game', fields).then((data)=>{
-                dispatch(fetchAuthMe());
-                socket.emit("upGames", { userId: friend._id });
-                const fields = {
-                    userId: friend._id,
-                    message:`${user.nickname} пригласил поиграть`, 
-                    severity: 'info',
-                }
-                socket.emit("socketNotification", fields);
-                if(inGams === false) {navigate(`/gams`)} else { onExit() }
-                onSuccess('Игра создана', 'success')
-            }).catch((err)=>{
-                console.warn(err); 
-                onSuccess('Не удалось создать игру', 'error')
-                onExit()
-            });
-        } else {
-            const fields = {
-                gameName: `Игра ${user.nickname} & ${friend.nickname}`,
-                theme: theme.theme,
-                user2: friend._id,
-                turn: null,
-            }
-            await axios.post('/new-game', fields).then((data)=>{
-                dispatch(fetchAuthMe());
-                socket.emit("upGames", { userId: friend._id });
-                const fields = {
-                    userId: friend._id,
-                    message:`${user.nickname} пригласил поиграть`, 
-                    severity: 'info',
-                }
-                socket.emit("socketNotification", fields);
-                if(inGams === false) {navigate(`/gams`)} else { onExit() }
-                onSuccess('Игра создана', 'success')
-            }).catch((err)=>{
-                console.warn(err); 
-                onSuccess('Не удалось создать игру', 'error')
-                onExit()
-            });
+        const fields = {
+            gameName: `Игра ${user.nickname} & ${friend.nickname}`,
+            theme: theme.theme,
+            forSponsor: theme.forSponsor,
+            user2: friend._id,
+            turn: null,
         }
+        await axios.post('/new-game', fields).then((data)=>{
+            dispatch(fetchAuthMe());
+            socket.emit("upGames", { userId: friend._id });
+            const fields = {
+                userId: friend._id,
+                message:`${user.nickname} пригласил поиграть`, 
+                severity: 'info',
+            }
+            socket.emit("socketNotification", fields);
+            if(inGams === false) {navigate(`/gams`)} else { onExit() }
+            onSuccess('Игра создана', 'success')
+        }).catch((err)=>{
+            console.warn(err); 
+            onSuccess('Не удалось создать игру', 'error')
+            onExit()
+        });
     }
 
     React.useEffect(()=>{

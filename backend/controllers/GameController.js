@@ -46,6 +46,7 @@ export const create = async (req,res) => {
                     gameName: req.body.gameName,
                     theme: req.body.theme,
                     turn: req.body.turn,
+                    forSponsor: req.body.forSponsor,
                     user1: req.userId,
                     user2: req.body.user2,
                 });
@@ -80,6 +81,7 @@ export const create = async (req,res) => {
                     gameName: req.body.gameName,
                     theme: req.body.theme,
                     turn: req.body.turn,
+                    forSponsor: req.body.forSponsor,
                     user1: req.userId,
                     user2: req.body.user2,
                 });
@@ -125,6 +127,7 @@ export const create = async (req,res) => {
                         gameName: req.body.gameName,
                         theme: req.body.theme,
                         turn: req.body.turn,
+                        forSponsor: req.body.forSponsor,
                         user1: req.userId,
                         user2: req.body.user2,
                     });
@@ -159,6 +162,7 @@ export const create = async (req,res) => {
                         gameName: req.body.gameName,
                         theme: req.body.theme,
                         turn: req.body.turn,
+                        forSponsor: req.body.forSponsor,
                         user1: req.userId,
                         user2: req.body.user2,
                     });
