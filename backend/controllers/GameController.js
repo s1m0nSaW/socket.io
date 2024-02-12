@@ -45,7 +45,7 @@ export const create = async (req,res) => {
                 const doc = new GameModel({
                     gameName: req.body.gameName,
                     theme: req.body.theme,
-                    turn: null,
+                    turn: req.body.turn,
                     user1: req.userId,
                     user2: req.body.user2,
                 });
@@ -79,7 +79,7 @@ export const create = async (req,res) => {
                 const doc = new GameModel({
                     gameName: req.body.gameName,
                     theme: req.body.theme,
-                    turn: null,
+                    turn: req.body.turn,
                     user1: req.userId,
                     user2: req.body.user2,
                 });
@@ -124,7 +124,7 @@ export const create = async (req,res) => {
                     const doc = new GameModel({
                         gameName: req.body.gameName,
                         theme: req.body.theme,
-                        turn: null,
+                        turn: req.body.turn,
                         user1: req.userId,
                         user2: req.body.user2,
                     });
@@ -158,7 +158,7 @@ export const create = async (req,res) => {
                     const doc = new GameModel({
                         gameName: req.body.gameName,
                         theme: req.body.theme,
-                        turn: null,
+                        turn: req.body.turn,
                         user1: req.userId,
                         user2: req.body.user2,
                     });

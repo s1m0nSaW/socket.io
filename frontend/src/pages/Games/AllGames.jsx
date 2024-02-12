@@ -68,7 +68,7 @@ const AllGames = () => {
                                 {rate.theme}&nbsp; 
                                 {rate.forSponsor && <MonetizationOnIcon fontSize="small" color="primary"/>}
                             </Typography>}
-                            secondary={themes && <Typography>Количество вопросов: {questionsCount(rate.theme)}</Typography>}
+                            secondary={themes && <Typography variant='caption'>Количество вопросов: {questionsCount(rate.theme)}</Typography>}
                         />
                     </ListItem>
                     <Stack direction='row' justifyContent='center' alignItems='flex-start' sx={{ marginBottom:'10px'}}>

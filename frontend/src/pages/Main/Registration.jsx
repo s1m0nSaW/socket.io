@@ -16,7 +16,7 @@ const Registration = ({ handleOpenDialog }) => {
     const [ nicknameOk, setNicknameOk ] = React.useState(false);
     const [ emailOk, setEmailOk ] = React.useState(false);
 
-    const { register, handleSubmit, formState: { errors, isValid } } = useForm({
+    const { register, handleSubmit, formState: { errors, isValid }, setError } = useForm({
         defaultValues: {
         nickname: '',
         email: '',
@@ -26,6 +26,26 @@ const Registration = ({ handleOpenDialog }) => {
         },
         mode: 'onChange',
     });
+
+    const validateNickname = (value) => {
+        if (value.length < 5) {
+            setError("nickname", {
+                type: "minLength",
+                message: "Никнейм должен содержать как минимум 5 символов",
+            });
+            return false;
+        }
+    
+        if (!/^[A-Za-z]+$/.test(value)) {
+            setError("nickname", {
+                type: "pattern",
+                message: "Никнейм должен содержать только латинские символы",
+            });
+            return false;
+        }
+    
+        return true;
+    };
 
     const onConfirmed = async (values, promoter, nickname, email,) => {
         try {
@@ -82,11 +102,12 @@ const Registration = ({ handleOpenDialog }) => {
                                 {...register("promoter")}
                             />
                             <TextField
-                                label="Ваш никнейм (минимум 5 символов)"
+                                label="Ваш никнейм (минимум 5 символов, только латиница)"
                                 error={Boolean(errors.nickname?.message)}
                                 helperText={errors.nickname?.message}
                                 {...register("nickname", {
                                     required: "Придумайте уникальный никнейм",
+                                    validate: validateNickname,
                                 })}
                                 fullWidth
                             />
