@@ -85,7 +85,7 @@ const TheEnd = ({ user, friend, game, socket }) => {
         });
         const data = {
             userId: friend._id,
-            message: `${friend.nickname} оценил игру в ${value} звезд`, 
+            message: `${user.nickname} оценил игру в ${value} звезд`, 
             severity: 'success',
         }
         socket.emit("socketNotification", data);

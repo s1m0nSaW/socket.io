@@ -46,22 +46,22 @@ const ActiveStep = ({ question, answered, user, game, friend, updateAnswered, ne
                 {answered.answer1 === answered.answer2 ?
                     <CardHeader
                     title={<Typography variant="body1"><b>{friend.nickname} отгадал</b></Typography>}
-                    subheader={<Typography variant="body2">Вопрос: {question?.text}</Typography>}
+                    subheader={<Typography variant="body2">Вопрос {game.activeStep + 1}/{questions.length}: {question?.text}</Typography>}
                 />:
                 <CardHeader
                     title={<Typography variant="body1"><b>{friend.nickname} не отгадал</b></Typography>}
-                    subheader={<Typography variant="body2">Вопрос: {question?.text}</Typography>}
+                    subheader={<Typography variant="body2">Вопрос {game.activeStep + 1}/{questions.length}: {question?.text}</Typography>}
                 />
                 }
                 </>:<>
                 {answered.answer1 === answered.answer2 ?
                     <CardHeader
                     title={<Typography variant="body1"><b>Вы отгадали</b></Typography>}
-                    subheader={<Typography variant="body2">Вопрос: {question?.text}</Typography>}
+                    subheader={<Typography variant="body2">Вопрос {game.activeStep + 1}/{questions.length}: {question?.text}</Typography>}
                 />:
                 <CardHeader
                     title={<Typography variant="body1"><b>Вы не отгадали</b></Typography>}
-                    subheader={<Typography variant="body2">Вопрос: {question?.text}</Typography>}
+                    subheader={<Typography variant="body2">Вопрос {game.activeStep + 1}/{questions.length}: {question?.text}</Typography>}
                 />
                 }
                 </>
@@ -69,8 +69,8 @@ const ActiveStep = ({ question, answered, user, game, friend, updateAnswered, ne
             </>
             :
             <CardHeader
-                title={<Typography variant="body1">Вопрос: <b>{question?.text}</b></Typography>}
-                subheader={<Typography variant="body2">Правильный ответ: <b>{question?.correct}</b></Typography>}
+                title={question._id === answered.questionId && <Typography variant="body1">Вопрос {game.activeStep + 1}/{questions.length}: <b>{question?.text}</b></Typography>}
+                subheader={question._id === answered.questionId && <Typography variant="body2">Правильный ответ: <b>{question?.correct}</b></Typography>}
             />
             }
             <CardContent>

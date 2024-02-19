@@ -75,37 +75,39 @@ const EditInfoDialog = ({ open, handleClose, onSuccess, user }) => {
     }
 
     const onSubmit = async () => {
-        let fullname = user.fullname
-        let profileStatus = user.profileStatus
-        let age = user.age
-        let gender = user.gender
-        let city = user.city
-        if(username !== '') fullname = username
-        if(status !== '') profileStatus = status
-        if(userage !== '') age = userage
-        if(usergender !== '') gender = usergender
-        if(usercity !== '') city = usercity
+        if(user){
+            let fullname = user.fullname
+            let profileStatus = user.profileStatus
+            let age = user.age
+            let gender = user.gender
+            let city = user.city
+            if(username !== '') fullname = username
+            if(status !== '') profileStatus = status
+            if(userage !== '') age = userage
+            if(usergender !== '') gender = usergender
+            if(usercity !== '') city = usercity
 
-        const fields = { fullname, profileStatus, age, gender, city } 
-        
-        await axios.patch(`/auth-data`, fields).then((data) => {
-            if(data){
-                onSuccess('Данные добавлены', 'success')
-                setContent('info')
-            }
-        }).catch((err)=>{
-            if(err) {
-                onSuccess('Данные не добавлены', 'error')
-                setContent('info')
-            }
-        });
-        setFullname('')
-        setStatus('')
-        setAge('')
-        setGender('')
-        setCity('')
-        dispatch(fetchAuthMe())
-        handleClose()
+            const fields = { fullname, profileStatus, age, gender, city } 
+            
+            await axios.patch(`/auth-data`, fields).then((data) => {
+                if(data){
+                    onSuccess('Данные добавлены', 'success')
+                    setContent('info')
+                }
+            }).catch((err)=>{
+                if(err) {
+                    onSuccess('Данные не добавлены', 'error')
+                    setContent('info')
+                }
+            });
+            setFullname('')
+            setStatus('')
+            setAge('')
+            setGender('')
+            setCity('')
+            dispatch(fetchAuthMe())
+            handleClose()
+        }
     };
 
     // const src = `http://localhost:5000${user.pic}`

@@ -13,6 +13,7 @@ export const emailValidator = [
 
 export const nicknameValidator = [
     body('nickname','Никнейм пригласившего должен быть минимум 5 символов').isLength({ min: 5, max: 10}),
+    body('nickname', 'Никнейм должен содержать только латинские символы').isAlpha('en-US')
 ]
 
 export const passwordValidator = [
