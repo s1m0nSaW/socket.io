@@ -21,6 +21,8 @@ import BuyRsvpDialog from "./Profile/BuyRsvpDialog";
 import SettingsDialog from "./Profile/SettingsDialog";
 import NewGameDialog from "./Profile/NewGameDialog";
 import SponsorDialog from "./Profile/SponsorDialog.jsx";
+import InterestsIcon from '@mui/icons-material/Interests';
+import ConnectionDialog from "./Profile/ConnectionDialog.jsx";
 
 export const Profile = ({ socket }) => {
     const user = useSelector((state) => state.auth.data);
@@ -36,9 +38,14 @@ export const Profile = ({ socket }) => {
     const [openSponsorDialog, setOpenSponsorDialog] = React.useState(false);
     const [openSettingsDialog, setOpenSettingsDialog] = React.useState(false);
     const [openNewGameDialog, setOpenNewGameDialog] = React.useState(false);
+    const [openConnectionDialog, setOpenConnectionDialog] = React.useState(false);
 
     const handleCloseEditInfo = () => {
         setEditInfo(false)
+    }
+
+    const handleCloseConnectionDialog = () => {
+        setOpenConnectionDialog(false)
     }
 
     const handleCloseBuyDialog = () => {
@@ -260,6 +267,11 @@ export const Profile = ({ socket }) => {
                         </Button>
                     </Grid>
                     <Grid item xs={8}>
+                        <Button onClick={()=>setOpenConnectionDialog(true)} endIcon={<InterestsIcon fontSize="small" />}>
+                            <b>Знакомства</b>
+                        </Button>
+                    </Grid>
+                    <Grid item xs={8}>
                         <Button onClick={()=>setOpenSettingsDialog(true)} endIcon={<SettingsIcon fontSize="small" />}>
                             <b>Настройки</b>
                         </Button>
@@ -303,6 +315,10 @@ export const Profile = ({ socket }) => {
                 socket={socket}
                 inGams={false}
                 mate={false}
+            />
+            <ConnectionDialog
+                open={openConnectionDialog}
+                handleClose={handleCloseConnectionDialog}
             />
             <SuccessSnack
                 open={successSnack}

@@ -31,7 +31,11 @@ const SettingsDialog = ({ open, handleClose, onSuccess, user }) => {
         const nick = e.target.value
         setNickname(nick)
         if(nick.length >= 5){
-            setNickErr(false)
+            if (!/^[A-Za-z]+$/.test(nick)) {
+                setNickErr(true)
+            } else {
+                setNickErr(false)
+            }
         } else {
             setNickErr(true)
         }
@@ -133,7 +137,7 @@ const SettingsDialog = ({ open, handleClose, onSuccess, user }) => {
                         onChange={handleChangeNickname}
                         label="Новый никнейм"
                         error={nickErr}
-                        helperText='Никнейм должен быть минимум из 5 символов'
+                        helperText='Минимум из 5 символов, только латиница'
                     />
                 </ListItem>
                 :

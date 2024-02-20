@@ -1,31 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <!-- Creator: CorelDRAW 2020 (64-Bit) -->
-<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="81.28mm" height="81.28mm" version="1.1" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd"
-viewBox="0 0 8128 8128"
+<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="84.6666mm" height="84.6666mm" version="1.1" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd"
+viewBox="0 0 8466.66 8466.66"
  xmlns:xlink="http://www.w3.org/1999/xlink"
  xmlns:xodm="http://www.corel.com/coreldraw/odm/2003">
  <defs>
-  <font id="FontID0" horiz-adv-x="809" font-variant="normal" style="fill-rule:nonzero" font-weight="400">
-	<font-face 
-		font-family="Poiret One">
-		<font-face-src>
-			<font-face-name name="Poiret One"/>
-		</font-face-src>
-	</font-face>
-   <missing-glyph><path d="M0 0z"/></missing-glyph>
-   <glyph unicode="O" horiz-adv-x="870" d="M426.999 -12.9993c-103.332,0 -192.833,38.9995 -268.5,117 -75.6666,77.999 -113.5,169.165 -113.5,273.499 0,104.333 38.334,194.668 115,271 76.6664,76.3336 168.666,114.501 275.999,114.501 107.334,0 199.001,-38.0012 275.001,-114.001 75.9993,-75.9993 114.001,-166.5 114.001,-271.501 0,-104.999 -37.6669,-196.333 -113.001,-273.999 -75.3338,-77.6662 -165.334,-116.499 -270,-116.499l-15.0005 0zm365.001 388.499c0,98.333 -34.8338,182.667 -104.5,253 -69.6676,70.3331 -153.667,105.5 -252,105.5 -98.333,0 -182.5,-35.1666 -252.501,-105.5 -69.9988,-70.3331 -104.999,-154.667 -104.999,-253 0,-98.333 35.0002,-182.833 104.999,-253.499 70.0004,-70.6674 154,-106 252,-106 98.0002,0 182.001,35.3329 252,106 70.0004,70.6659 105.001,155.166 105.001,253.499z"/>
-  </font>
   <style type="text/css">
    <![CDATA[
-    @font-face { font-family:"Poiret One";font-variant:normal;font-weight:normal;src:url("#FontID0") format(svg)}
-    .fil0 {fill:dodgerblue}
-    .fnt0 {font-weight:normal;font-size:6491.11px;font-family:'Poiret One'}
+    .fil0 {fill:dodgerblue;fill-rule:nonzero}
    ]]>
   </style>
  </defs>
  <g id="Слой_x0020_1">
   <metadata id="CorelCorpID_0Corel-Layer"/>
-  <text x="1240.37" y="6498.17"  class="fil0 fnt0">O</text>
+  <path class="fil0" d="M4181.41 6751.87c-670.74,0 -1251.7,-253.15 -1742.86,-759.46 -491.16,-506.3 -736.74,-1098.07 -736.74,-1775.31 0,-677.24 248.83,-1263.61 746.48,-1759.09 497.65,-495.49 1094.83,-743.24 1791.54,-743.24 696.72,0 1291.74,246.67 1785.06,739.99 493.32,493.32 739.99,1080.77 739.99,1762.34 0,681.56 -244.5,1274.42 -733.5,1778.56 -489,504.14 -1073.2,756.21 -1752.6,756.21l-97.37 0zm2369.26 -2521.79c0,-638.29 -226.11,-1185.71 -678.32,-1642.25 -452.22,-456.54 -997.47,-684.81 -1635.76,-684.81 -638.29,0 -1184.63,228.27 -1639.01,684.81 -454.37,456.54 -681.56,1003.96 -681.56,1642.25 0,638.29 227.19,1186.79 681.56,1645.49 454.38,458.71 999.63,688.06 1635.76,688.06 636.13,0 1181.39,-229.35 1635.76,-688.06 454.38,-458.7 681.57,-1007.2 681.57,-1645.49z"/>
  </g>
 </svg>
