@@ -1,25 +1,25 @@
 import React from 'react';
 import { Grid, Stack, Typography, Toolbar, } from '@mui/material';
-import { useSelector } from 'react-redux';
+//import { useSelector } from 'react-redux';
 
-import { selectIsAuth } from '../redux/slices/auth.js';
+//import { selectIsAuth } from '../redux/slices/auth.js';
 import Situations from './Main/Situations.jsx';
-import Registration from './Main/Registration.jsx';
+//import Registration from './Main/Registration.jsx';
 import Header from '../components/Header.jsx';
 import Rsvp from './Main/Rsvp.jsx';
 import AddApp from './Main/AddApp.jsx';
 
 export const Main = () => {
-    const isAuth = useSelector(selectIsAuth)
+    //const isAuth = useSelector(selectIsAuth)
     const [ openAdd, setOpenAdd ] = React.useState(false);
 
     const handleCloseAdd = () => {
         setOpenAdd(false)
     };
 
-    const handleOpenAdd = () => {
+    /*const handleOpenAdd = () => {
         setOpenAdd(true)
-    }
+    }*/
 
     return (
         <React.Fragment>
@@ -63,7 +63,6 @@ export const Main = () => {
                     <Grid item xs={12} md={12} justifyContent='center'>
                         <Rsvp/>
                     </Grid> 
-                    {!isAuth && <Registration handleOpenDialog={handleOpenAdd}/>}
                     
                 </Grid>
                 <Toolbar/>
