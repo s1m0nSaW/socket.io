@@ -3,37 +3,6 @@ import UserModel from '../models/User.js';
 import RatingModel from '../models/Rating.js';
 import AnsweredModel from '../models/Answered.js';
 import MessageModel from '../models/Message.js';
-import StatModel from '../models/Stat.js';
-
-const updateStat = async (user_id) => {
-    const today = new Date(); // Получаем текущую дату
-    today.setHours(0, 0, 0, 0); // Устанавливаем время в полночь
-    StatModel.findOne({ date: today }, (err, stat) => {
-        if (err) {
-            console.error('Ошибка при поиске статистики:', err);
-        } else {
-            if (stat) {
-                // Нашли объект статистики для сегодняшней даты
-                // Теперь мы можем вносить изменения
-                stat.newGames.push(user_id); // Добавляем новую строку в массив strings
-                // stat.numbers.push(42); // Добавляем число 42 в массив numbers
-
-                // Сохраняем изменения в базе данных
-                stat.save();
-            } else {
-                // Объект статистики для сегодняшней даты не найден, создаем новый объект статистики
-                const newStatistic = new StatModel({
-                    date: today,
-                    newGames: [user_id],
-                    // numbers: [42],
-                });
-
-                // Сохраняем новый объект статистики в базе данных
-                newStatistic.save();
-            }
-        }
-    });
-}
 
 export const create = async (req,res) => {
     try {
@@ -47,12 +16,11 @@ export const create = async (req,res) => {
                     theme: req.body.theme,
                     turn: req.body.turn,
                     forSponsor: req.body.forSponsor,
-                    user1: req.userId,
+                    user1: req.body.user1, // создатель
                     user2: req.body.user2,
                 });
         
                 const game = await doc.save();
-                updateStat(user._id);
         
                 UserModel.findById(req.userId)
                 .then(user1 => {
@@ -82,12 +50,11 @@ export const create = async (req,res) => {
                     theme: req.body.theme,
                     turn: req.body.turn,
                     forSponsor: req.body.forSponsor,
-                    user1: req.userId,
+                    user1: req.body.user1, // создатель
                     user2: req.body.user2,
                 });
         
                 const game = await doc.save();
-                updateStat(user._id);
         
                 UserModel.findById(req.userId)
                 .then(user1 => {
@@ -128,12 +95,11 @@ export const create = async (req,res) => {
                         theme: req.body.theme,
                         turn: req.body.turn,
                         forSponsor: req.body.forSponsor,
-                        user1: req.userId,
+                        user1: req.body.user1, // создатель
                         user2: req.body.user2,
                     });
             
                     const game = await doc.save();
-                    updateStat(user._id);
             
                     UserModel.findById(req.userId)
                     .then(user1 => {
@@ -163,12 +129,11 @@ export const create = async (req,res) => {
                         theme: req.body.theme,
                         turn: req.body.turn,
                         forSponsor: req.body.forSponsor,
-                        user1: req.userId,
+                        user1: req.body.user1, // создатель
                         user2: req.body.user2,
                     });
             
                     const game = await doc.save();
-                    updateStat(user._id);
             
                     UserModel.findById(req.userId)
                     .then(user1 => {
