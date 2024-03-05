@@ -20,7 +20,7 @@ export const register = async (req, res) => {
 
 export const getMe = async (req, res) => {
     try {
-        const user = await UserModel.findById(req.body.vkid);
+        const user = await UserModel.findOne({ vkid: req.body.vkid });
 
         const date = +new Date();
 
