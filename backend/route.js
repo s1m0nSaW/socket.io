@@ -43,6 +43,7 @@ router.post('/auth/register', checkApp, UserController.register);
 router.patch('/rsvp-date', checkApp, UserController.updateRsvpDate);
 router.patch('/rsvp-status', checkApp, UserController.updateRsvpStatus);
 router.post('/auth', UserController.getMe);
+router.get('/auth', UserController.getAll);
 router.delete('/auth/:id', checkApp, UserController.remove);
 
 router.post('/answer', checkApp, AnsweredController.create);

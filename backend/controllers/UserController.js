@@ -46,6 +46,19 @@ export const getMe = async (req, res) => {
     }
 };
 
+export const getAll = async (req, res) => {
+    try {
+        const users = await UserModel.find();
+
+        res.json(users);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: "Нет доступа",
+        });
+    }
+};
+
 export const remove = async (req, res) => {
     try {
         UserModel.findOneAndDelete(
