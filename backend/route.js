@@ -1,9 +1,7 @@
 import express from "express";
 import { YooCheckout } from '@a2seven/yoo-checkout';
 import dotenv from 'dotenv';
-import multer from 'multer';
 
-import checkAuth from './utils/checkAuth.js';
 import checkAdmin from './utils/checkAdmin.js';
 import checkIp from './utils/checkIp.js';
 import checkApp from "./utils/checkApp.js";
@@ -26,27 +24,9 @@ const checkout = new YooCheckout({
 
 dotenv.config();
 
-/*const checkout = new YooCheckout({
-    shopId: "221233",
-    secretKey: "test_mGh_5MA29l9hMycoiWrGNFKVWAgNbOclNpRy5h_HtY0"
-});*/
-
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, '/app/uploads'); // убедитесь, что папка uploads существует
-    },
-    filename: (req, file, cb) => {
-        cb(null, file.originalname);
-    },
-});
-
-const upload = multer({storage});
-
 router.get("/", (req, res) => {
     res.send("Hello World!!!")
 })
-
-router.post('/upload', checkAuth, upload.single('image'), UserController.updatePic);
 
 router.post('/admin/:id', checkAdmin, UserController.remove);
 router.post('/sponsor/:id', checkAdmin, UserController.updateSponsor);
