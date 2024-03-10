@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 
 import checkAdmin from './utils/checkAdmin.js';
 import checkIp from './utils/checkIp.js';
-import checkApp from "./utils/checkApp.js";
+import checkAuth from "./utils/checkAuth.js";
 
 import * as UserController from './controllers/UserController.js';
 import * as PaymentController from './controllers/PaymentController.js';
@@ -14,6 +14,7 @@ import * as MessageController from './controllers/MessageController.js';
 import * as AnsweredController from './controllers/AnsweredController.js';
 import * as RaitingController from './controllers/RatingController.js';
 import * as StatController from './controllers/StatController.js';
+import checkAuth from "./utils/checkAuth.js";
 
 const router = express.Router();
 
@@ -39,39 +40,39 @@ router.post('/ratings', checkAdmin, RaitingController.getAll);
 router.post('/del-rating/:id', checkAdmin, RaitingController.remove);
 router.post('/stats', checkAdmin, StatController.getAll);
 
-router.post('/auth/register', checkApp, UserController.register);
-router.patch('/rsvp-date', checkApp, UserController.updateRsvpDate);
-router.patch('/rsvp-status', checkApp, UserController.updateRsvpStatus);
+router.post('/auth/register', UserController.register);
+router.patch('/rsvp-date', checkAuth, UserController.updateRsvpDate);
+router.patch('/rsvp-status', checkAuth, UserController.updateRsvpStatus);
 router.post('/auth', UserController.getMe);
 router.get('/auth', UserController.getAll);
-router.delete('/auth/:id', checkApp, UserController.remove);
+router.delete('/auth/:id', checkAuth, UserController.remove);
 
-router.post('/answer', checkApp, AnsweredController.create);
-router.post('/up-answer/:id', checkApp, AnsweredController.update);
-router.get('/answer/:id', checkApp, AnsweredController.getAnwered);
-router.get('/answereds/:id', checkApp, AnsweredController.getAnwereds);
-router.delete('/answer/:id', checkApp, AnsweredController.remove);
+router.post('/answer', checkAuth, AnsweredController.create);
+router.post('/up-answer/:id', checkAuth, AnsweredController.update);
+router.get('/answer/:id', checkAuth, AnsweredController.getAnwered);
+router.get('/answereds/:id', checkAuth, AnsweredController.getAnwereds);
+router.delete('/answer/:id', checkAuth, AnsweredController.remove);
 
-router.post('/message', checkApp, MessageController.create);
-router.get('/messages/:id', checkApp, MessageController.getMessages);
-router.delete('/message/:id', checkApp, MessageController.remove);
+router.post('/message', checkAuth, MessageController.create);
+router.get('/messages/:id', checkAuth, MessageController.getMessages);
+router.delete('/message/:id', checkAuth, MessageController.remove);
 
-router.post('/questions', checkApp, QuestionController.getQuestions);
-router.get('/all-quest', checkApp, QuestionController.getAll);
+router.post('/questions', checkAuth, QuestionController.getQuestions);
+router.get('/all-quest', checkAuth, QuestionController.getAll);
 
-router.post('/new-game', checkApp, GameController.create);
-router.post('/games', checkApp, GameController.getGames);
-router.post('/begin-game/:id', checkApp, GameController.begin);
-router.post('/up-game/:id', checkApp, GameController.update);
-router.get('/game/:id', checkApp, GameController.getGame);
-router.get('/join/:id', checkApp, GameController.acceptGame);
-router.delete('/game/:id', checkApp, GameController.removeGame);
+router.post('/new-game', checkAuth, GameController.create);
+router.post('/games', checkAuth, GameController.getGames);
+router.post('/begin-game/:id', checkAuth, GameController.begin);
+router.post('/up-game/:id', checkAuth, GameController.update);
+router.get('/game/:id', checkAuth, GameController.getGame);
+router.get('/join/:id', checkAuth, GameController.acceptGame);
+router.delete('/game/:id', checkAuth, GameController.removeGame);
 
-router.post('/get-rating', checkApp, RaitingController.getRating);
-router.post('/up-rating/:id', checkApp, RaitingController.update);
-router.get('/all-rates', checkApp, RaitingController.getAll);
+router.post('/get-rating', checkAuth, RaitingController.getRating);
+router.post('/up-rating/:id', checkAuth, RaitingController.update);
+router.get('/all-rates', checkAuth, RaitingController.getAll);
 
-router.patch('/payment', checkApp, PaymentController.create);
+router.patch('/payment', checkAuth, PaymentController.create);
 router.post('/payment-notification',checkIp, PaymentController.payments);   //    checkIp,
 router.post('/create-payment', async (req, res) => {
     const createPayload = {

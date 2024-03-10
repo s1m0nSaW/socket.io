@@ -1,14 +1,37 @@
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
+import dotenv from "dotenv";
+
 import UserModel from "../models/User.js";
+
+dotenv.config();
+
+const secret = process.env.SKEY;
 
 export const register = async (req, res) => {
     try {
+
+        const password = req.body.vkid;
+        const salt = await bcrypt.genSalt(10);
+        const hash = await bcrypt.hash(password, salt);
+
         const doc = new UserModel({
             vkid: req.body.vkid,
         });
     
         const user = await doc.save();
+
+        const token = jwt.sign(
+            {
+                _id: user._id,
+            },
+            secret,
+            {
+                expiresIn: "30d",
+            }
+        );
     
-        res.json(user);
+        res.json(user, token);
         
     } catch (err) {
         console.log(err);
