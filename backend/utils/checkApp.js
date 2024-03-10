@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import crypto from 'crypto'
+import forge from 'node-forge';
 
 dotenv.config()
 
@@ -7,8 +7,8 @@ const skey = process.env.SKEY
 
 export default (req, res, next) => {
     
-    const clientSecret = skey;
-    const signParam = req.body.appKey;
+    var client_secret = skey;
+    var sign_param = req.body.appKey;
 
     const hashParams = {
         ts: req.body.ts, // Время создания подписи
@@ -18,20 +18,22 @@ export default (req, res, next) => {
     };
 
     // Сортируем список по ключам
-    Object.keys(hashParams).sort().forEach(key => {
-    hashParams[key] = hashParams[key];
-    });
+    var hash_params = Object.keys(hash_params).sort().reduce((acc, key) => {
+        acc[key] = hash_params[key];
+        return acc;
+        }, {});
 
     // Формируем строку для вычисления подписи
-    let signParamsQuery = Object.keys(hashParams).map(key => `${key}=${hashParams[key]}`).join('&');
+    var sign_params_query = Object.keys(hash_params).map(key => `${key}=${hash_params[key]}`).join('&');
 
     // Формируем подпись, используя защищённый ключ приложения (метод HMAC)
-    const sign = crypto.createHmac('sha256', clientSecret).update(signParamsQuery).digest('base64');
+    var sign = forge.util.encode64(forge.md.hmacSha256.create().update(sign_params_query, 'utf8', client_secret).digest().getBytes());
 
     // Сравниваем полученную строку со значением из VKWebAppCreateHash
-    const status = sign === signParam;
+    var status = sign === sign_param;
 
-    console.log((status ? 'ok' : 'fail'));
+    console.log('мой ключ:', sign);
+    console.log('ключ vk:', sign);
     if(status){
         next()
     } else {
