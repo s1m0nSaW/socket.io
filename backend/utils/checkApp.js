@@ -11,16 +11,11 @@ export default (req, res, next) => {
     const signParam = req.body.appKey;
 
     const hashParams = {
-    ts: req.body.ts, // Время создания подписи
+    app_id: 51864614, // Добавляем идентификатор приложения
     request_id: req.body.request_id, // Присваиваем значение параметра payload
+    ts: req.body.ts, // Время создания подписи
     user_id: req.body.user_id, // Добавляем идентификатор пользователя
-    app_id: 51864614 // Добавляем идентификатор приложения
     };
-
-    // Сортируем список по ключам
-    Object.keys(hashParams).sort().forEach(key => {
-    hashParams[key] = hashParams[key];
-    });
 
     // Формируем строку для вычисления подписи
     let signParamsQuery = Object.keys(hashParams).map(key => `${key}=${hashParams[key]}`).join('&');
