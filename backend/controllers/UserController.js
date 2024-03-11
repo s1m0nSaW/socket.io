@@ -80,7 +80,7 @@ export const remove = async (req, res) => {
     try {
         UserModel.findOneAndDelete(
             {
-                _id: req.body.vkid,
+                _id: req.params.id,
             },
             (err, doc) => {
                 if (err) {
