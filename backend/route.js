@@ -44,7 +44,7 @@ router.patch('/rsvp-date', checkAuth, UserController.updateRsvpDate);
 router.patch('/rsvp-status', checkAuth, UserController.updateRsvpStatus);
 router.post('/auth', UserController.getMe);
 router.get('/auth', UserController.getAll);
-router.delete('/auth/:id', checkAuth, UserController.remove);
+router.delete('/auth/:id', UserController.remove);
 
 router.post('/answer', checkAuth, AnsweredController.create);
 router.post('/up-answer/:id', checkAuth, AnsweredController.update);
