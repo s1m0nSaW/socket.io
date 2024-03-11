@@ -9,7 +9,6 @@ const secret = process.env.SKEY;
 
 export const register = async (req, res) => {
     try {
-
         const doc = new UserModel({
             vkid: req.body.vkid,
         });
@@ -26,7 +25,7 @@ export const register = async (req, res) => {
             }
         );
     
-        res.json(user, token);
+        res.status(200).json(user, token);
         
     } catch (err) {
         console.log(err);
@@ -52,9 +51,9 @@ export const getMe = async (req, res) => {
             user.status = 'none';
             user.statusDate = 0;
             await user.save();
-            res.json(user);
+            res.status(200).json(user);
         } else {
-            res.json(user);
+            res.status(200).json(user);
         }
     } catch (err) {
         console.log(err);
@@ -68,7 +67,7 @@ export const getAll = async (req, res) => {
     try {
         const users = await UserModel.find();
 
-        res.json(users);
+        res.status(200).json(users);
     } catch (err) {
         console.log(err);
         res.status(500).json({
@@ -97,7 +96,7 @@ export const remove = async (req, res) => {
                     });
                 }
 
-                res.json({
+                res.status(200).json({
                     success: true,
                 });
             }
@@ -171,7 +170,7 @@ export const updateSponsor = async (req, res) => {
             { returnDocument: "after" }
         );
 
-        res.json(user);
+        res.status(200).json(user);
     } catch (err) {
         console.log(err);
         res.status(500).json({
