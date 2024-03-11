@@ -14,7 +14,6 @@ import * as MessageController from './controllers/MessageController.js';
 import * as AnsweredController from './controllers/AnsweredController.js';
 import * as RaitingController from './controllers/RatingController.js';
 import * as StatController from './controllers/StatController.js';
-import checkAuth from "./utils/checkAuth.js";
 
 const router = express.Router();
 
