@@ -25,14 +25,20 @@ mongoose
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+    exposedHeaders: ['X-My-Custom-Header']
+    }));
 app.use(route);
 app.use('/uploads', express.static('uploads'));
 
 const server = createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: ["https://ochem.ru","https://www.ochem.ru"],
+        origin: ["*"],
         credentials: true
     },
     transports: ['polling', 'xhr-polling'],
