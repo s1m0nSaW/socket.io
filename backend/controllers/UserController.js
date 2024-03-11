@@ -24,13 +24,66 @@ export const register = async (req, res) => {
                 expiresIn: "30d",
             }
         );
+        const date = +new Date();
+        const tokenDate = date+2160000000
     
-        res.status(200).json({user, token});
+        res.status(200).json({user, token, tokenDate});
         
     } catch (err) {
         console.log(err);
         res.status(500).json({
             message: "Не удалoсь зарегистрироваться",
+        });
+    }
+};
+
+export const getToken = async (req, res) => {
+    try {
+        const user = await UserModel.findOne({ vkid: req.body.vkid });
+
+        const date = +new Date();
+
+        if (!user) {
+            return res.status(404).json({
+                message: "Пользователь не найден",
+            });
+        }
+
+        if(date > user.statusDate) {
+            user.status = 'none';
+            user.statusDate = 0;
+            await user.save();
+        
+            const token = jwt.sign(
+                {
+                    _id: user._id,
+                },
+                secret,
+                {
+                    expiresIn: "30d",
+                }
+            );
+            const tokenDate = date+2160000000
+        
+            res.status(200).json({user, token, tokenDate});
+        } else {
+        
+            const token = jwt.sign(
+                {
+                    _id: user._id,
+                },
+                secret,
+                {
+                    expiresIn: "30d",
+                }
+            );
+            const tokenDate = date+2160000000
+            res.status(200).json({user, token, tokenDate});
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: "Нет доступа",
         });
     }
 };
@@ -51,8 +104,10 @@ export const getMe = async (req, res) => {
             user.status = 'none';
             user.statusDate = 0;
             await user.save();
+        
             res.status(200).json(user);
         } else {
+        
             res.status(200).json(user);
         }
     } catch (err) {
