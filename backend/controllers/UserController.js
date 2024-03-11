@@ -25,7 +25,7 @@ export const register = async (req, res) => {
             }
         );
     
-        res.status(200).json(user, token);
+        res.status(200).json({user, token});
         
     } catch (err) {
         console.log(err);
