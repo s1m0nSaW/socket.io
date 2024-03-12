@@ -6,7 +6,7 @@ dotenv.config()
 const secret = process.env.SKEY
 
 export default (req, res, next) => {
-  const token = (req.headers.authorization || '').replace(/Bearer\s?/, '');
+  const token = (req.body.token || '').replace(/Bearer\s?/, '');
 
   if (token) {
     try {

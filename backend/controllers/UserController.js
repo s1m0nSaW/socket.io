@@ -165,19 +165,20 @@ export const remove = async (req, res) => {
 };
 
 export const updateRsvpDate = async (req, res) => {
+    const date = +new Date()
     try {
-        const user = await UserModel.findById(req.body.vkid);
+        const user = await UserModel.findById(req.userId);
         if (user.status === 'sponsor') {
-            user.dailyRsvp = 10;
+            user.dailyRsvp += 10;
         } else if (user.status === 'promoter') {
-            user.dailyRsvp = 3;
+            user.dailyRsvp += 3;
         } else if (user.status === 'none') {
-            user.dailyRsvp = 1;
+            user.dailyRsvp += 1;
         }
-        user.rsvpDate = req.body.rsvpDate;
+        user.rsvpDate = date + 86400000;
         user.rsvpStatus = false;
         await user.save();
-        res.sendStatus(200);
+        res.status(200);
 
     } catch (err) {
         console.log(err);

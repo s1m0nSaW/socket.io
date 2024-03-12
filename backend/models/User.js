@@ -24,7 +24,7 @@ const UserSchema = new mongoose.Schema({
     },
     rsvpStatus:{
         type: Boolean,
-        default: false,
+        default: true,
     },
     dailyRsvp:{
         type: Number,
