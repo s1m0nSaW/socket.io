@@ -99,10 +99,15 @@ export const getMe = async (req, res) => {
                 message: "Пользователь не найден",
             });
         }
+        
+        if(date > user.rsvpDate){
+            user.rsvpStatus = true;
+        }
 
         if(date > user.statusDate) {
             user.status = 'none';
             user.statusDate = 0;
+            
             await user.save();
         
             res.status(200).json(user);
@@ -168,18 +173,21 @@ export const updateRsvpDate = async (req, res) => {
     const date = +new Date()
     try {
         const user = await UserModel.findById(req.userId);
-        if (user.status === 'sponsor') {
-            user.dailyRsvp += 10;
-        } else if (user.status === 'promoter') {
-            user.dailyRsvp += 3;
-        } else if (user.status === 'none') {
-            user.dailyRsvp += 1;
+        if(user.rsvpStatus === true){
+            if (user.status === 'sponsor') {
+                user.dailyRsvp += 10;
+            } else if (user.status === 'promoter') {
+                user.dailyRsvp += 3;
+            } else if (user.status === 'none') {
+                user.dailyRsvp += 1;
+            }
+            user.rsvpDate = date + 86400000;
+            user.rsvpStatus = false;
+            await user.save();
+            res.status(200);
+        } else {
+            res.status(200);
         }
-        user.rsvpDate = date + 86400000;
-        user.rsvpStatus = false;
-        await user.save();
-        res.status(200);
-
     } catch (err) {
         console.log(err);
         res.status(500).json({
@@ -190,18 +198,15 @@ export const updateRsvpDate = async (req, res) => {
 
 export const updateRsvpStatus = async (req, res) => {
     try {
-        const user = await UserModel.findOneAndUpdate(
-            {
-                _id: req.body.vkid
-            },
-            {
-                $set: {
-                    rsvpStatus: true,
-                },
-            },
-            { returnDocument: "after" }
-        );
-        if(user){res.sendStatus(200);}
+        const date = +new Date();
+        const user = await UserModel.findById(req.userId);
+        if(date > user.rsvpDate){
+            user.rsvpStatus = true;
+            await user.save();
+            res.status(200);
+        } else {
+            res.status(200);
+        }
 
     } catch (err) {
         console.log(err);

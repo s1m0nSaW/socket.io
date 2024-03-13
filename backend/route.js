@@ -14,6 +14,8 @@ import * as MessageController from './controllers/MessageController.js';
 import * as AnsweredController from './controllers/AnsweredController.js';
 import * as RaitingController from './controllers/RatingController.js';
 import * as StatController from './controllers/StatController.js';
+import * as PurchaseController from './controllers/PurchaseController.js';
+import * as ItemController from './controllers/ItemController.js';
 
 const router = express.Router();
 
@@ -28,6 +30,7 @@ router.get("/", (req, res) => {
     res.send("Hello World!!!")
 })
 
+router.post('/purchase', PurchaseController.purchase)
 router.post('/admin/:id', checkAdmin, UserController.remove);
 router.post('/sponsor/:id', checkAdmin, UserController.updateSponsor);
 router.post('/quests', checkAdmin, QuestionController.getAll);
@@ -38,6 +41,9 @@ router.post('/rating', checkAdmin, RaitingController.create);
 router.post('/ratings', checkAdmin, RaitingController.getAll);
 router.post('/del-rating/:id', checkAdmin, RaitingController.remove);
 router.post('/stats', checkAdmin, StatController.getAll);
+router.post('/add-item', checkAdmin, ItemController.create);
+router.post('/items', checkAdmin, ItemController.getItems);
+router.post('/del-item/:id', checkAdmin, ItemController.remove);
 
 router.post('/auth/register', UserController.register);
 router.patch('/rsvp-date', checkAuth, UserController.updateRsvpDate);
