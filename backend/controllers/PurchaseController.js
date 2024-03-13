@@ -1,6 +1,6 @@
-import ItemModel from "../models/Item";
-import UserModel from "../models/User";
-import OrderModel from "../models/Order";
+import ItemModel from "../models/Item.js";
+import UserModel from "../models/User.js";
+import OrderModel from "../models/Order.js";
 import md5 from "md5";
 import dotenv from 'dotenv';
 
