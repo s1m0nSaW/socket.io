@@ -35,15 +35,29 @@ export const purchase = async (request, response) => {
                 switch (requestParams.notification_type) {
                     case "get_item":
                         responseData = handleGetItem(requestParams);
+                        // Отправляем ответ
+                        s = JSON.stringify(responseData);
+                        console.log('Отправили ответ в вк: ', s);
+                        response.end(s);
                         break;
                     case "get_item_test":
                         responseData = handleGetItem(requestParams);
+                        // Отправляем ответ
+                        s = JSON.stringify(responseData);
+                        console.log('Отправили ответ в вк: ', s);
+                        response.end(s);
                         break;
                     case "order_status_change":
                         responseData = handleOrderStatusChange(requestParams);
+                        s = JSON.stringify(responseData);
+                        console.log('Отправили ответ в вк: ', s);
+                        response.end(s);
                         break;
                     case "order_status_change_test":
                         responseData = handleOrderStatusChange(requestParams);
+                        s = JSON.stringify(responseData);
+                        console.log('Отправили ответ в вк: ', s);
+                        response.end(s);
                         break;
                 }
             } else {
@@ -57,12 +71,11 @@ export const purchase = async (request, response) => {
                         critical: true,
                     },
                 };
+                // Отправляем ответ
+                s = JSON.stringify(responseData);
+                console.log('Отправили ответ в вк: ', s);
+                response.end(s);
             }
-
-            // Отправляем ответ
-            s = JSON.stringify(responseData);
-            console.log('Отправили ответ в вк: ', s);
-            response.end(s);
         });
 };
 
