@@ -18,7 +18,7 @@ export const purchase = async (request, response) => {
         .on("data", (chunk) => {
             requestData += chunk;
         })
-        .on("end", () => {
+        .on("end", async () => {
             // Формируем список параметров
             let s = String(requestData).split("&");
             s.map((item) => {
@@ -34,21 +34,17 @@ export const purchase = async (request, response) => {
                 // Обрабатываем запрос
                 switch (requestParams.notification_type) {
                     case "get_item":
-                        responseData = handleGetItem(requestParams);
+                        responseData = await handleGetItem(requestParams);
                         // Отправляем ответ
-                        if(responseData){
-                            console.log('Отправили ответ в вк: ', responseData);
-                            response.status(200).json(responseData);
-                            break;
-                        }
+                        console.log('Отправили ответ в вк: ', responseData);
+                        response.status(200).json(responseData);
+                        break;
                     case "get_item_test":
-                        responseData = handleGetItem(requestParams);
+                        responseData = await handleGetItem(requestParams);
                         // Отправляем ответ
-                        if(responseData){
-                            console.log('Отправили ответ в вк: ', responseData);
-                            response.status(200).json(responseData);
-                            break;
-                        }
+                        console.log('Отправили ответ в вк: ', responseData);
+                        response.status(200).json(responseData);
+                        break;
                     case "order_status_change":
                         responseData = handleOrderStatusChange(requestParams);
                         s = JSON.stringify(responseData);
