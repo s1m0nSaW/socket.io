@@ -46,13 +46,13 @@ export const purchase = async (request, response) => {
                         response.status(200).json(responseData);
                         break;
                     case "order_status_change":
-                        responseData = handleOrderStatusChange(requestParams);
+                        responseData = await handleOrderStatusChange(requestParams);
                         s = JSON.stringify(responseData);
                         console.log('Отправили ответ в вк: ', s);
                         response.end(s);
                         break;
                     case "order_status_change_test":
-                        responseData = handleOrderStatusChange(requestParams);
+                        responseData = await handleOrderStatusChange(requestParams);
                         s = JSON.stringify(responseData);
                         console.log('Отправили ответ в вк: ', s);
                         response.end(s);
