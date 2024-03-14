@@ -18,6 +18,18 @@ const UserSchema = new mongoose.Schema({
         type: Number,
         default: 0,
     },
+    ads:{
+        type: Number,
+        default: 0,
+    },
+    adsDate:{
+        type: Number,
+        default: 0,
+    },
+    adsStatus:{
+        type: Boolean,
+        default: true,
+    },
     rsvp:{
         type: Number,
         default: 0,

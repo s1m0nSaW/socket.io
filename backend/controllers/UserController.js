@@ -104,6 +104,10 @@ export const getMe = async (req, res) => {
             user.rsvpStatus = true;
         }
 
+        if(date > user.adsDate){
+            user.adsStatus = true;
+        }
+
         if(date > user.statusDate) {
             user.status = 'none';
             user.statusDate = 0;
@@ -173,9 +177,18 @@ export const afterAds = async (req, res) => {
     const date = +new Date()
     try {
         const user = await UserModel.findById(req.userId);
-        user.rsvp += 1;
-        await user.save();
-        res.status(200);
+        if(user.ads >= 2){
+            res.status(500);
+        } else {
+            user.rsvp += 1;
+            user.ads += 1;
+            if (user.ads === 2){
+                user.adsDate = date + 86400000;
+                user.adsStatus = false;
+            }
+            await user.save();
+            res.status(200);
+        }
     } catch (err) {
         console.log(err);
         res.status(500).json({
