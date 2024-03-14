@@ -46,6 +46,7 @@ router.post('/items', checkAdmin, ItemController.getItems);
 router.post('/del-item/:id', checkAdmin, ItemController.remove);
 
 router.post('/auth/register', UserController.register);
+router.patch('/after-ads', checkAuth, UserController.afterAds);
 router.patch('/rsvp-date', checkAuth, UserController.updateRsvpDate);
 router.patch('/rsvp-status', checkAuth, UserController.updateRsvpStatus);
 router.post('/auth', UserController.getMe);

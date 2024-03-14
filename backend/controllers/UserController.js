@@ -99,7 +99,7 @@ export const getMe = async (req, res) => {
                 message: "Пользователь не найден",
             });
         }
-        
+
         if(date > user.rsvpDate){
             user.rsvpStatus = true;
         }
@@ -165,6 +165,21 @@ export const remove = async (req, res) => {
         console.log(err);
         res.status(500).json({
             message: "Проблема с удалением",
+        });
+    }
+};
+
+export const afterAds = async (req, res) => {
+    const date = +new Date()
+    try {
+        const user = await UserModel.findById(req.userId);
+        user.rsvp += 1;
+        await user.save();
+        res.status(200);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: "Не удалось обновить данные",
         });
     }
 };
