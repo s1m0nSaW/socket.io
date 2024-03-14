@@ -143,6 +143,7 @@ const handleOrderStatusChange = async (params) => {
             const user = await UserModel.findOne({ vkid: params.receiver_id });
             if(item?.type === 'rsvp'){
                 user.rsvp += item.count;
+                console.log('User,', user)
                 console.log('Пользователю rsvp успешно начислены')
                 await user.save();
             }
