@@ -5,6 +5,9 @@ const ItemSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    photo_url:{
+        type: String,
+    },
     title:{
         type: String,
         required: true,

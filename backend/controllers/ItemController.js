@@ -8,6 +8,7 @@ export const create = async (req,res) => {
             price: req.body.price,
             type: req.body.type,
             count: req.body.count,
+            photo_url: req.body.photo_url,
         });
 
         const item = await doc.save();
