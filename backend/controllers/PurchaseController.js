@@ -93,7 +93,7 @@ function calcSignature(params) {
 const handleGetItem = async (params) => {
     let responseData;
     // Получаем информацию о товаре
-    const item = await ItemModel.findOne({ item_id: params.item });
+    const item = await ItemModel.findOne({ item: params.item });
 
     // Возвращаем ответ
     if (item) {
