@@ -36,15 +36,19 @@ export const purchase = async (request, response) => {
                     case "get_item":
                         responseData = handleGetItem(requestParams);
                         // Отправляем ответ
-                        console.log('Отправили ответ в вк: ', responseData);
-                        response.status(200).json(responseData);
-                        break;
+                        if(responseData){
+                            console.log('Отправили ответ в вк: ', responseData);
+                            response.status(200).json(responseData);
+                            break;
+                        }
                     case "get_item_test":
                         responseData = handleGetItem(requestParams);
                         // Отправляем ответ
-                        console.log('Отправили ответ в вк: ', responseData);
-                        response.status(200).json(responseData);
-                        break;
+                        if(responseData){
+                            console.log('Отправили ответ в вк: ', responseData);
+                            response.status(200).json(responseData);
+                            break;
+                        }
                     case "order_status_change":
                         responseData = handleOrderStatusChange(requestParams);
                         s = JSON.stringify(responseData);
