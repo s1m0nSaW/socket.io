@@ -135,12 +135,13 @@ const handleGetItem = async (params) => {
 // Обработчик уведомления order_status_change
 const handleOrderStatusChange = async (params) => {
     let responseData;
-    const item = await ItemModel.findOne({ item_id: params.item });
-    const user = await UserModel.findOne({ vkid: params.receiver_id });
+    
     switch (params.status) {
         case "chargeable":
             // Предоставляем товар в приложении
-            if(item.type === 'rsvp'){
+            const item = await ItemModel.findOne({ item_id: params.item });
+            const user = await UserModel.findOne({ vkid: params.receiver_id });
+            if(item?.type === 'rsvp'){
                 user.rsvp += item.count;
                 console.log('Пользователю rsvp успешно начислены')
                 await user.save();
@@ -177,7 +178,8 @@ const handleOrderStatusChange = async (params) => {
 
         case "refund":
             // Обрабатываем возврат
-            if(item.type = 'rsvp'){
+            
+            if(item?.type === 'rsvp'){
                 user.rsvp -= item.count;
                 await user.save();
             }
