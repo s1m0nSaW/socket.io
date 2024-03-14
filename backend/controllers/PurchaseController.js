@@ -139,7 +139,7 @@ const handleOrderStatusChange = async (params) => {
     switch (params.status) {
         case "chargeable":
             // Предоставляем товар в приложении
-            const item = await ItemModel.findOne({ item_id: params.item });
+            const item = await ItemModel.findOne({ item: params.item });
             const user = await UserModel.findOne({ vkid: params.receiver_id });
             if(item?.type === 'rsvp'){
                 user.rsvp += item.count;
