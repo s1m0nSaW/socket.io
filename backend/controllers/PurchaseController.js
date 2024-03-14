@@ -105,7 +105,9 @@ const handleGetItem = async (params) => {
                 expiration: 3600,
               },
         };
-        console.log("Айди товара успешно отправлен в вк")
+        console.log("Айди товара найден", responseData)
+        return responseData;
+        
     } else {
         console.log("Товара не существует")
         responseData = {
@@ -115,9 +117,8 @@ const handleGetItem = async (params) => {
                 critical: true,
             },
         };
+        return responseData;
     }
-
-    return responseData;
 }
 
 // Обработчик уведомления order_status_change
