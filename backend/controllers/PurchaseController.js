@@ -140,7 +140,7 @@ const handleOrderStatusChange = async (params) => {
     switch (params.status) {
         case "chargeable":
             // Предоставляем товар в приложении
-            if(item.type = 'rsvp'){
+            if(item.type === 'rsvp'){
                 user.rsvp += item.count;
                 console.log('Пользователю rsvp успешно начислены')
                 await user.save();
