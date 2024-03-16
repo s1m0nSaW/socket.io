@@ -37,6 +37,14 @@ const GameSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId, 
         ref: "User" 
     },
+    userUrl1: { 
+        type: String,
+        default: 'none', 
+    },
+    userUrl2: { 
+        type: String,
+        default: 'none',
+    },
 },{
     timestamps:true,
 },

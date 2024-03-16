@@ -103,15 +103,25 @@ export const getMe = async (req, res) => {
         if(date > user.rsvpDate){
             user.rsvpStatus = true;
         }
-
         if(date > user.adsDate){
             user.adsStatus = true;
         }
+        if(req.body.change === true){
+            user.status = 'none'
+        }
+        if(user.status === 'none'){
+            if(req.body.promoter === true){
+                user.status = 'promoter';
+                user.dailyRsvp = 3;
+            }
+        }
 
         if(date > user.statusDate) {
-            user.status = 'none';
-            user.statusDate = 0;
-            
+            if(user.status === 'sponsor'){
+                user.status = 'none';
+                user.statusDate = 0;
+                user.dailyRsvp = 1;
+            }
             await user.save();
         
             res.status(200).json(user);
@@ -203,11 +213,11 @@ export const updateRsvpDate = async (req, res) => {
         const user = await UserModel.findById(req.userId);
         if(user.rsvpStatus === true){
             if (user.status === 'sponsor') {
-                user.dailyRsvp += 10;
+                user.rsvp += 10;
             } else if (user.status === 'promoter') {
-                user.dailyRsvp += 3;
+                user.rsvp += 3;
             } else if (user.status === 'none') {
-                user.dailyRsvp += 1;
+                user.rsvp += 1;
             }
             user.rsvpDate = date + 86400000;
             user.rsvpStatus = false;
@@ -248,12 +258,13 @@ export const updateSponsor = async (req, res) => {
     try {
         const user = await UserModel.findOneAndUpdate(
             {
-                _id: req.body.vkid
+                vkid: req.body.vkid
             },
             {
                 $set: {
                     status: 'sponsor',
                     statusDate: +new Date() + 2592000000,
+                    dailyRsvp: 10
                 },
             },
             { returnDocument: "after" }

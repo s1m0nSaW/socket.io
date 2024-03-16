@@ -8,7 +8,7 @@ const UserSchema = new mongoose.Schema({
     },
     status:{
         type: String,
-        default: 'none',
+        default: 'firstTime',
     },
     statusDate:{
         type: Number,

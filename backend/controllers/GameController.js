@@ -10,7 +10,7 @@ export const create = async (req,res) => {
         const rating = await RatingModel.findOne({ theme: req.body.theme });
 
         if (user.status === 'sponsor'){
-            if (user.dailyRsvp > 0) {
+            if (user.rsvp > 0) {
                 const doc = new GameModel({
                     gameName: req.body.gameName,
                     theme: req.body.theme,
@@ -18,40 +18,8 @@ export const create = async (req,res) => {
                     forSponsor: req.body.forSponsor,
                     user1: req.body.user1, // создатель
                     user2: req.body.user2,
-                });
-        
-                const game = await doc.save();
-        
-                UserModel.findById(req.userId)
-                .then(user1 => {
-                    // Добавление идентификатор2 в поле gameIn первого пользователя
-                    user1.gamesOut.push(game._id);
-                    user1.dailyRsvp -= 1;
-                    user1.createGamesCount += 1;
-                    return user1.save();
-                })
-                .then(savedUser1 => {
-                    // Получение данных второго пользователя
-                    return UserModel.findById(req.body.user2);
-                })
-                .then(user2 => {
-                    // Добавление идентификатор1 в поле gameOut второго пользователя
-                    user2.gamesIn.push(game._id);
-                    return user2.save();
-                })
-                .catch(error => {
-                    console.error(error);
-                });
-        
-                res.json(game);
-            } else if (user.rsvp > 0) {
-                const doc = new GameModel({
-                    gameName: req.body.gameName,
-                    theme: req.body.theme,
-                    turn: req.body.turn,
-                    forSponsor: req.body.forSponsor,
-                    user1: req.body.user1, // создатель
-                    user2: req.body.user2,
+                    userUrl1: req.body.userUrl1, 
+                    userUrl2: req.body.userUrl2,
                 });
         
                 const game = await doc.save();
@@ -89,7 +57,7 @@ export const create = async (req,res) => {
                     message: 'Не удалось создать игру',
                 });
             } else {
-                if (user.dailyRsvp > 0) {
+                if (user.rsvp > 0) {
                     const doc = new GameModel({
                         gameName: req.body.gameName,
                         theme: req.body.theme,
@@ -97,40 +65,8 @@ export const create = async (req,res) => {
                         forSponsor: req.body.forSponsor,
                         user1: req.body.user1, // создатель
                         user2: req.body.user2,
-                    });
-            
-                    const game = await doc.save();
-            
-                    UserModel.findById(req.userId)
-                    .then(user1 => {
-                        // Добавление идентификатор2 в поле gameIn первого пользователя
-                        user1.gamesOut.push(game._id);
-                        user1.dailyRsvp -= 1;
-                        user1.createGamesCount += 1;
-                        return user1.save();
-                    })
-                    .then(savedUser1 => {
-                        // Получение данных второго пользователя
-                        return UserModel.findById(req.body.user2);
-                    })
-                    .then(user2 => {
-                        // Добавление идентификатор1 в поле gameOut второго пользователя
-                        user2.gamesIn.push(game._id);
-                        return user2.save();
-                    })
-                    .catch(error => {
-                        console.error(error);
-                    });
-            
-                    res.json(game);
-                } else if (user.rsvp > 0) {
-                    const doc = new GameModel({
-                        gameName: req.body.gameName,
-                        theme: req.body.theme,
-                        turn: req.body.turn,
-                        forSponsor: req.body.forSponsor,
-                        user1: req.body.user1, // создатель
-                        user2: req.body.user2,
+                        userUrl1: req.body.userUrl1, 
+                        userUrl2: req.body.userUrl2,
                     });
             
                     const game = await doc.save();
