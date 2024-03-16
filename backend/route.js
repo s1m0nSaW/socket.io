@@ -77,7 +77,7 @@ router.delete('/game/:id', checkAuth, GameController.removeGame);
 
 router.post('/get-rating', checkAuth, RaitingController.getRating);
 router.post('/up-rating/:id', checkAuth, RaitingController.update);
-router.get('/all-rates', checkAuth, RaitingController.getAll);
+router.post('/all-rates', checkAuth, RaitingController.getAll);
 
 router.patch('/payment', checkAuth, PaymentController.create);
 router.post('/payment-notification',checkIp, PaymentController.payments);   //    checkIp,
