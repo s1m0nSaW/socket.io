@@ -216,7 +216,7 @@ export const updateRsvpDate = async (req, res) => {
     const date = +new Date()
     try {
         const user = await UserModel.findById(req.userId);
-        if(user.rsvpStatus === true){
+        if(user?.rsvpStatus === true){
             if (user.status === 'sponsor') {
                 user.rsvp += 10;
             } else if (user.status === 'promoter') {
