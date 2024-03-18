@@ -102,37 +102,38 @@ export const getMe = async (req, res) => {
             return res.status(404).json({
                 message: "Пользователь не найден",
             });
-        }
-
-        if(date > user.rsvpDate){
-            user.rsvpStatus = true;
-        }
-        if(date > user.adsDate){
-            user.adsStatus = true;
-        }
-        if(req.body.change === true){
-            user.status = 'none'
-        }
-        if(user.status === 'none'){
-            if(req.body.promoter === true){
-                user.status = 'promoter';
-                user.dailyRsvp = 3;
-            }
-        }
-
-        if(date > user.statusDate) {
-            if(user.status === 'sponsor'){
-                user.status = 'none';
-                user.statusDate = 0;
-                user.dailyRsvp = 1;
-            }
-            await user.save();
-        
-            res.status(200).json(user);
         } else {
-        
-            res.status(200).json(user);
+            if(date > user.rsvpDate){
+                user.rsvpStatus = true;
+            }
+            if(date > user.adsDate){
+                user.adsStatus = true;
+            }
+            if(req.body.change === true){
+                user.status = 'none'
+            }
+            if(user.status === 'none'){
+                if(req.body.promoter === true){
+                    user.status = 'promoter';
+                    user.dailyRsvp = 3;
+                }
+            }
+    
+            if(date > user.statusDate) {
+                if(user.status === 'sponsor'){
+                    user.status = 'none';
+                    user.statusDate = 0;
+                    user.dailyRsvp = 1;
+                }
+                await user.save();
+            
+                res.status(200).json(user);
+            } else {
+            
+                res.status(200).json(user);
+            }
         }
+
     } catch (err) {
         console.log(err);
         res.status(500).json({
