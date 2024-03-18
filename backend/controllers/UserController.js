@@ -9,8 +9,10 @@ const secret = process.env.SKEY;
 
 export const register = async (req, res) => {
     try {
+        
         const doc = new UserModel({
             vkid: req.body.vkid,
+            status: req.body.status
         });
     
         const user = await doc.save();
