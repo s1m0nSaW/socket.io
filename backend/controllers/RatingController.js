@@ -9,8 +9,35 @@ export const create = async (req,res) => {
 
         await doc.save();
 
-        res.json({
+        res.status(200).json({
             success: "Рейтинг создан",
+        });
+
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: 'Не удалось создать рейтинг',
+        });
+    }
+}
+
+export const createMany = async (req,res) => {
+    try {
+        const rates = req.body.rates;
+
+        for (let i = 0; i < rates.length; i++) {
+            const doc = new Rating({
+                theme: rates[i].theme,
+                forSponsor: rates[i].forSponsor,
+                count: rates[i].count,
+		        rating: rates[i].rating,
+            });
+
+            await doc.save();
+        }
+
+        res.status(200).json({
+            success: "Рейтинги созданы",
         });
 
     } catch (err) {
@@ -37,7 +64,7 @@ export const getRating = async (req, res) => {
             });
         }
 
-        res.json(rating);
+        res.status(200).json(rating);
     } catch (err) {
         console.log(err);
         res.status(500).json({
@@ -49,7 +76,7 @@ export const getRating = async (req, res) => {
 export const getAll = async (req, res) => {
     try {
         const ratings = await Rating.find().exec();
-        res.json(ratings);
+        res.status(200).json(ratings);
     } catch (err) {
         console.log(err);
         res.status(500).json({
@@ -64,7 +91,7 @@ export const update = async (req, res) => {
 
         if(rating){
             const newRating = Math.ceil((req.body.rate + (rating.rating * rating.count))/(rating.count + 1));
-            const updatedRating = await Rating.findOneAndUpdate(
+            await Rating.findOneAndUpdate(
                 {
                     _id: req.params.id,
                 },
@@ -79,11 +106,11 @@ export const update = async (req, res) => {
             );
         }
 
-        res.sendStatus(200);
+        res.status(200);
 
     } catch (error) {
         console.log(error);
-        res.sendStatus(500);
+        res.status(500);
     }
 };
 
@@ -102,11 +129,11 @@ export const remove = async (req, res) => {
 
                 if (!doc) {
                     return res.status(404).json({
-                        message: 'Платеж не найден'
+                        message: 'Рейтинг не найден'
                     });
                 }
-                res.json({
-                    success: "Платеж удален"
+                res.status(200).json({
+                    success: "Рейтинг удален"
                 });
             }
         );
@@ -114,7 +141,7 @@ export const remove = async (req, res) => {
     } catch (err) {
         console.log(err);
         res.status(500).json({
-            message: 'Проблема с удалением Платежа',
+            message: 'Проблема с удалением Рейтинга',
         });
     }
 }
