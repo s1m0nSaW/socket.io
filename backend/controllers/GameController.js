@@ -16,7 +16,7 @@ export const create = async (req,res) => {
                     theme: req.body.theme,
                     turn: req.body.turn,
                     forSponsor: req.body.forSponsor,
-                    user1: req.body.user1, // создатель
+                    user1: req.userId, // создатель
                     user2: req.body.user2,
                     userUrl1: req.body.userUrl1, 
                     userUrl2: req.body.userUrl2,
@@ -45,7 +45,7 @@ export const create = async (req,res) => {
                     console.error(error);
                 });
         
-                res.json(game);
+                res.status(200).json(game);
             } else {
                 res.status(500).json({
                     message: 'Недостаточно rsvp',
@@ -63,7 +63,7 @@ export const create = async (req,res) => {
                         theme: req.body.theme,
                         turn: req.body.turn,
                         forSponsor: req.body.forSponsor,
-                        user1: req.body.user1, // создатель
+                        user1: req.userId, // создатель
                         user2: req.body.user2,
                         userUrl1: req.body.userUrl1, 
                         userUrl2: req.body.userUrl2,
@@ -92,7 +92,7 @@ export const create = async (req,res) => {
                         console.error(error);
                     });
             
-                    res.json(game);
+                    res.status(200).json(game);
                 } else {
                     res.status(500).json({
                         message: 'Недостаточно rsvp',
@@ -120,7 +120,26 @@ export const getGames = async (req, res) => {
             });
         }
 
-        res.json(games);
+        res.status(200).json(games);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: 'Ошибка при поиске игр',
+        });
+    }
+};
+
+export const getAllGames = async (req, res) => {
+    try {
+        const games = await GameModel.find();
+
+        if (!games) {
+            return res.status(404).json({
+                message: "Не удалось найти игры",
+            });
+        }
+
+        res.status(200).json(games);
     } catch (err) {
         console.log(err);
         res.status(500).json({
@@ -139,7 +158,7 @@ export const getGame = async (req, res) => {
             });
         }
 
-        res.json(chat);
+        res.status(200).json(chat);
     } catch (err) {
         console.log(err);
         res.status(500).json({
@@ -160,7 +179,7 @@ export const acceptGame = async (req, res) => {
                                             { $push: { games: game._id }, $pull: { gamesIn: game._id } }, 
                                             { new: true })
                     .then(user2 => {
-                        res.json(game);
+                        res.status(200).json(game);
                     })
                     .catch(error => {
                         console.log(error);
@@ -199,7 +218,7 @@ export const begin = async (req, res) => {
             });
         }
 
-        res.json(game);
+        res.status(200).json(game);
     } catch (err) {
         console.log(err);
         res.status(500).json({
@@ -224,7 +243,7 @@ export const update = async (req, res) => {
             });
         }
 
-        res.json(game);
+        res.status(200).json(game);
     } catch (err) {
         console.log(err);
         res.status(500).json({

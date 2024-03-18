@@ -32,7 +32,7 @@ const UserSchema = new mongoose.Schema({
     },
     rsvp:{
         type: Number,
-        default: 0,
+        default: 10,
     },
     rsvpStatus:{
         type: Boolean,
