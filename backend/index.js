@@ -14,7 +14,7 @@ dotenv.config();
 const port = process.env.PORT || 5000;
 
 const mongooseUrl = `mongodb://0.0.0.0:27017/ochem`; // localhost
-const url1 = `mongodb://mongo:27017/ochem`; //нужно поменять перед деплойем
+const url1 = `mongodb://mongo:27017/ochem-vk`; //нужно поменять перед деплойем
 
 mongoose.set("strictQuery", false);
 mongoose
