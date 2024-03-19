@@ -284,49 +284,51 @@ export const removeGame = async (req, res) => {
                     }
                 });
             }
-        });
+        }).catch((err)=>console.log('айди игр не удалены из данных юзеров: ', err));
 
-        GameModel.findOneAndDelete(
-            {
-                _id: game._id,
-            },
-            (err, doc) => {
-                if (err) {
-                    return res.status(500).json({
-                        message: 'Не удалось удалить игру',
+        if(game){
+            GameModel.findOneAndDelete(
+                {
+                    _id: game._id,
+                },
+                (err, doc) => {
+                    if (err) {
+                        return res.status(500).json({
+                            message: 'Не удалось удалить игру',
+                        });
+                    }
+    
+                    if (!doc) {
+                        return res.status(404).json({
+                            message: 'Игра не найдена'
+                        });
+                    }
+    
+                    MessageModel.deleteMany({ gameId: game._id }, (err, doc) => {
+                        if (err) {
+                            console.log("Не удалось удалить сообщения", game._id)
+                        }
+                        if (!doc) {
+                            console.log("Сообщения не найдены", game._id)
+                        }
+                        console.log("Сообщения удалены", game._id)
+                    });
+                    AnsweredModel.deleteMany({ gameId: game._id }, (err, doc) => {
+                        if (err) {
+                            console.log("Не удалось удалить answereds", game._id)
+                        }
+                        if (!doc) {
+                            console.log("answereds не найдены", game._id)
+                        }
+                        console.log("answereds удалены", game._id)
+                    });
+    
+                    res.status(200).json({
+                        success: "Игра удалена"
                     });
                 }
-
-                if (!doc) {
-                    return res.status(404).json({
-                        message: 'Игра не найдена'
-                    });
-                }
-
-                MessageModel.deleteMany({ gameId: game._id }, (err, doc) => {
-                    if (err) {
-                        console.log("Не удалось удалить сообщения", game._id)
-                    }
-                    if (!doc) {
-                        console.log("Сообщения не найдены", game._id)
-                    }
-                    console.log("Сообщения удалены", game._id)
-                });
-                AnsweredModel.deleteMany({ gameId: game._id }, (err, doc) => {
-                    if (err) {
-                        console.log("Не удалось удалить answereds", game._id)
-                    }
-                    if (!doc) {
-                        console.log("answereds не найдены", game._id)
-                    }
-                    console.log("answereds удалены", game._id)
-                });
-
-                res.json({
-                    success: "Игра удалена"
-                });
-            }
-        );
+            );
+        }
 
     } catch (err) {
         console.warn(err);
