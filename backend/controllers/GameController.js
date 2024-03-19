@@ -266,7 +266,7 @@ export const removeGame = async (req, res) => {
     
             UserModel.findByIdAndUpdate(game.user2, { $pull: { games: game._id } }, { new: true }, (err, user1) => {
                 if (err) {
-                    console.log('Произошла ошибка при обновлении пользователя 1:', err);
+                    console.log('Произошла ошибка при обновлении пользователя 2:', err);
                     return;
                 }
             });
@@ -280,7 +280,7 @@ export const removeGame = async (req, res) => {
     
             UserModel.findByIdAndUpdate(game.user2, { $pull: { gameIn: game._id } }, { new: true }, (err, user1) => {
                 if (err) {
-                    console.log('Произошла ошибка при обновлении пользователя 1:', err);
+                    console.log('Произошла ошибка при обновлении пользователя 2:', err);
                     return;
                 }
             });

@@ -54,18 +54,17 @@ router.patch('/rsvp-date', checkAuth, UserController.updateRsvpDate);
 router.patch('/rsvp-status', checkAuth, UserController.updateRsvpStatus);
 router.post('/auth', UserController.getMe);
 router.get('/auth', UserController.getAll);
-router.delete('/auth/:id', UserController.remove);
 router.post('/get-token', UserController.getToken);
 
 router.post('/answer', checkAuth, AnsweredController.create);
 router.post('/up-answer/:id', checkAuth, AnsweredController.update);
 router.post('/answer/:id', checkAuth, AnsweredController.getAnwered);
 router.post('/answereds/:id', checkAuth, AnsweredController.getAnwereds);
-router.delete('/answer/:id', checkAuth, AnsweredController.remove);
+router.post('/del-answer/:id', checkAuth, AnsweredController.remove);
 
 router.post('/message', checkAuth, MessageController.create);
 router.post('/messages/:id', checkAuth, MessageController.getMessages);
-router.delete('/message/:id', checkAuth, MessageController.remove);
+router.post('/del-message/:id', checkAuth, MessageController.remove);
 
 router.post('/questions', checkAuth, QuestionController.getQuestions);
 router.post('/all-quest', checkAuth, QuestionController.getAll);
@@ -76,7 +75,7 @@ router.post('/begin-game/:id', checkAuth, GameController.begin);
 router.post('/up-game/:id', checkAuth, GameController.update);
 router.post('/game/:id', checkAuth, GameController.getGame);
 router.post('/join/:id', checkAuth, GameController.acceptGame);
-router.delete('/game/:id', checkAuth, GameController.removeGame);
+router.post('/del-game/:id', checkAuth, GameController.removeGame);
 
 router.post('/get-rating', checkAuth, RaitingController.getRating);
 router.post('/up-rating/:id', checkAuth, RaitingController.update);
