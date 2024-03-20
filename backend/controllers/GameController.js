@@ -254,7 +254,7 @@ export const update = async (req, res) => {
 
 export const removeGame = async (req, res) => {
     try {
-        const game = GameModel.findById(req.params.id);
+        const game = GameModel.findById(req.body.game);
 
         if(game.status === 'active') {
             UserModel.findByIdAndUpdate(game.user1, { $pull: { games: game._id } }, { new: true }, (err, user1) => {

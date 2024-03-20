@@ -75,7 +75,7 @@ router.post('/begin-game/:id', checkAuth, GameController.begin);
 router.post('/up-game/:id', checkAuth, GameController.update);
 router.post('/game/:id', checkAuth, GameController.getGame);
 router.post('/join/:id', checkAuth, GameController.acceptGame);
-router.post('/del-game/:id', checkAuth, GameController.removeGame);
+router.post('/del-game', checkAuth, GameController.removeGame);
 
 router.post('/get-rating', checkAuth, RaitingController.getRating);
 router.post('/up-rating/:id', checkAuth, RaitingController.update);
