@@ -273,7 +273,7 @@ export const removeGame = async (req, res) => {
             await user2.save();
         }
 
-        await MessageModel.deleteMany({ gameId: req.body.game }, (err, doc) => {
+        MessageModel.deleteMany({ gameId: req.body.game }, (err, doc) => {
             if (err) {
                 console.log("Не удалось удалить сообщения", req.body.game)
             }
@@ -283,7 +283,7 @@ export const removeGame = async (req, res) => {
             console.log("Сообщения удалены", req.body.game)
         });
 
-        await AnsweredModel.deleteMany({ gameId: req.body.game }, (err, doc) => {
+        AnsweredModel.deleteMany({ gameId: req.body.game }, (err, doc) => {
             if (err) {
                 console.log("Не удалось удалить answereds", req.body.game)
             }
@@ -293,7 +293,7 @@ export const removeGame = async (req, res) => {
             console.log("answereds удалены", req.body.game)
         });
 
-        await GameModel.findOneAndDelete(
+        GameModel.findOneAndDelete(
             {
                 _id: req.body.game,
             },
