@@ -256,34 +256,21 @@ export const removeGame = async (req, res) => {
     try {
 
         if(req.body.status === 'active') {
-            await UserModel.findByIdAndUpdate(req.body.user1, { $pull: { games: req.body.game } }, { new: true }, async (err, user1) => {
-                if (err) {
-                    console.log('Произошла ошибка при обновлении пользователя 1:', err);
-                    return;
-                }
-                if(user1){
-                    await UserModel.findByIdAndUpdate(req.body.user2, { $pull: { games: req.body.game } }, { new: true }, (err, user1) => {
-                        if (err) {
-                            console.log('Произошла ошибка при обновлении пользователя 2:', err);
-                            return;
-                        }
-                    });
-                }
-            });
+            let user1 = await UserModel.findById(req.body.user1)
+            user1.games.pull(req.body.game); 
+            await user1.save();
+
+            let user2 = await UserModel.findById(req.body.user2)
+            user2.games.pull(req.body.game);
+            await user2.save();
         } else {
-            await UserModel.findByIdAndUpdate(req.body.user1, { $pull: { gameOut: req.body.game } }, { new: true }, async (err, user1) => {
-                if (err) {
-                    console.log('Произошла ошибка при обновлении пользователя 1:', err);
-                    return;
-                }if(user1){
-                    await UserModel.findByIdAndUpdate(req.body.user2, { $pull: { gameIn: req.body.game } }, { new: true }, (err, user1) => {
-                        if (err) {
-                            console.log('Произошла ошибка при обновлении пользователя 2:', err);
-                            return;
-                        }
-                    });
-                }
-            });
+            let user1 = await UserModel.findById(req.body.user1)
+            user1.gamesOut.pull(req.body.game); 
+            await user1.save();
+
+            let user2 = await UserModel.findById(req.body.user2)
+            user2.gamesIn.pull(req.body.game);
+            await user2.save();
         }
 
         await MessageModel.deleteMany({ gameId: req.body.game }, (err, doc) => {
