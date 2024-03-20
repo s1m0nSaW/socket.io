@@ -254,37 +254,56 @@ export const update = async (req, res) => {
 
 export const removeGame = async (req, res) => {
     try {
-        let status = req.body.status;
 
-        if(status === 'active') {
-            UserModel.findByIdAndUpdate(req.body.user1, { $pull: { games: req.body.game } }, { new: true }, (err, user1) => {
+        if(req.body.status === 'active') {
+            await UserModel.findByIdAndUpdate(req.body.user1, { $pull: { games: req.body.game } }, { new: true }, (err, user1) => {
                 if (err) {
                     console.log('Произошла ошибка при обновлении пользователя 1:', err);
                     return;
                 }
             });
     
-            UserModel.findByIdAndUpdate(req.body.user2, { $pull: { games: req.body.game } }, { new: true }, (err, user1) => {
+            await UserModel.findByIdAndUpdate(req.body.user2, { $pull: { games: req.body.game } }, { new: true }, (err, user1) => {
                 if (err) {
                     console.log('Произошла ошибка при обновлении пользователя 2:', err);
                     return;
                 }
             });
         } else {
-            UserModel.findByIdAndUpdate(req.body.user1, { $pull: { gameOut: req.body.game } }, { new: true }, (err, user1) => {
+            await UserModel.findByIdAndUpdate(req.body.user1, { $pull: { gameOut: req.body.game } }, { new: true }, (err, user1) => {
                 if (err) {
                     console.log('Произошла ошибка при обновлении пользователя 1:', err);
                     return;
                 }
             });
     
-            UserModel.findByIdAndUpdate(req.body.user2, { $pull: { gameIn: req.body.game } }, { new: true }, (err, user1) => {
+            await UserModel.findByIdAndUpdate(req.body.user2, { $pull: { gameIn: req.body.game } }, { new: true }, (err, user1) => {
                 if (err) {
                     console.log('Произошла ошибка при обновлении пользователя 2:', err);
                     return;
                 }
             });
         }
+
+        await MessageModel.deleteMany({ gameId: req.body.game }, (err, doc) => {
+            if (err) {
+                console.log("Не удалось удалить сообщения", req.body.game)
+            }
+            if (!doc) {
+                console.log("Сообщения не найдены", req.body.game)
+            }
+            console.log("Сообщения удалены", req.body.game)
+        });
+
+        await AnsweredModel.deleteMany({ gameId: req.body.game }, (err, doc) => {
+            if (err) {
+                console.log("Не удалось удалить answereds", req.body.game)
+            }
+            if (!doc) {
+                console.log("answereds не найдены", req.body.game)
+            }
+            console.log("answereds удалены", req.body.game)
+        });
 
         await GameModel.findOneAndDelete(
             {
@@ -302,31 +321,12 @@ export const removeGame = async (req, res) => {
                         message: 'Игра не найдена'
                     });
                 }
-
-                MessageModel.deleteMany({ gameId: req.body.game }, (err, doc) => {
-                    if (err) {
-                        console.log("Не удалось удалить сообщения", req.body.game)
-                    }
-                    if (!doc) {
-                        console.log("Сообщения не найдены", req.body.game)
-                    }
-                    console.log("Сообщения удалены", req.body.game)
-                });
-                AnsweredModel.deleteMany({ gameId: req.body.game }, (err, doc) => {
-                    if (err) {
-                        console.log("Не удалось удалить answereds", req.body.game)
-                    }
-                    if (!doc) {
-                        console.log("answereds не найдены", req.body.game)
-                    }
-                    console.log("answereds удалены", req.body.game)
-                });
-
-                res.status(200).json({
-                    success: "Игра удалена"
-                });
             }
         );
+
+        res.status(200).json({
+            success: "Игра удалена"
+        });
 
     } catch (err) {
         console.warn(err);
