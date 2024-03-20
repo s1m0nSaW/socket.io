@@ -254,81 +254,79 @@ export const update = async (req, res) => {
 
 export const removeGame = async (req, res) => {
     try {
-        const game = await GameModel.findById(req.params.id).then((data) => {
-            if(data.status === 'active') {
-                UserModel.findByIdAndUpdate(data.user1, { $pull: { games: data._id } }, { new: true }, (err, user1) => {
-                    if (err) {
-                        console.log('Произошла ошибка при обновлении пользователя 1:', err);
-                        return;
-                    }
-                });
-        
-                UserModel.findByIdAndUpdate(data.user2, { $pull: { games: data._id } }, { new: true }, (err, user1) => {
-                    if (err) {
-                        console.log('Произошла ошибка при обновлении пользователя 2:', err);
-                        return;
-                    }
-                });
-            } else {
-                UserModel.findByIdAndUpdate(data.user1, { $pull: { gameOut: data._id } }, { new: true }, (err, user1) => {
-                    if (err) {
-                        console.log('Произошла ошибка при обновлении пользователя 1:', err);
-                        return;
-                    }
-                });
-        
-                UserModel.findByIdAndUpdate(data.user2, { $pull: { gameIn: data._id } }, { new: true }, (err, user1) => {
-                    if (err) {
-                        console.log('Произошла ошибка при обновлении пользователя 2:', err);
-                        return;
-                    }
-                });
-            }
-        }).catch((err)=>console.log('айди игр не удалены из данных юзеров: ', err));
+        const game = GameModel.findById(req.params.id);
 
-        if(game){
-            GameModel.findOneAndDelete(
-                {
-                    _id: game._id,
-                },
-                (err, doc) => {
-                    if (err) {
-                        return res.status(500).json({
-                            message: 'Не удалось удалить игру',
-                        });
-                    }
+        if(game.status === 'active') {
+            UserModel.findByIdAndUpdate(game.user1, { $pull: { games: game._id } }, { new: true }, (err, user1) => {
+                if (err) {
+                    console.log('Произошла ошибка при обновлении пользователя 1:', err);
+                    return;
+                }
+            });
     
-                    if (!doc) {
-                        return res.status(404).json({
-                            message: 'Игра не найдена'
-                        });
-                    }
+            UserModel.findByIdAndUpdate(game.user2, { $pull: { games: game._id } }, { new: true }, (err, user1) => {
+                if (err) {
+                    console.log('Произошла ошибка при обновлении пользователя 2:', err);
+                    return;
+                }
+            });
+        } else {
+            UserModel.findByIdAndUpdate(game.user1, { $pull: { gameOut: game._id } }, { new: true }, (err, user1) => {
+                if (err) {
+                    console.log('Произошла ошибка при обновлении пользователя 1:', err);
+                    return;
+                }
+            });
     
-                    MessageModel.deleteMany({ gameId: game._id }, (err, doc) => {
-                        if (err) {
-                            console.log("Не удалось удалить сообщения", game._id)
-                        }
-                        if (!doc) {
-                            console.log("Сообщения не найдены", game._id)
-                        }
-                        console.log("Сообщения удалены", game._id)
-                    });
-                    AnsweredModel.deleteMany({ gameId: game._id }, (err, doc) => {
-                        if (err) {
-                            console.log("Не удалось удалить answereds", game._id)
-                        }
-                        if (!doc) {
-                            console.log("answereds не найдены", game._id)
-                        }
-                        console.log("answereds удалены", game._id)
-                    });
-    
-                    res.status(200).json({
-                        success: "Игра удалена"
+            UserModel.findByIdAndUpdate(game.user2, { $pull: { gameIn: game._id } }, { new: true }, (err, user1) => {
+                if (err) {
+                    console.log('Произошла ошибка при обновлении пользователя 2:', err);
+                    return;
+                }
+            });
+        }
+
+        GameModel.findOneAndDelete(
+            {
+                _id: game._id,
+            },
+            (err, doc) => {
+                if (err) {
+                    return res.status(500).json({
+                        message: 'Не удалось удалить игру',
                     });
                 }
-            );
-        }
+
+                if (!doc) {
+                    return res.status(404).json({
+                        message: 'Игра не найдена'
+                    });
+                }
+
+                MessageModel.deleteMany({ gameId: game._id }, (err, doc) => {
+                    if (err) {
+                        console.log("Не удалось удалить сообщения", game._id)
+                    }
+                    if (!doc) {
+                        console.log("Сообщения не найдены", game._id)
+                    }
+                    console.log("Сообщения удалены", game._id)
+                });
+                AnsweredModel.deleteMany({ gameId: game._id }, (err, doc) => {
+                    if (err) {
+                        console.log("Не удалось удалить answereds", game._id)
+                    }
+                    if (!doc) {
+                        console.log("answereds не найдены", game._id)
+                    }
+                    console.log("answereds удалены", game._id)
+                });
+
+                res.json({
+                    success: "Игра удалена"
+                });
+            }
+        );
 
     } catch (err) {
         console.warn(err);
