@@ -254,31 +254,31 @@ export const update = async (req, res) => {
 
 export const removeGame = async (req, res) => {
     try {
-        const game = await GameModel.findById(req.body.game);
+        let status = req.body.status;
 
-        if(game.status === 'active') {
-            UserModel.findByIdAndUpdate(game.user1, { $pull: { games: game._id } }, { new: true }, (err, user1) => {
+        if(status === 'active') {
+            UserModel.findByIdAndUpdate(req.body.user1, { $pull: { games: req.body.game } }, { new: true }, (err, user1) => {
                 if (err) {
                     console.log('Произошла ошибка при обновлении пользователя 1:', err);
                     return;
                 }
             });
     
-            UserModel.findByIdAndUpdate(game.user2, { $pull: { games: game._id } }, { new: true }, (err, user1) => {
+            UserModel.findByIdAndUpdate(req.body.user2, { $pull: { games: req.body.game } }, { new: true }, (err, user1) => {
                 if (err) {
                     console.log('Произошла ошибка при обновлении пользователя 2:', err);
                     return;
                 }
             });
         } else {
-            UserModel.findByIdAndUpdate(game.user1, { $pull: { gameOut: game._id } }, { new: true }, (err, user1) => {
+            UserModel.findByIdAndUpdate(req.body.user1, { $pull: { gameOut: req.body.game } }, { new: true }, (err, user1) => {
                 if (err) {
                     console.log('Произошла ошибка при обновлении пользователя 1:', err);
                     return;
                 }
             });
     
-            UserModel.findByIdAndUpdate(game.user2, { $pull: { gameIn: game._id } }, { new: true }, (err, user1) => {
+            UserModel.findByIdAndUpdate(req.body.user2, { $pull: { gameIn: req.body.game } }, { new: true }, (err, user1) => {
                 if (err) {
                     console.log('Произошла ошибка при обновлении пользователя 2:', err);
                     return;
@@ -288,7 +288,7 @@ export const removeGame = async (req, res) => {
 
         await GameModel.findOneAndDelete(
             {
-                _id: game._id,
+                _id: req.body.game,
             },
             (err, doc) => {
                 if (err) {
@@ -303,26 +303,26 @@ export const removeGame = async (req, res) => {
                     });
                 }
 
-                MessageModel.deleteMany({ gameId: game._id }, (err, doc) => {
+                MessageModel.deleteMany({ gameId: req.body.game }, (err, doc) => {
                     if (err) {
-                        console.log("Не удалось удалить сообщения", game._id)
+                        console.log("Не удалось удалить сообщения", req.body.game)
                     }
                     if (!doc) {
-                        console.log("Сообщения не найдены", game._id)
+                        console.log("Сообщения не найдены", req.body.game)
                     }
-                    console.log("Сообщения удалены", game._id)
+                    console.log("Сообщения удалены", req.body.game)
                 });
-                AnsweredModel.deleteMany({ gameId: game._id }, (err, doc) => {
+                AnsweredModel.deleteMany({ gameId: req.body.game }, (err, doc) => {
                     if (err) {
-                        console.log("Не удалось удалить answereds", game._id)
+                        console.log("Не удалось удалить answereds", req.body.game)
                     }
                     if (!doc) {
-                        console.log("answereds не найдены", game._id)
+                        console.log("answereds не найдены", req.body.game)
                     }
-                    console.log("answereds удалены", game._id)
+                    console.log("answereds удалены", req.body.game)
                 });
 
-                res.json({
+                res.status(200).json({
                     success: "Игра удалена"
                 });
             }
