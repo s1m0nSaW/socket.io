@@ -256,31 +256,32 @@ export const removeGame = async (req, res) => {
     try {
 
         if(req.body.status === 'active') {
-            await UserModel.findByIdAndUpdate(req.body.user1, { $pull: { games: req.body.game } }, { new: true }, (err, user1) => {
+            await UserModel.findByIdAndUpdate(req.body.user1, { $pull: { games: req.body.game } }, { new: true }, async (err, user1) => {
                 if (err) {
                     console.log('Произошла ошибка при обновлении пользователя 1:', err);
                     return;
                 }
-            });
-    
-            await UserModel.findByIdAndUpdate(req.body.user2, { $pull: { games: req.body.game } }, { new: true }, (err, user1) => {
-                if (err) {
-                    console.log('Произошла ошибка при обновлении пользователя 2:', err);
-                    return;
+                if(user1){
+                    await UserModel.findByIdAndUpdate(req.body.user2, { $pull: { games: req.body.game } }, { new: true }, (err, user1) => {
+                        if (err) {
+                            console.log('Произошла ошибка при обновлении пользователя 2:', err);
+                            return;
+                        }
+                    });
                 }
             });
         } else {
-            await UserModel.findByIdAndUpdate(req.body.user1, { $pull: { gameOut: req.body.game } }, { new: true }, (err, user1) => {
+            await UserModel.findByIdAndUpdate(req.body.user1, { $pull: { gameOut: req.body.game } }, { new: true }, async (err, user1) => {
                 if (err) {
                     console.log('Произошла ошибка при обновлении пользователя 1:', err);
                     return;
-                }
-            });
-    
-            await UserModel.findByIdAndUpdate(req.body.user2, { $pull: { gameIn: req.body.game } }, { new: true }, (err, user1) => {
-                if (err) {
-                    console.log('Произошла ошибка при обновлении пользователя 2:', err);
-                    return;
+                }if(user1){
+                    await UserModel.findByIdAndUpdate(req.body.user2, { $pull: { gameIn: req.body.game } }, { new: true }, (err, user1) => {
+                        if (err) {
+                            console.log('Произошла ошибка при обновлении пользователя 2:', err);
+                            return;
+                        }
+                    });
                 }
             });
         }
