@@ -51,9 +51,9 @@ export const getToken = async (req, res) => {
             });
         }
 
-        if(user.status !== 'none'){
+        if(user.status === 'sponsor'){
             if(date > user.statusDate) {
-                user.status = 'none';
+                user.status = 'promoter';
                 user.statusDate = 0;
                 await user.save();
             
