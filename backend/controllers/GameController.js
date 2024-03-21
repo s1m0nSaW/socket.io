@@ -9,54 +9,8 @@ export const create = async (req,res) => {
         const user = await UserModel.findById(req.userId);
         const rating = await RatingModel.findOne({ theme: req.body.theme });
 
-        if (user.status === 'sponsor'){
-            if (user.rsvp > 0) {
-                const doc = new GameModel({
-                    gameName: req.body.gameName,
-                    theme: req.body.theme,
-                    turn: req.body.turn,
-                    forSponsor: req.body.forSponsor,
-                    user1: req.userId, // создатель
-                    user2: req.body.user2,
-                    userUrl1: req.body.userUrl1, 
-                    userUrl2: req.body.userUrl2,
-                });
-        
-                const game = await doc.save();
-        
-                UserModel.findById(req.userId)
-                .then(user1 => {
-                    // Добавление идентификатор2 в поле gameIn первого пользователя
-                    user1.gamesOut.push(game._id);
-                    user1.rsvp -= 1;
-                    user1.createGamesCount += 1;
-                    return user1.save();
-                })
-                .then(savedUser1 => {
-                    // Получение данных второго пользователя
-                    return UserModel.findById(req.body.user2);
-                })
-                .then(user2 => {
-                    // Добавление идентификатор1 в поле gameOut второго пользователя
-                    user2.gamesIn.push(game._id);
-                    return user2.save();
-                })
-                .catch(error => {
-                    console.error(error);
-                });
-        
-                res.status(200).json(game);
-            } else {
-                res.status(500).json({
-                    message: 'Недостаточно rsvp',
-                });
-            }
-        } else {
-            if(rating.forSponsor){
-                res.status(500).json({
-                    message: 'Не удалось создать игру',
-                });
-            } else {
+        if(user){
+            if (user.status === 'sponsor'){
                 if (user.rsvp > 0) {
                     const doc = new GameModel({
                         gameName: req.body.gameName,
@@ -97,6 +51,54 @@ export const create = async (req,res) => {
                     res.status(500).json({
                         message: 'Недостаточно rsvp',
                     });
+                }
+            } else {
+                if(rating.forSponsor){
+                    res.status(500).json({
+                        message: 'Не удалось создать игру',
+                    });
+                } else {
+                    if (user.rsvp > 0) {
+                        const doc = new GameModel({
+                            gameName: req.body.gameName,
+                            theme: req.body.theme,
+                            turn: req.body.turn,
+                            forSponsor: req.body.forSponsor,
+                            user1: req.userId, // создатель
+                            user2: req.body.user2,
+                            userUrl1: req.body.userUrl1, 
+                            userUrl2: req.body.userUrl2,
+                        });
+                
+                        const game = await doc.save();
+                
+                        UserModel.findById(req.userId)
+                        .then(user1 => {
+                            // Добавление идентификатор2 в поле gameIn первого пользователя
+                            user1.gamesOut.push(game._id);
+                            user1.rsvp -= 1;
+                            user1.createGamesCount += 1;
+                            return user1.save();
+                        })
+                        .then(savedUser1 => {
+                            // Получение данных второго пользователя
+                            return UserModel.findById(req.body.user2);
+                        })
+                        .then(user2 => {
+                            // Добавление идентификатор1 в поле gameOut второго пользователя
+                            user2.gamesIn.push(game._id);
+                            return user2.save();
+                        })
+                        .catch(error => {
+                            console.error(error);
+                        });
+                
+                        res.status(200).json(game);
+                    } else {
+                        res.status(500).json({
+                            message: 'Недостаточно rsvp',
+                        });
+                    }
                 }
             }
         }
