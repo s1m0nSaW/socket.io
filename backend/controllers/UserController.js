@@ -56,34 +56,20 @@ export const getToken = async (req, res) => {
                 user.status = 'promoter';
                 user.statusDate = 0;
                 await user.save();
-            
-                const token = jwt.sign(
-                    {
-                        _id: user._id,
-                    },
-                    secret,
-                    {
-                        expiresIn: "30d",
-                    }
-                );
-                const tokenDate = date+2160000000
-            
-                res.status(200).json({user, token, tokenDate});
-            } else {
-            
-                const token = jwt.sign(
-                    {
-                        _id: user._id,
-                    },
-                    secret,
-                    {
-                        expiresIn: "30d",
-                    }
-                );
-                const tokenDate = date+2160000000
-                res.status(200).json({user, token, tokenDate});
-            }
+            } 
         }
+        const token = jwt.sign(
+            {
+                _id: user._id,
+            },
+            secret,
+            {
+                expiresIn: "30d",
+            }
+        );
+        const tokenDate = date+2160000000
+    
+        res.status(200).json({user, token, tokenDate});
     } catch (err) {
         console.log(err);
         res.status(500).json({
