@@ -8,6 +8,7 @@ export const create = async (req,res) => {
     try {
         const user = await UserModel.findById(req.userId);
         const rating = await RatingModel.findOne({ theme: req.body.theme });
+        console.log(user, req.userId);
 
         if(user){
             if (user.status === 'sponsor'){
