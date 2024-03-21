@@ -12,7 +12,9 @@ export const register = async (req, res) => {
         
         const doc = new UserModel({
             vkid: req.body.vkid,
-            status: req.body.status
+            status: req.body.status,
+            firstName: req.body.firstName,
+            avaUrl: req.body.avaUrl,
         });
     
         const user = await doc.save();

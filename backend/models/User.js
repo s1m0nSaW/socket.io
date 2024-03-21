@@ -6,6 +6,14 @@ const UserSchema = new mongoose.Schema({
         required: true,
         unique: true,
     },
+    firstName:{
+        type: String,
+        default: 'no name',
+    },
+    avaUrl:{
+        type: String,
+        default: 'no url',
+    },
     status:{
         type: String,
         default: 'firstTime',
