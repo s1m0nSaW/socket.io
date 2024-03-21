@@ -5,6 +5,10 @@ const GameSchema = new mongoose.Schema({
         type: String, 
         trim: true 
     },
+    quiz:{
+        type: Boolean,
+        default: false,
+    },
     activeStep:{
         type: Number,
         default: 0,

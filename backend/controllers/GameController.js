@@ -14,6 +14,7 @@ export const create = async (req,res) => {
                 const doc = new GameModel({
                     gameName: req.body.gameName,
                     theme: req.body.theme,
+                    quiz: req.body.quiz,
                     turn: req.body.turn,
                     forSponsor: req.body.forSponsor,
                     user1: req.body.user1, // создатель

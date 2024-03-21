@@ -5,6 +5,10 @@ const RatingSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    quiz:{
+        type: Boolean,
+        default: false,
+    },
     count:{
         type: Number,
         default: 0,
