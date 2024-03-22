@@ -53,6 +53,7 @@ router.patch('/after-ads', checkAuth, UserController.afterAds);
 router.patch('/rsvp-date', checkAuth, UserController.updateRsvpDate);
 router.patch('/rsvp-status', checkAuth, UserController.updateRsvpStatus);
 router.post('/auth', UserController.getMe);
+router.post('/get-user', UserController.getUser);
 router.get('/auth', UserController.getAll);
 router.post('/get-token', UserController.getToken);
 
