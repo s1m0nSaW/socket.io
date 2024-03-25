@@ -32,7 +32,7 @@ app.use('/uploads', express.static('uploads'));
 const server = createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: "*",
+        origin: "https://localhost:3000",
         credentials: true,
         methods: ["GET", "POST"]
     },
