@@ -57,6 +57,7 @@ io.on("connection", (socket) => {
 
     socket.on("joinUser", ({ userId }) => {
         socket.join(userId);
+        console.log('связь с ', userId)
     })
 
     socket.on("sendMessage", ({ senderId, content, gameId }) => {
