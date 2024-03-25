@@ -32,12 +32,12 @@ app.use('/uploads', express.static('uploads'));
 const server = createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: ["*"],
-        //credentials: true,
+        origin: "https://localhost:3000",
+        credentials: true,
         methods: ["GET", "POST"]
     },
     transports: ['polling', 'xhr-polling'],
-    //secure: true
+    secure: true
 });
 
 instrument(io, {
