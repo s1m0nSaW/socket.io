@@ -33,10 +33,11 @@ const server = createServer(app);
 const io = new Server(server, {
     cors: {
         origin: ["*"],
-        credentials: true
+        //credentials: true,
+        methods: ["GET", "POST"]
     },
     transports: ['polling', 'xhr-polling'],
-    secure: true
+    //secure: true
 });
 
 instrument(io, {
@@ -45,7 +46,7 @@ instrument(io, {
 });
 
 io.engine.on("connection_error", (err) => {
-    console.log(err.message);  // the error message, for example "Session ID unknown"
+    console.log(`Ошибка:`, err.message);  // the error message, for example "Session ID unknown"
 });
 
 io.on("connection", (socket) => {
