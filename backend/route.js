@@ -16,6 +16,7 @@ import * as RaitingController from './controllers/RatingController.js';
 import * as StatController from './controllers/StatController.js';
 import * as PurchaseController from './controllers/PurchaseController.js';
 import * as ItemController from './controllers/ItemController.js';
+import * as ComplimentController from './controllers/ComplimentController.js'
 
 const router = express.Router();
 
@@ -66,6 +67,9 @@ router.post('/del-answer/:id', checkAuth, AnsweredController.remove);
 router.post('/message', checkAuth, MessageController.create);
 router.post('/messages/:id', checkAuth, MessageController.getMessages);
 router.post('/del-message/:id', checkAuth, MessageController.remove);
+
+router.post('/compliment', checkAuth, ComplimentController.create);
+router.post('/compliments', checkAuth, ComplimentController.getMy);
 
 router.post('/questions', checkAuth, QuestionController.getQuestions);
 router.post('/all-quest', checkAuth, QuestionController.getAll);
