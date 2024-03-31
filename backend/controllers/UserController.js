@@ -229,7 +229,7 @@ export const updateRsvpDate = async (req, res) => {
             user.rsvpDate = date + 86400000;
             user.rsvpStatus = false;
             await user.save();
-            res.status(200);
+            res.status(200).json(user);
         } else {
             res.status(200);
         }
