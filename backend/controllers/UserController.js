@@ -107,19 +107,9 @@ export const getMe = async (req, res) => {
                 }
             }
     
-            if(date > user.statusDate) {
-                if(user.status === 'sponsor'){
-                    user.status = 'none';
-                    user.statusDate = 0;
-                    user.dailyRsvp = 1;
-                }
-                await user.save();
+            await user.save();
             
-                res.status(200).json(user);
-            } else {
-            
-                res.status(200).json(user);
-            }
+            res.status(200).json(user);
         }
 
     } catch (err) {

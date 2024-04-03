@@ -343,12 +343,12 @@ const handleSubscriptionStatusChange = async (params) => {
             console.log("Обработан возврат")
             break;
         case "cancelled":
-            /*// Обрабатываем возврат
+            // Обрабатываем возврат
             let _apOrder = +new Date();
             user.status = 'none';
             user.statusDate = 0;
             console.log('Пользователь успешно отписался', user)
-            await user.save();*/
+            await user.save();
             
             if(subscriptionOrder){
                 responseData = {
