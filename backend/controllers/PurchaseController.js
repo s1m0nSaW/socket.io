@@ -275,10 +275,9 @@ const handleSubscriptionStatusChange = async (params) => {
             const user = await UserModel.findOne({ vkid: params.user_id });
 
             if(user) {
-                user.status = 'sponsor';
-                user.statusDate = params.next_bill_time
-                
                 try {
+                    user.status = 'sponsor';
+                    user.statusDate = params.next_bill_time;
                     await user.save();
                     console.log('Пользователь успешно стал premium')
                 } catch (error) {
