@@ -271,14 +271,22 @@ const handleSubscriptionStatusChange = async (params) => {
     switch (params.status) {
         case "chargeable":
             // Предоставляем товар в приложении
-            const user = await UserModel.findOne({ vkid: params.user_id });
             const subscriptionOrder = await OrderModel.findOne({ order_id: params.subscription_id });
+            const user = await UserModel.findOne({ vkid: params.user_id });
 
-            user.status = 'sponsor';
-            user.statusDate = params.next_bill_time
-            console.log('Пользователь успешно стал premium', user)
-            user.save();
-
+            if(user) {
+                user.status = 'sponsor';
+                user.statusDate = params.next_bill_time
+                
+                try {
+                    await user.save();
+                    console.log('Пользователь успешно стал premium')
+                } catch (error) {
+                    console.log('Ошибка premium', error)
+                }
+            } else {
+                console.log('Пользователь не найден');
+            }
             // Формируем ответ
             let appOrder = +new Date(); // Идентификатор заказа в приложении
 
