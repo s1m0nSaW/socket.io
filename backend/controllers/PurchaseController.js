@@ -271,7 +271,7 @@ const handleSubscriptionStatusChange = async (params) => {
     switch (params.status) {
         case "chargeable":
             // Предоставляем товар в приложении
-            const user = await UserModel.findOne({ vkid: params.receiver_id });
+            const user = await UserModel.findOne({ vkid: params.user_id });
             const subscriptionOrder = await OrderModel.findOne({ order_id: params.subscription_id });
 
             user.status = 'sponsor';
@@ -339,7 +339,7 @@ const handleSubscriptionStatusChange = async (params) => {
             break;
         case "cancelled":
             // Обрабатываем возврат
-            const _user = await UserModel.findOne({ vkid: params.receiver_id });
+            const _user = await UserModel.findOne({ vkid: params.user_id });
             const _subscriptionOrder = await OrderModel.findOne({ order_id: params.subscription_id });
             _user.status = 'none';
             _user.statusDate = 0;
