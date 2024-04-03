@@ -267,13 +267,13 @@ const handleOrderStatusChange = async (params) => {
 
 const handleSubscriptionStatusChange = async (params) => {
     let responseData;
-    const user = await UserModel.findOne({ vkid: params.receiver_id });
-    const subscriptionOrder = await OrderModel.findOne({ order_id: params.subscription_id });
     
     switch (params.status) {
         case "chargeable":
             // Предоставляем товар в приложении
-            
+            const user = await UserModel.findOne({ vkid: params.receiver_id });
+            const subscriptionOrder = await OrderModel.findOne({ order_id: params.subscription_id });
+
             user.status = 'sponsor';
             user.statusDate = params.next_bill_time
             console.log('Пользователь успешно стал premium')
@@ -319,11 +319,12 @@ const handleSubscriptionStatusChange = async (params) => {
             break;
 
         case "active":
-            if(subscriptionOrder){
+            const subsOrder = await OrderModel.findOne({ order_id: params.subscription_id });
+            if(subsOrder){
                 responseData = {
                     response: {
                         subscription_id: params.subscription_id,
-                        app_order_id: subscriptionOrder.app_order_id,
+                        app_order_id: subsOrder.app_order_id,
                     },
                 };
             } else {
@@ -338,16 +339,18 @@ const handleSubscriptionStatusChange = async (params) => {
             break;
         case "cancelled":
             // Обрабатываем возврат
-            user.status = 'none';
-            user.statusDate = 0;
+            const _user = await UserModel.findOne({ vkid: params.receiver_id });
+            const _subscriptionOrder = await OrderModel.findOne({ order_id: params.subscription_id });
+            _user.status = 'none';
+            _user.statusDate = 0;
             console.log('Пользователь успешно отписался')
-            await user.save();
+            await _user.save();
             
-            if(subscriptionOrder){
+            if(_subscriptionOrder){
                 responseData = {
                     response: {
                         subscription_id: params.subscription_id,
-                        app_order_id: subscriptionOrder.app_order_id,
+                        app_order_id: _subscriptionOrder.app_order_id,
                     },
                 };
             } else {
