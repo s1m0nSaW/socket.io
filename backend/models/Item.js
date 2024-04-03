@@ -23,7 +23,11 @@ const ItemSchema = new mongoose.Schema({
     count:{
         type: Number,
         required: true,
-    }
+    },
+    period:{
+        type: Number,
+        default: 7,
+    }, 
 },{
     timestamps:true,
 },

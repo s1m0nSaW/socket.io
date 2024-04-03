@@ -48,6 +48,8 @@ router.post('/stats', checkAdmin, StatController.getAll);
 router.post('/add-item', checkAdmin, ItemController.create);
 router.post('/items', checkAdmin, ItemController.getItems);
 router.post('/del-item/:id', checkAdmin, ItemController.remove);
+router.post('/orders', checkAdmin, ItemController.getOrders);
+router.post('/del-order/:id', checkAdmin, ItemController.removeOrder);
 
 router.post('/auth/register', UserController.register);
 router.patch('/after-ads', checkAuth, UserController.afterAds);

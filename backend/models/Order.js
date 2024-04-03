@@ -19,12 +19,20 @@ const OrderSchema = new mongoose.Schema({
     },
     receiver_id:{
         type: Number,
-        required: true,
+        default: 0,
     },
     app_order_id:{
         type: Number,
         required: true,
-    }
+    },
+    cancel_reason:{
+        type: String,
+        default: 'none',
+    },
+    type:{
+        type: String,
+        default: 'none',
+    },
 },{
     timestamps:true,
 },
