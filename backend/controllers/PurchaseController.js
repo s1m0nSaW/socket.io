@@ -267,12 +267,12 @@ const handleOrderStatusChange = async (params) => {
 
 const handleSubscriptionStatusChange = async (params) => {
     let responseData;
+    const subscriptionOrder = await OrderModel.findOne({ order_id: params.subscription_id });
+    let user = await UserModel.findOne({ vkid: params.user_id });
     
     switch (params.status) {
         case "chargeable":
-            // Предоставляем товар в приложении
-            const subscriptionOrder = await OrderModel.findOne({ order_id: params.subscription_id });
-            const user = await UserModel.findOne({ vkid: params.user_id });
+            // Предоставляем товар в приложени
 
             if(user) {
                 try {
@@ -326,8 +326,7 @@ const handleSubscriptionStatusChange = async (params) => {
 
         case "active":
             let _appOrder = +new Date();
-            const subsOrder = await OrderModel.findOne({ order_id: params.subscription_id });
-            if(subsOrder){
+            if(subscriptionOrder){
                 responseData = {
                     response: {
                         subscription_id: params.subscription_id,
@@ -345,16 +344,14 @@ const handleSubscriptionStatusChange = async (params) => {
             console.log("Обработан возврат")
             break;
         case "cancelled":
-            // Обрабатываем возврат
+            /*// Обрабатываем возврат
             let _apOrder = +new Date();
-            const _user = await UserModel.findOne({ vkid: params.user_id });
-            const _subscriptionOrder = await OrderModel.findOne({ order_id: params.subscription_id });
-            _user.status = 'none';
-            _user.statusDate = 0;
-            console.log('Пользователь успешно отписался', _user)
-            await _user.save();
+            user.status = 'none';
+            user.statusDate = 0;
+            console.log('Пользователь успешно отписался', user)
+            await user.save();*/
             
-            if(_subscriptionOrder){
+            if(subscriptionOrder){
                 responseData = {
                     response: {
                         subscription_id: params.subscription_id,
