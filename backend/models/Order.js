@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const OrderSchema = new mongoose.Schema({
     item:{                     //Идентификатор товара, который в приложении.
         type: String,
-        required: true,
+        default: 'none',
     },
     item_id:{                     //Идентификатор проданного товара, который сгенерировал ВКонтакте.
         type: String,

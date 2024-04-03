@@ -280,7 +280,7 @@ const handleSubscriptionStatusChange = async (params) => {
             await user.save();
 
             // Формируем ответ
-            let appOrder = params.date; // Идентификатор заказа в приложении
+            let appOrder = +new Date(); // Идентификатор заказа в приложении
 
             if(subscriptionOrder) {
                 responseData = {
@@ -293,7 +293,6 @@ const handleSubscriptionStatusChange = async (params) => {
                 // Сохраняем информацию о заказе в приложении
                 const doc = new OrderModel({
                     type: 'subscription',
-                    item: params.item,
                     item_id: params.item_id,
                     user_id: params.user_id,
                     app_order_id: appOrder,
@@ -319,6 +318,7 @@ const handleSubscriptionStatusChange = async (params) => {
             break;
 
         case "active":
+            let _appOrder = +new Date();
             const subsOrder = await OrderModel.findOne({ order_id: params.subscription_id });
             if(subsOrder){
                 responseData = {
@@ -331,7 +331,7 @@ const handleSubscriptionStatusChange = async (params) => {
                 responseData = {
                     response: {
                         subscription_id: params.subscription_id,
-                        app_order_id: params.date,
+                        app_order_id: _appOrder,
                     },
                 };
             }
@@ -339,6 +339,7 @@ const handleSubscriptionStatusChange = async (params) => {
             break;
         case "cancelled":
             // Обрабатываем возврат
+            let _apOrder = +new Date();
             const _user = await UserModel.findOne({ vkid: params.user_id });
             const _subscriptionOrder = await OrderModel.findOne({ order_id: params.subscription_id });
             _user.status = 'none';
@@ -357,7 +358,7 @@ const handleSubscriptionStatusChange = async (params) => {
                 responseData = {
                     response: {
                         subscription_id: params.subscription_id,
-                        app_order_id: params.date,
+                        app_order_id: _apOrder,
                     },
                 };
             }
