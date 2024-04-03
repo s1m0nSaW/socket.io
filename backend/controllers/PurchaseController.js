@@ -276,8 +276,8 @@ const handleSubscriptionStatusChange = async (params) => {
 
             user.status = 'sponsor';
             user.statusDate = params.next_bill_time
-            console.log('Пользователь успешно стал premium')
-            await user.save();
+            console.log('Пользователь успешно стал premium', user)
+            user.save();
 
             // Формируем ответ
             let appOrder = +new Date(); // Идентификатор заказа в приложении
@@ -344,7 +344,7 @@ const handleSubscriptionStatusChange = async (params) => {
             const _subscriptionOrder = await OrderModel.findOne({ order_id: params.subscription_id });
             _user.status = 'none';
             _user.statusDate = 0;
-            console.log('Пользователь успешно отписался')
+            console.log('Пользователь успешно отписался', _user)
             await _user.save();
             
             if(_subscriptionOrder){
