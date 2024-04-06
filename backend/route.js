@@ -59,6 +59,7 @@ router.post('/auth', UserController.getMe);
 router.post('/get-user', UserController.getUser);
 router.get('/auth', UserController.getAll);
 router.post('/get-token', UserController.getToken);
+router.post('/promoter', checkAuth, UserController.updatePromoter);
 
 router.post('/answer', checkAuth, AnsweredController.create);
 router.post('/up-answer/:id', checkAuth, AnsweredController.update);

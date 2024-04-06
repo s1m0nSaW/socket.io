@@ -40,7 +40,7 @@ const UserSchema = new mongoose.Schema({
     },
     rsvp:{
         type: Number,
-        default: 10,
+        default: 0,
     },
     rsvpStatus:{
         type: Boolean,

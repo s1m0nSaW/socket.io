@@ -275,3 +275,27 @@ export const updateSponsor = async (req, res) => {
         });
     }
 };
+
+export const updatePromoter = async (req, res) => {
+    try {
+        const user = await UserModel.findOneAndUpdate(
+            {
+                vkid: req.body.vkid
+            },
+            {
+                $set: {
+                    status: 'promoter',
+                    dailyRsvp: 3
+                },
+            },
+            { returnDocument: "after" }
+        );
+
+        res.status(200).json(user);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: "Проблема с удалением",
+        });
+    }
+};
