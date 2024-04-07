@@ -27,12 +27,13 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(route);
-app.use('/uploads', express.static('uploads'));
+app.use('/uploads', express.static('uploads')); //https://prod-app51864614-9b2d04f5e16a.pages-ac.vk-apps.com/index.html
 
 const server = createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: "https://localhost:3000",
+        origin: ["https://stage-app51864614-9b2d04f5e16a.pages.vk-apps.com/index.html", 
+        "https://prod-app51864614-9b2d04f5e16a.pages-ac.vk-apps.com/index.html"],
         credentials: true,
         methods: ["GET", "POST"]
     },
