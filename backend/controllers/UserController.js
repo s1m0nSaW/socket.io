@@ -284,8 +284,8 @@ export const updatePromoter = async (req, res) => {
             },
             {
                 $set: {
-                    status: 'promoter',
-                    dailyRsvp: 3
+                    status: req.body.status,
+                    dailyRsvp: req.body.dailyRsvp,
                 },
             },
             { returnDocument: "after" }
