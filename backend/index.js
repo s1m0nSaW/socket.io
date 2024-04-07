@@ -32,8 +32,8 @@ app.use('/uploads', express.static('uploads')); //https://prod-app51864614-9b2d0
 const server = createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: ["https://stage-app51864614-9b2d04f5e16a.pages.vk-apps.com/index.html", 
-        "https://prod-app51864614-9b2d04f5e16a.pages-ac.vk-apps.com/index.html"],
+        origin: ["https://stage-app51864614-9b2d04f5e16a.pages.vk-apps.com", 
+        "https://prod-app51864614-9b2d04f5e16a.pages-ac.vk-apps.com"],
         credentials: true,
         methods: ["GET", "POST"]
     },
