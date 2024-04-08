@@ -60,6 +60,12 @@ export const getToken = async (req, res) => {
                 await user.save();
             } 
         }
+
+        if(user.status === "firstTime"){
+            user.status = 'none';
+            await user.save();
+        }
+
         const token = jwt.sign(
             {
                 _id: user._id,
