@@ -27,13 +27,15 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(route);
-app.use('/uploads', express.static('uploads')); //https://prod-app51864614-9b2d04f5e16a.pages-ac.vk-apps.com/index.html
+app.use('/uploads', express.static('uploads')); 
+/*vk.com: https://stage-app51864614-8a089653751e.pages.vk-apps.com/index.html
+iOS & Android:  https://stage-app51864614-8a089653751e.pages.vk-apps.com/index.html
+m.vk.com:       https://stage-app51864614-8a089653751e.pages.vk-apps.com/index.html*/
 
 const server = createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: ["https://stage-app51864614-9b2d04f5e16a.pages.vk-apps.com", 
-        "https://prod-app51864614-9b2d04f5e16a.pages-ac.vk-apps.com"],
+        origin: ["https://prod-app51864614-8a089653751e.pages-ac.vk-apps.com", 'https://stage-app51864614-8a089653751e.pages.vk-apps.com'],
         credentials: true,
         methods: ["GET", "POST"]
     },
