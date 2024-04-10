@@ -1,4 +1,4 @@
-import MessageModel from "../models/Message";
+import MessageModel from "../models/Message.js";
 
 export const sendMessageHandler = async (io, senderId, content, gameId, date) => {
     try {
@@ -15,7 +15,7 @@ export const sendMessageHandler = async (io, senderId, content, gameId, date) =>
             const messages = await MessageModel.find({ gameId: gameId });
             io.to(data.id).emit("gameMessages", { data: messages.reverse()});
         }
-        
+
     } catch (err) {
         console.log(err);
         io.to(gameId).emit("message", { data: "Не удалось создать сообщение"});
