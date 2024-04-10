@@ -13,7 +13,7 @@ export const sendMessageHandler = async (io, senderId, content, gameId, date) =>
 
         if(message) {
             const messages = await MessageModel.find({ gameId: gameId });
-            io.to(data.id).emit("gameMessages", { data: messages.reverse()});
+            io.to(gameId).emit("gameMessages", { data: messages.reverse()});
         }
 
     } catch (err) {
