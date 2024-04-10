@@ -22,16 +22,16 @@ export const sendMessageHandler = async (io, senderId, content, gameId, date) =>
     }
 };
 
-export const getMessagesHandler = async (io, data) => {
+export const getMessagesHandler = async (io, gameId) => {
     try {
-        const messages = await MessageModel.find({ gameId: data.id });
+        const messages = await MessageModel.find({ gameId: gameId });
 
         if (messages) {
-            io.to(data.id).emit("gameMessages", { data: messages.reverse()});
+            io.to(gameId).emit("gameMessages", { data: messages.reverse()});
         }
 
     } catch (err) {
         console.log(err);
-        io.to(data.id).emit("gameMessages", { data: "Нет доступа"});
+        io.to(gameId).emit("gameMessages", { data: "Нет доступа"});
     }
 }

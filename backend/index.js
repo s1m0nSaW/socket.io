@@ -65,7 +65,7 @@ io.on("connection", (socket) => {
     })
 
     socket.on("sendMessage", ({ senderId, content, gameId, date }) => sendMessageHandler( io, senderId, content, gameId, date ));
-    socket.on("getMessages", (data) => sendMessageHandler( io, data ));
+    socket.on("getMessages", ({gameId}) => sendMessageHandler( io, gameId ));
     /*
     router.post('/message', checkAuth, MessageController.create);
     router.post('/messages/:id', checkAuth, MessageController.getMessages);
