@@ -8,7 +8,7 @@ import { addUser } from './users.js';
 import { createServer } from 'node:http';
 import { Server } from 'socket.io';
 import { instrument } from "@socket.io/admin-ui";
-import { sendMessageHandler } from './handlers/messagesHandler.js';
+import { sendMessageHandler, getMessagesHandler } from './handlers/messagesHandler.js';
 
 dotenv.config();
 
@@ -65,7 +65,7 @@ io.on("connection", (socket) => {
     })
 
     socket.on("sendMessage", ({ senderId, content, gameId, date }) => sendMessageHandler( io, senderId, content, gameId, date ));
-    socket.on("getMessages", ({gameId}) => sendMessageHandler( io, gameId ));
+    socket.on("getMessages", ({gameId}) => getMessagesHandler( io, gameId ));
     /*
     router.post('/message', checkAuth, MessageController.create);
     router.post('/messages/:id', checkAuth, MessageController.getMessages);
