@@ -8,6 +8,7 @@ import { addUser } from './users.js';
 import { createServer } from 'node:http';
 import { Server } from 'socket.io';
 import { instrument } from "@socket.io/admin-ui";
+import { sendMessageHandler } from './handlers/messagesHandler.js';
 
 dotenv.config();
 
@@ -35,7 +36,7 @@ m.vk.com:       https://stage-app51864614-ea75c147ac61.pages.vk-apps.com/index.h
 const server = createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: ["https://stage-app51864614-ea75c147ac61.pages.vk-apps.com", 'https://prod-app51864614-ea75c147ac61.pages-ac.vk-apps.com'],
+        origin: ["https://stage-app51864614-ea75c147ac61.pages.vk-apps.com", 'https://prod-app51864614-ea75c147ac61.pages-ac.vk-apps.com', 'https://localhost:3000/'],
         credentials: true,
         methods: ["GET", "POST"]
     },
@@ -63,13 +64,13 @@ io.on("connection", (socket) => {
         console.log('связь с ', userId)
     })
 
-    socket.on("sendMessage", ({ senderId, content, gameId }) => {
-        io.to(gameId).emit("message", { data: { 
-            senderId: senderId,
-            content: content,
-            gameId: gameId, } })
-        
-    })
+    socket.on("sendMessage", ({ senderId, content, gameId, date }) => sendMessageHandler( io, senderId, content, gameId, date ));
+    socket.on("getMessages", (data) => sendMessageHandler( io, data ));
+    /*
+    router.post('/message', checkAuth, MessageController.create);
+    router.post('/messages/:id', checkAuth, MessageController.getMessages);
+    router.post('/del-message/:id', checkAuth, MessageController.remove);
+    */
 
     socket.on("socketNotification", ({ userId, message, severity }) => {
         io.to(userId).emit("notification", { data: { message, severity } })
@@ -89,6 +90,11 @@ io.on("connection", (socket) => {
 
     socket.on("upAnswered", ({ gameId, answeredId }) => {
         io.to(gameId).emit("answered", { data: { aswId: answeredId } })
+    })
+
+    socket.on("getUser", async ({ userId, vkid }) => {
+        const user = await UserModel.findOne({ vkid: vkid });
+        io.to(userId).emit("updatedUser", { data: { user } })
     })
 })
 
