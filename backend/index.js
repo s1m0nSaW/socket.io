@@ -9,6 +9,8 @@ import { createServer } from 'node:http';
 import { Server } from 'socket.io';
 import { instrument } from "@socket.io/admin-ui";
 import { sendMessageHandler, getMessagesHandler } from './handlers/messagesHandler.js';
+import { create, getAnwered } from './handlers/answeredHandler.js';
+import { update } from './controllers/AnsweredController.js';
 
 dotenv.config();
 
@@ -66,10 +68,14 @@ io.on("connection", (socket) => {
 
     socket.on("sendMessage", ({ senderId, content, gameId, date }) => sendMessageHandler( io, senderId, content, gameId, date ));
     socket.on("getMessages", ({gameId}) => getMessagesHandler( io, gameId ));
+    
+    socket.on("newAnswered", ({ questionId, gameId, turn, user1, user2, answer1, answer2 }) => create(io, questionId, gameId, turn, user1, user2, answer1, answer2));
+    socket.on("getAnswered", ({ gameId, answeredId }) => getAnwered(gameId, answeredId));
+    socket.on("upAnswered", ({ id, answer2, correct, answer1, gameId }) => update(io, id, answer2, correct, answer1, gameId));
     /*
-    router.post('/message', checkAuth, MessageController.create);
-    router.post('/messages/:id', checkAuth, MessageController.getMessages);
-    router.post('/del-message/:id', checkAuth, MessageController.remove);
+    router.post('/answer', checkAuth, AnsweredController.create);
+    router.post('/up-answer/:id', checkAuth, AnsweredController.update);
+    router.post('/answer/:id', checkAuth, AnsweredController.getAnwered);
     */
 
     socket.on("socketNotification", ({ userId, message, severity }) => {
@@ -86,10 +92,6 @@ io.on("connection", (socket) => {
 
     socket.on("removeGame", ({ gameId }) => {
         io.to(gameId).emit("deleteGame", { data: { gameId } })
-    })
-
-    socket.on("upAnswered", ({ gameId, answeredId }) => {
-        io.to(gameId).emit("answered", { data: { aswId: answeredId } })
     })
 
     socket.on("getUser", async ({ userId, vkid }) => {
