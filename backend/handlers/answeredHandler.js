@@ -14,7 +14,9 @@ export const create = async ( io, questionId, gameId, turn, user1, user2, answer
 
         const answered = await doc.save();
 
-        io.to(gameId).emit("answered", { data: answered});
+        if(answered){
+            io.to(gameId).emit("answered", { data: answered});
+        }
 
     } catch (err) {
         console.log(err);
@@ -32,7 +34,9 @@ export const update = async ( io, id, answer2, correct, answer1, gameId) => {
                 io.to(gameId).emit("error", { data: 'Something went wrong', error});
                 console.log(error);
             });
-            io.to(gameId).emit("answered", { data: answered});
+            if(answered){
+                io.to(gameId).emit("answered", { data: answered});
+            }
         } else if (answer2 === 'none' ){
             const answered = await AnsweredModel.findOneAndUpdate({ _id: req.params.id }, { 
                 answer1: answer1,
@@ -41,7 +45,9 @@ export const update = async ( io, id, answer2, correct, answer1, gameId) => {
                 console.log(error);
                 io.to(gameId).emit("error", { data: 'Something went wrong', error});
             });
-            io.to(gameId).emit("answered", { data: answered});
+            if(answered){
+                io.to(gameId).emit("answered", { data: answered});
+            }
         } else {
             io.to(gameId).emit("error", { data: 'Something went wrong'});
         }
@@ -57,9 +63,9 @@ export const getAnwered = async ( gameId, answeredId ) => {
 
         if (!answered) {
             io.to(gameId).emit("error", { data: "Ответов нет"});
+        } else {
+            io.to(gameId).emit("answered", { data: answered});
         }
-
-        io.to(gameId).emit("answered", { data: answered});
 
     } catch (err) {
         console.log(err);
