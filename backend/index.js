@@ -9,8 +9,7 @@ import { createServer } from 'node:http';
 import { Server } from 'socket.io';
 import { instrument } from "@socket.io/admin-ui";
 import { sendMessageHandler, getMessagesHandler } from './handlers/messagesHandler.js';
-import { create, getAnwered } from './handlers/answeredHandler.js';
-import { update } from './controllers/AnsweredController.js';
+import { create, getAnwered, update } from './handlers/answeredHandler.js';
 
 dotenv.config();
 
