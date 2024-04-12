@@ -38,7 +38,7 @@ export const update = async ( io, id, answer2, correct, answer1, gameId) => {
                 io.to(gameId).emit("answered", { data: answered});
             }
         } else if (answer2 === 'none' ){
-            const answered = await AnsweredModel.findOneAndUpdate({ _id: req.params.id }, { 
+            const answered = await AnsweredModel.findOneAndUpdate({ _id: id }, { 
                 answer1: answer1,
                 correct: correct,
             }, { new: true }).catch(error => {
