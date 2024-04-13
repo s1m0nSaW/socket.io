@@ -27,7 +27,7 @@ export const create = async ( io, questionId, gameId, turn, user1, user2, answer
 export const update = async ( io, id, answer2, correct, answer1, gameId) => {
     try {
         if(answer1 === 'none' ){
-            const answered = await AnsweredModel.findOneAndUpdate({ _id: id }, { 
+            const answered = await AnsweredModel.findOneAndUpdate({ questionId: id }, { 
                 answer2: answer2,
                 correct: correct,
             }, { new: true }).catch(error => {
@@ -38,7 +38,7 @@ export const update = async ( io, id, answer2, correct, answer1, gameId) => {
                 io.to(gameId).emit("answered", { data: answered});
             }
         } else if (answer2 === 'none' ){
-            const answered = await AnsweredModel.findOneAndUpdate({ _id: id }, { 
+            const answered = await AnsweredModel.findOneAndUpdate({ questionId: id }, { 
                 answer1: answer1,
                 correct: correct,
             }, { new: true }).catch(error => {
@@ -59,7 +59,7 @@ export const update = async ( io, id, answer2, correct, answer1, gameId) => {
 
 export const getAnwered = async ( gameId, answeredId ) => {
     try {
-        const answered = await AnsweredModel.findById(answeredId);
+        const answered = await AnsweredModel.findOne({ questionId: answeredId });
 
         if (!answered) {
             io.to(gameId).emit("error", { data: "Ответов нет"});

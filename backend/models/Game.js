@@ -15,7 +15,7 @@ const GameSchema = new mongoose.Schema({
     },
     answered: { 
         type: mongoose.Schema.Types.ObjectId, 
-        ref: "Answered"
+        ref: "Question"
     },
     turn: { 
         type: mongoose.Schema.Types.ObjectId, 
