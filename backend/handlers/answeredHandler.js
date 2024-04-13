@@ -57,7 +57,7 @@ export const update = async ( io, id, answer2, correct, answer1, gameId) => {
     }
 }
 
-export const getAnwered = async ( gameId, answeredId ) => {
+export const getAnwered = async ( io, gameId, answeredId ) => {
     try {
         const answered = await AnsweredModel.findOne({ questionId: answeredId });
 

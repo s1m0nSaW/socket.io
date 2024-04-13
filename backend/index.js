@@ -69,7 +69,7 @@ io.on("connection", (socket) => {
     socket.on("getMessages", ({gameId}) => getMessagesHandler( io, gameId ));
     
     socket.on("newAnswered", ({ questionId, gameId, turn, user1, user2, answer1, answer2 }) => create(io, questionId, gameId, turn, user1, user2, answer1, answer2));
-    socket.on("getAnswered", ({ gameId, answeredId }) => getAnwered(gameId, answeredId));
+    socket.on("getAnswered", ({ gameId, answeredId }) => getAnwered(io, gameId, answeredId));
     socket.on("upAnswered", ({ id, answer2, correct, answer1, gameId }) => update(io, id, answer2, correct, answer1, gameId));
     /*
     router.post('/answer', checkAuth, AnsweredController.create);
