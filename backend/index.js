@@ -96,7 +96,11 @@ io.on("connection", (socket) => {
 
     socket.on("getUser", async ({ userId, vkid }) => {
         const user = await UserModel.findOne({ vkid: vkid });
-        io.to(userId).emit("updatedUser", { data: { user } })
+        if(user){
+            io.to(userId).emit("updatedUser", { data: { user } })
+        } else {
+            io.to(userId).emit("updatedUser", { data: { user:'none' } })
+        }
     })
 })
 
