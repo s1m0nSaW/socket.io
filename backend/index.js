@@ -4,13 +4,13 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import route from './route.js'
 import { addUser } from './users.js';
-import UserModel from './models/User.js';
 
 import { createServer } from 'node:http';
 import { Server } from 'socket.io';
 import { instrument } from "@socket.io/admin-ui";
 import { sendMessageHandler, getMessagesHandler } from './handlers/messagesHandler.js';
 import { create, getAnwered, update } from './handlers/answeredHandler.js';
+import { getUser } from './handlers/userHandler.js';
 
 dotenv.config();
 
@@ -30,7 +30,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(route);
-app.use('/uploads', express.static('uploads')); 
+app.use('/uploads', express.static('uploads'));
 /*vk.com: https://stage-app51864614-ea75c147ac61.pages.vk-apps.com/index.html
 iOS & Android:  https://stage-app51864614-ea75c147ac61.pages.vk-apps.com/index.html
 m.vk.com:       https://stage-app51864614-ea75c147ac61.pages.vk-apps.com/index.html*/
@@ -72,6 +72,8 @@ io.on("connection", (socket) => {
     socket.on("newAnswered", ({ questionId, gameId, turn, user1, user2, answer1, answer2 }) => create(io, questionId, gameId, turn, user1, user2, answer1, answer2));
     socket.on("getAnswered", ({ gameId, answeredId }) => getAnwered(io, gameId, answeredId));
     socket.on("upAnswered", ({ id, answer2, correct, answer1, gameId }) => update(io, id, answer2, correct, answer1, gameId));
+    
+    socket.on("getUser", async ({ userId, vkid }) => getUser(io, userId, vkid))
     /*
     router.post('/answer', checkAuth, AnsweredController.create);
     router.post('/up-answer/:id', checkAuth, AnsweredController.update);
@@ -94,14 +96,6 @@ io.on("connection", (socket) => {
         io.to(gameId).emit("deleteGame", { data: { gameId } })
     })
 
-    socket.on("getUser", async ({ userId, vkid }) => {
-        const user = await UserModel.findOne({ vkid: vkid });
-        if(user){
-            io.to(userId).emit("updatedUser", { data: { user } })
-        } else {
-            io.to(userId).emit("updatedUser", { data: { user:'none' } })
-        }
-    })
 })
 
 server.listen(port, (err) => {
