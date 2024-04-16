@@ -10,7 +10,7 @@ import { Server } from 'socket.io';
 import { instrument } from "@socket.io/admin-ui";
 import { sendMessageHandler, getMessagesHandler } from './handlers/messagesHandler.js';
 import { create, getAnwered, update } from './handlers/answeredHandler.js';
-import { getUser } from './handlers/userHandler.js';
+import { getUser, register } from './handlers/userHandler.js';
 
 dotenv.config();
 
@@ -73,7 +73,8 @@ io.on("connection", (socket) => {
     socket.on("getAnswered", ({ gameId, answeredId }) => getAnwered(io, gameId, answeredId));
     socket.on("upAnswered", ({ id, answer2, correct, answer1, gameId }) => update(io, id, answer2, correct, answer1, gameId));
     
-    socket.on("getUser", async ({ userId, vkid }) => getUser(io, userId, vkid))
+    socket.on("getUser", async ({ vkid }) => getUser(io, vkid));
+    socket.on("getUser", async ({ vkid, status, firstName, avaUrl }) => register(io, vkid, status, firstName, avaUrl));
     /*
     router.post('/answer', checkAuth, AnsweredController.create);
     router.post('/up-answer/:id', checkAuth, AnsweredController.update);
