@@ -26,7 +26,9 @@ export const register = async ( io, vkid, status, firstName, avaUrl ) => {
     
         const user = await doc.save();
 
-        io.to(vkid).emit("updatedUser", { data: { user } })
+        if(user){
+            io.to(vkid).emit("updatedUser", { data: { user } })
+        }
         
     } catch (err) {
         console.log(err);

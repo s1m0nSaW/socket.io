@@ -74,7 +74,7 @@ io.on("connection", (socket) => {
     socket.on("upAnswered", ({ id, answer2, correct, answer1, gameId }) => update(io, id, answer2, correct, answer1, gameId));
     
     socket.on("getUser", async ({ vkid }) => getUser(io, vkid));
-    socket.on("getUser", async ({ vkid, status, firstName, avaUrl }) => register(io, vkid, status, firstName, avaUrl));
+    socket.on("register", async ({ vkid, status, firstName, avaUrl }) => register(io, vkid, status, firstName, avaUrl));
     /*
     router.post('/answer', checkAuth, AnsweredController.create);
     router.post('/up-answer/:id', checkAuth, AnsweredController.update);
