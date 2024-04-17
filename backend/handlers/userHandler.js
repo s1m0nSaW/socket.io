@@ -18,7 +18,7 @@ export const getUser = async ( io, vkid ) => {
 
     } catch (err) {
         console.log(err);
-        io.to(vkid).emit("error", { data: "Нет доступа", err });
+        io.to(vkid).emit("error", { data: "Что-то пошло не так", err });
     }
 };
 
@@ -39,6 +39,30 @@ export const register = async ( io, vkid, status, firstName, avaUrl ) => {
         
     } catch (err) {
         console.log(err);
-        io.to(vkid).emit("error", { data: "Не удалoсь зарегистрироваться", err });
+        io.to(vkid).emit("error", { data: "Что-то пошло не так", err });
+    }
+};
+
+export const getFreeRsvp = async ( io, vkid ) => {
+    const date = +new Date()
+    try {
+        const user = await UserModel.findOne({ vkid: vkid });
+
+        if(user?.rsvpStatus === true){
+            if (user.status === 'sponsor') {
+                user.rsvp += 10;
+            } else if (user.status === 'promoter') {
+                user.rsvp += 3;
+            } else if (user.status === 'none') {
+                user.rsvp += 1;
+            }
+            user.rsvpDate = date + 86400000;
+            user.rsvpStatus = false;
+            await user.save();
+            io.to(vkid).emit("updatedUser", { data: { user } })
+        } 
+    } catch (err) {
+        console.log(err);
+        io.to(vkid).emit("error", { data: "Что-то пошло не так", err });
     }
 };

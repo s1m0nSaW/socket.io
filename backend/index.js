@@ -10,7 +10,7 @@ import { Server } from 'socket.io';
 import { instrument } from "@socket.io/admin-ui";
 import { sendMessageHandler, getMessagesHandler } from './handlers/messagesHandler.js';
 import { create, getAnwered, update } from './handlers/answeredHandler.js';
-import { getUser, register } from './handlers/userHandler.js';
+import { getUser, register, getFreeRsvp } from './handlers/userHandler.js';
 
 dotenv.config();
 
@@ -75,6 +75,7 @@ io.on("connection", (socket) => {
     
     socket.on("getUser", async ({ vkid }) => getUser(io, vkid));
     socket.on("register", async ({ vkid, status, firstName, avaUrl }) => register(io, vkid, status, firstName, avaUrl));
+    socket.on("getFreeRsvp", async ({ vkid }) => getFreeRsvp(io, vkid));
     /*
     router.post('/answer', checkAuth, AnsweredController.create);
     router.post('/up-answer/:id', checkAuth, AnsweredController.update);
