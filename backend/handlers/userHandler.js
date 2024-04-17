@@ -1,9 +1,16 @@
 import UserModel from "../models/User.js";
+import ComplimentModel from "../models/Compliment.js";
 
 export const getUser = async ( io, vkid ) => {
     try {
         const user = await UserModel.findOne({ vkid: vkid });
         if(user){
+            const compliments = await ComplimentModel.find({ to: user._id });
+
+            if(compliments) {
+                io.to(vkid).emit("compliments", { data: { compliments } })
+            }
+
             io.to(vkid).emit("updatedUser", { data: { user } })
         } else {
             io.to(vkid).emit("updatedUser", { data: { user:{ firstName:'$2b$10$T72I44FcHBIcS81xrkFY3e2TJwaaTVLFp7d5wuddKeVEuc2.3WR0G' } } })
