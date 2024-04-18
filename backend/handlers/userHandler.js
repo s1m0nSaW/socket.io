@@ -66,3 +66,33 @@ export const getFreeRsvp = async ( io, vkid ) => {
         io.to(vkid).emit("error", { data: "Что-то пошло не так", err });
     }
 };
+
+export const checkPromoter = async ( io, vkid ) => {
+    try {
+        const user = await UserModel.findOne({ vkid: vkid });
+        if(user){
+            user.status = 'none';
+            user.dailyRsvp = 1;
+            await user.save();
+            io.to(vkid).emit("updatedUser", { data: { user } })
+        } 
+    } catch (err) {
+        console.log(err);
+        io.to(vkid).emit("error", { data: "Что-то пошло не так", err });
+    }
+};
+
+export const setPromoter = async ( io, vkid ) => {
+    try {
+        const user = await UserModel.findOne({ vkid: vkid });
+        if(user){
+            user.status = 'promoter';
+            user.dailyRsvp = 3;
+            await user.save();
+            io.to(vkid).emit("updatedUser", { data: { user } })
+        } 
+    } catch (err) {
+        console.log(err);
+        io.to(vkid).emit("error", { data: "Что-то пошло не так", err });
+    }
+};

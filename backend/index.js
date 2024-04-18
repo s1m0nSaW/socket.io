@@ -10,7 +10,8 @@ import { Server } from 'socket.io';
 import { instrument } from "@socket.io/admin-ui";
 import { sendMessageHandler, getMessagesHandler } from './handlers/messagesHandler.js';
 import { create, getAnwered, update } from './handlers/answeredHandler.js';
-import { getUser, register, getFreeRsvp } from './handlers/userHandler.js';
+import { getUser, register, getFreeRsvp, checkPromoter, setPromoter } from './handlers/userHandler.js';
+import { getThemes, newGame, newUser } from './handlers/newGameHandler.js';
 
 dotenv.config();
 
@@ -76,6 +77,11 @@ io.on("connection", (socket) => {
     socket.on("getUser", async ({ vkid }) => getUser(io, vkid));
     socket.on("register", async ({ vkid, status, firstName, avaUrl }) => register(io, vkid, status, firstName, avaUrl));
     socket.on("getFreeRsvp", async ({ vkid }) => getFreeRsvp(io, vkid));
+    socket.on("checkPromoter", async ({ vkid }) => checkPromoter(io, vkid));
+    socket.on("promoter", async ({ vkid }) => setPromoter(io, vkid));
+    socket.on("getThemes", ({vkid}) => getThemes(io,vkid));
+    socket.on("newGame", (fields) => newGame(io,fields));
+    socket.on("newPlayer", async ({ vkid, status, firstName, avaUrl }) => newUser(io, vkid, status, firstName, avaUrl));
     /*
     router.post('/answer', checkAuth, AnsweredController.create);
     router.post('/up-answer/:id', checkAuth, AnsweredController.update);
