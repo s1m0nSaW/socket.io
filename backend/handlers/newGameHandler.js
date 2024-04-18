@@ -1,10 +1,10 @@
-import Rating from "../models/Rating.js";
+import RatingModel from "../models/Rating.js";
 import GameModel from "../models/Game.js";
 import UserModel from "../models/User.js";
 
 export const getThemes = async (io, vkid) => {
     try {
-        const ratings = await Rating.find().exec();
+        const ratings = await RatingModel.find().exec();
         io.to(vkid).emit("ratings", { data: { ratings } })
     } catch (err) {
         console.log(err);
@@ -99,7 +99,7 @@ export const newGame = async (io, fields) => {
                         console.error(error);
                     });
             
-                    io.to(fields.vkid).emit("game", { data: { game } })
+                    io.to(fields.vkid).emit("notification", { data: { message: 'Игра создана', severity:'success' } })
                 } else {
                     io.to(fields.vkid).emit("notification", { data: { message: 'Недостаточно rsvp', severity:'error' } })
                 }
