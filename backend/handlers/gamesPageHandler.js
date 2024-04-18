@@ -1,4 +1,5 @@
 import GameModel from "../models/Game.js";
+import UserModel from "../models/User.js";
 
 export const getGames = async ( io, vkid ) => {
     try {
