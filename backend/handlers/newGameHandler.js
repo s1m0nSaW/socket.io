@@ -111,14 +111,14 @@ export const newGame = async (io, fields) => {
     }
 };
 
-export const newUser = async ( io, vkid, status, firstName, avaUrl ) => {
+export const newUser = async ( io, vkid, playerId, status, firstName, avaUrl ) => {
     try {
-        const user = await UserModel.findOne({ vkid: vkid });
+        const user = await UserModel.findOne({ vkid: playerId });
         if(user){
             io.to(vkid).emit("friend", { data: { player: user } })
         } else {
             const doc = new UserModel({
-                vkid: vkid,
+                vkid: playerId,
                 status: status,
                 firstName: firstName,
                 avaUrl: avaUrl,
