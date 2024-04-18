@@ -17,7 +17,8 @@ export const newGame = async (io, vkid, gameName, theme, quiz, forSponsor, user1
         const user = await UserModel.findOne({ vkid: vkid });
         const rating = await RatingModel.findOne({ theme: theme });
         
-        if (user.status === 'sponsor'){
+        if(user && rating)
+        {if (user.status === 'sponsor'){
             if (user.rsvp > 0) {
                 const doc = new GameModel({
                     gameName: gameName,
@@ -104,7 +105,7 @@ export const newGame = async (io, vkid, gameName, theme, quiz, forSponsor, user1
                     io.to(vkid).emit("notification", { data: { message: 'Недостаточно rsvp', severity:'error' } })
                 }
             }
-        }
+        }}
     } catch (err) {
         console.log(err);
         io.to(vkid).emit("notification", { data: { message: 'Не удалось создать игру', severity:'error' } })
