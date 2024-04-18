@@ -16,3 +16,45 @@ export const getGames = async ( io, vkid ) => {
         console.log(err);
     }
 };
+
+export const myGames = async ( io, vkid ) => {
+    try {
+        const user = await UserModel.findOne({ vkid: vkid });
+
+        if(user) {
+            const games = await GameModel.find({ _id: { $in: user.games } });
+            io.to(vkid).emit("myGames", { data: games});
+        }
+        
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+export const gamesIn = async ( io, vkid ) => {
+    try {
+        const user = await UserModel.findOne({ vkid: vkid });
+
+        if(user) {
+            const games = await GameModel.find({ _id: { $in: user.gamesIn } });
+            io.to(vkid).emit("myGames", { data: games});
+        }
+        
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+export const gamesOut = async ( io, vkid ) => {
+    try {
+        const user = await UserModel.findOne({ vkid: vkid });
+
+        if(user) {
+            const games = await GameModel.find({ _id: { $in: user.gamesOut } });
+            io.to(vkid).emit("myGames", { data: games});
+        }
+        
+    } catch (err) {
+        console.log(err);
+    }
+};
