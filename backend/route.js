@@ -50,6 +50,7 @@ router.post('/items', checkAdmin, ItemController.getItems);
 router.post('/del-item/:id', checkAdmin, ItemController.remove);
 router.post('/orders', checkAdmin, ItemController.getOrders);
 router.post('/del-order/:id', checkAdmin, ItemController.removeOrder);
+router.post('/del-order/:id', checkAdmin, GameController.getAllGames);
 
 router.post('/auth/register', UserController.register);
 router.patch('/after-ads', checkAuth, UserController.afterAds);
