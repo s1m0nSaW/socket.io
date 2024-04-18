@@ -80,7 +80,9 @@ io.on("connection", (socket) => {
     socket.on("checkPromoter", async ({ vkid }) => checkPromoter(io, vkid));
     socket.on("promoter", async ({ vkid }) => setPromoter(io, vkid));
     socket.on("getThemes", ({vkid}) => getThemes(io,vkid));
-    socket.on("newGame", ({fields}) => newGame(io,fields));
+    socket.on("newGame", ({ vkid, gameName, theme, quiz, forSponsor, user1, user2, userUrl1, userUrl2, turn }) => {
+        newGame(io, vkid, gameName, theme, quiz, forSponsor, user1, user2, userUrl1, userUrl2, turn)
+    });
     socket.on("newPlayer", async ({ vkid, playerId, status, firstName, avaUrl }) => newUser(io, vkid, playerId, status, firstName, avaUrl));
     /*
     router.post('/answer', checkAuth, AnsweredController.create);
