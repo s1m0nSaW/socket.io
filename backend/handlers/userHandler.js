@@ -18,12 +18,6 @@ export const getUser = async ( io, vkid ) => {
             if(date > user.adsDate){
                 user.adsStatus = true;
             }
-            if(user.status === 'none'){
-                if(req.body.promoter === true){
-                    user.status = 'promoter';
-                    user.dailyRsvp = 3;
-                }
-            }
     
             await user.save();
 
