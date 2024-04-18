@@ -1,6 +1,6 @@
-import Rating from "../models/Rating";
-import GameModel from "../models/Game";
-import UserModel from "../models/User";
+import Rating from "../models/Rating.js";
+import GameModel from "../models/Game.js";
+import UserModel from "../models/User.js";
 
 export const getThemes = async (io, vkid) => {
     try {
