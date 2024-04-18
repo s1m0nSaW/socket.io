@@ -12,103 +12,80 @@ export const getThemes = async (io, vkid) => {
     }
 };
 
-export const newGame = async (io, vkid, gameName, theme, quiz, forSponsor, user1, user2, userUrl1, userUrl2, turn) => {
+export const newGame = async (io, playerId1, playerId2, turn, theme) => {
     try {
-        const user = await UserModel.findOne({ vkid: vkid });
+        const player1 = await UserModel.findOne({ vkid: playerId1 });
+        const player2 = await UserModel.findOne({ vkid: playerId2 });
         const rating = await RatingModel.findOne({ theme: theme });
         
-        if(user && rating)
-        {if (user.status === 'sponsor'){
-            if (user.rsvp > 0) {
+        if (player1.status === 'sponsor'){
+            if (player1.rsvp > 0) {
                 const doc = new GameModel({
-                    gameName: gameName,
-                    theme: theme,
-                    quiz: quiz,
+                    gameName: `Игра ${player1.first_name} & ${player2.first_name}`,
+                    theme: rating.theme,
+                    quiz: rating.quiz,
                     turn: turn,
-                    forSponsor: forSponsor,
-                    user1: user1, // создатель
-                    user2: user2,
-                    userUrl1: userUrl1, 
-                    userUrl2: userUrl2,
+                    forSponsor: rating.forSponsor,
+                    player1: player1._id, // создатель
+                    player2: player2._id,
+                    userUrl1: player1.avaUrl, 
+                    userUrl2: player2.avaUrl,
                 });
         
                 const game = await doc.save();
-        
-                UserModel.findById(user1)
-                .then(user1 => {
-                    // Добавление идентификатор2 в поле gameIn первого пользователя
-                    user1.gamesOut.push(game._id);
-                    user1.rsvp -= 1;
-                    user1.createGamesCount += 1;
-                    io.to(vkid).emit("updatedUser", { data: { user1 } })
-                    return user1.save();
-                })
-                .then(savedUser1 => {
-                    // Получение данных второго пользователя
-                    return UserModel.findById(user2);
-                })
-                .then(user2 => {
-                    // Добавление идентификатор1 в поле gameOut второго пользователя
-                    user2.gamesIn.push(game._id);
-                    return user2.save();
-                })
-                .catch(error => {
-                    console.error(error);
-                });
+
+                player1.gamesOut.push(game._id);
+                player1.rsvp -= 1;
+                player1.createGamesCount += 1;
+                player1.save();
+                io.to(player1.vkid).emit("updatedUser", { data: { player1 } })
                 
-                io.to(vkid).emit("notification", { data: { message: 'Игра создана', severity:'success' } })
+                player2.gamesIn.push(game._id);
+                player2.save();
+                io.to(player2.vkid).emit("updatedUser", { data: { player2 } })
+
+                io.to(player2.vkid).emit("notification", { data: { message: `${player1.first_name} пригласил поиграть`, severity:'info' } })
+                io.to(player1.vkid).emit("notification", { data: { message: 'Игра создана', severity:'success' } })
             } else {
-                io.to(vkid).emit("notification", { data: { message: 'Недостаточно rsvp', severity:'error' } })
+                io.to(player1.vkid).emit("notification", { data: { message: 'Недостаточно монет', severity:'error' } })
             }
         } else {
             if(rating.forSponsor){
-                io.to(vkid).emit("notification", { data: { message: 'Не удалось создать игру', severity:'error' } })
+                io.to(player1.vkid).emit("notification", { data: { message: 'Игра только для спонсоров', severity:'error' } })
             } else {
-                if (user.rsvp > 0) {
+                if (player1.rsvp > 0) {
                     const doc = new GameModel({
-                        gameName: gameName,
-                        theme: theme,
+                        gameName: `Игра ${player1.first_name} & ${player2.first_name}`,
+                        theme: rating.theme,
+                        quiz: rating.quiz,
                         turn: turn,
-                        forSponsor: forSponsor,
-                        user1: user1, // создатель
-                        user2: user2,
-                        userUrl1: userUrl1, 
-                        userUrl2: userUrl2,
+                        forSponsor: rating.forSponsor,
+                        player1: player1._id, // создатель
+                        player2: player2._id,
+                        userUrl1: player1.avaUrl, 
+                        userUrl2: player2.avaUrl,
                     });
             
                     const game = await doc.save();
+
+                    player1.gamesOut.push(game._id);
+                    player1.rsvp -= 1;
+                    player1.createGamesCount += 1;
+                    player1.save();
+                    io.to(player1.vkid).emit("updatedUser", { data: { player1 } })
+                    
+                    player2.gamesIn.push(game._id);
+                    player2.save();
+                    io.to(player2.vkid).emit("updatedUser", { data: { player2 } })
             
-                    UserModel.findById(user1)
-                    .then(user1 => {
-                        // Добавление идентификатор2 в поле gameIn первого пользователя
-                        user1.gamesOut.push(game._id);
-                        user1.rsvp -= 1;
-                        user1.createGamesCount += 1;
-                        io.to(vkid).emit("updatedUser", { data: { user1 } })
-                        return user1.save();
-                    })
-                    .then(savedUser1 => {
-                        // Получение данных второго пользователя
-                        return UserModel.findById(user2);
-                    })
-                    .then(user2 => {
-                        // Добавление идентификатор1 в поле gameOut второго пользователя
-                        user2.gamesIn.push(game._id);
-                        return user2.save();
-                    })
-                    .catch(error => {
-                        console.error(error);
-                    });
-            
-                    io.to(vkid).emit("notification", { data: { message: 'Игра создана', severity:'success' } })
+                    io.to(player1.vkid).emit("notification", { data: { message: 'Игра создана', severity:'success' } })
                 } else {
-                    io.to(vkid).emit("notification", { data: { message: 'Недостаточно rsvp', severity:'error' } })
+                    io.to(player1.vkid).emit("notification", { data: { message: 'Недостаточно монет', severity:'error' } })
                 }
             }
-        }}
+        }
     } catch (err) {
         console.log(err);
-        io.to(vkid).emit("notification", { data: { message: 'Не удалось создать игру', severity:'error' } })
     }
 };
 

@@ -79,10 +79,8 @@ io.on("connection", (socket) => {
     socket.on("getFreeRsvp", async ({ vkid }) => getFreeRsvp(io, vkid));
     socket.on("checkPromoter", async ({ vkid }) => checkPromoter(io, vkid));
     socket.on("promoter", async ({ vkid }) => setPromoter(io, vkid));
-    socket.on("getThemes", ({vkid}) => getThemes(io,vkid));
-    socket.on("newGame", ({ vkid, gameName, theme, quiz, forSponsor, user1, user2, userUrl1, userUrl2, turn }) => {
-        newGame(io, vkid, gameName, theme, quiz, forSponsor, user1, user2, userUrl1, userUrl2, turn)
-    });
+    socket.on("getThemes", ({ vkid }) => getThemes(io, vkid));
+    socket.on("newGame", ({ playerId1, playerId2, turn, theme }) => newGame(io, playerId1, playerId2, turn, theme));
     socket.on("newPlayer", async ({ vkid, playerId, status, firstName, avaUrl }) => newUser(io, vkid, playerId, status, firstName, avaUrl));
     /*
     router.post('/answer', checkAuth, AnsweredController.create);
