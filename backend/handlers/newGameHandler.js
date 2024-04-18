@@ -38,11 +38,11 @@ export const newGame = async (io, playerId1, playerId2, turn, theme) => {
                 player1.rsvp -= 1;
                 player1.createGamesCount += 1;
                 player1.save();
-                io.to(player1.vkid).emit("updatedUser", { data: { player1 } })
+                io.to(player1.vkid).emit("updatedUser", { data: { user: player1 } })
                 
                 player2.gamesIn.push(game._id);
                 player2.save();
-                io.to(player2.vkid).emit("updatedUser", { data: { player2 } })
+                io.to(player2.vkid).emit("updatedUser", { data: { user: player2 } })
 
                 io.to(player2.vkid).emit("notification", { data: { message: `${player1.first_name} пригласил поиграть`, severity:'info' } })
                 io.to(player1.vkid).emit("notification", { data: { message: 'Игра создана', severity:'success' } })
@@ -72,11 +72,11 @@ export const newGame = async (io, playerId1, playerId2, turn, theme) => {
                     player1.rsvp -= 1;
                     player1.createGamesCount += 1;
                     player1.save();
-                    io.to(player1.vkid).emit("updatedUser", { data: { player1 } })
+                    io.to(player1.vkid).emit("updatedUser", { data: { user: player1 } })
                     
                     player2.gamesIn.push(game._id);
                     player2.save();
-                    io.to(player2.vkid).emit("updatedUser", { data: { player2 } })
+                    io.to(player2.vkid).emit("updatedUser", { data: { user: player2 } })
             
                     io.to(player1.vkid).emit("notification", { data: { message: 'Игра создана', severity:'success' } })
                 } else {
