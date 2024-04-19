@@ -21,7 +21,7 @@ export const newGame = async (io, playerId1, playerId2, turn, theme) => {
         if (player1.status === 'sponsor'){
             if (player1.rsvp > 0) {
                 const doc = new GameModel({
-                    gameName: `Игра ${player1.first_name} & ${player2.first_name}`,
+                    gameName: `Игра ${player1.firstName} & ${player2.firstName}`,
                     theme: rating.theme,
                     quiz: rating.quiz,
                     turn: turn,
@@ -44,7 +44,7 @@ export const newGame = async (io, playerId1, playerId2, turn, theme) => {
                 player2.save();
                 io.to(player2.vkid).emit("updatedUser", { data: { user: player2 } })
 
-                io.to(player2.vkid).emit("notification", { data: { message: `${player1.first_name} пригласил поиграть`, severity:'info' } })
+                io.to(player2.vkid).emit("notification", { data: { message: `${player1.firstName} пригласил поиграть`, severity:'info' } })
                 io.to(player1.vkid).emit("notification", { data: { message: 'Игра создана', severity:'success' } })
             } else {
                 io.to(player1.vkid).emit("notification", { data: { message: 'Недостаточно монет', severity:'error' } })
@@ -55,7 +55,7 @@ export const newGame = async (io, playerId1, playerId2, turn, theme) => {
             } else {
                 if (player1.rsvp > 0) {
                     const doc = new GameModel({
-                        gameName: `Игра ${player1.first_name} & ${player2.first_name}`,
+                        gameName: `Игра ${player1.firstName} & ${player2.firstName}`,
                         theme: rating.theme,
                         quiz: rating.quiz,
                         turn: turn,
