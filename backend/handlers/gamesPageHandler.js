@@ -67,7 +67,6 @@ export const removeGame = async ( io, vkid, gameId ) => {
         
         let user1 = await UserModel.findById(game.user1)
         let user2 = await UserModel.findById(game.user2)
-        console.log( 'fields:', vkid, gameId, 'game:', game, 'user1:', user1, 'user2:', user2)
 
         if(game.status === 'active') {
             user1.games.pull(gameId); 
@@ -83,8 +82,8 @@ export const removeGame = async ( io, vkid, gameId ) => {
             await user2.save();
         }
 
-        io.to(user1.vkid).emit("updatedUser", { data: { user1 } })
-        io.to(user2.vkid).emit("updatedUser", { data: { user2 } })
+        io.to(user1.vkid).emit("updatedUser", { data: { user: user1 } })
+        io.to(user2.vkid).emit("updatedUser", { data: { user: user2 } })
 
         MessageModel.deleteMany({ gameId: gameId }, (err, doc) => {
             if (err) {
@@ -135,3 +134,41 @@ export const removeGame = async ( io, vkid, gameId ) => {
         console.log('Проблема с удалением игры', err);
     }
 }
+
+export const acceptGame = async (io, gameId) => {
+    try {
+        GameModel.findOneAndUpdate({ _id: gameId }, { status: 'active' }, { new: true })
+            .then(game => {
+                UserModel.findOneAndUpdate({ _id: game.user1 }, 
+                                        { $push: { games: game._id }, $pull: { gamesOut: game._id } }, 
+                                        { new: true })
+                .then(user1 => {
+                    io.to(user1.vkid).emit("updatedUser", { data: { user: user1 } })
+                    UserModel.findOneAndUpdate({ _id: game.user2 }, 
+                                            { $push: { games: game._id }, $pull: { gamesIn: game._id } }, 
+                                            { new: true })
+                    .then(user2 => {
+                        io.to(user2.vkid).emit("updatedUser", { data: { user: user2 } })
+                        io.to(user2.vkid).emit("notification", { data: { message: `Вы согласились играть с ${user1.firstName}`, severity:'info' } })
+                        io.to(user1.vkid).emit("notification", { data: { message: `Пользователь ${user2.firstName} согласен играть`, severity:'info' } })
+                    })
+                    .catch(error => {
+                        console.log('Something went wrong', error);
+                    });
+                })
+                .catch(error => {
+                    console.log('Something went wrong', error);
+                });
+            })
+            .catch(error => {
+                console.log('Something went wrong', error);
+            });
+        
+
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: "Нет доступа",
+        });
+    }
+};
