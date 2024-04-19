@@ -67,6 +67,7 @@ export const removeGame = async ( io, vkid, gameId ) => {
         if(game){
             let user1 = await UserModel.findById(game.user1)
             let user2 = await UserModel.findById(game.user2)
+            console.log( 'fields:', vkid, gameId, 'game:', game, 'user1:', user1, 'user2:', user2)
 
             if(game.status === 'active') {
                 user1.games.pull(gameId); 
