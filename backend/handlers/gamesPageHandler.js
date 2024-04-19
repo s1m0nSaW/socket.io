@@ -2,6 +2,8 @@ import GameModel from "../models/Game.js";
 import UserModel from "../models/User.js";
 import MessageModel from "../models/Message.js";
 import AnsweredModel from "../models/Answered.js";
+import Question from "../models/Question.js";
+import Rating from "../models/Rating.js";
 
 export const getGames = async ( io, vkid ) => {
     try {
@@ -170,5 +172,15 @@ export const acceptGame = async (io, gameId) => {
         res.status(500).json({
             message: "Нет доступа",
         });
+    }
+};
+
+export const allGames = async (io, vkid) => {
+    try {
+        const rates = await Rating.find().exec();
+        const themes = await Question.find().exec();
+        io.to(vkid).emit("allgames", { data: {rates, themes}});
+    } catch (err) {
+        console.log(err);
     }
 };
