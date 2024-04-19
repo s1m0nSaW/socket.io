@@ -324,3 +324,81 @@ export const removeGame = async (req, res) => {
         });
     }
 }
+
+export const removeAllGames = async (req, res) => {
+    try {
+        GameModel.deleteMany({}, (err, doc) => {
+            if (err) {
+                return res.status(500).json({
+                    message: 'Не удалось удалить игры',
+                });
+            }
+            if (!doc) {
+                return res.status(404).json({
+                    message: 'Игры не найдены'
+                });
+            }
+            res.status(200).json({
+                success: "Игры удалена"
+            });
+        });
+
+    } catch (err) {
+        console.warn(err);
+        res.status(500).json({
+            message: 'Проблема с удалением игры',
+        });
+    }
+}
+
+export const removeAllAnswereds = async (req, res) => {
+    try {
+        AnsweredModel.deleteMany({}, (err, doc) => {
+            if (err) {
+                return res.status(500).json({
+                    message: "Не удалось удалить answereds",
+                });
+            }
+            if (!doc) {
+                return res.status(404).json({
+                    message: "answereds не найдены"
+                });
+            }
+            res.status(200).json({
+                success: "answereds удалены"
+            });
+        });
+
+    } catch (err) {
+        console.warn(err);
+        res.status(500).json({
+            message: 'Проблема с удалением игры',
+        });
+    }
+}
+
+export const removeAllMessages = async (req, res) => {
+    try {
+        MessageModel.deleteMany({}, (err, doc) => {
+            if (err) {
+                return res.status(500).json({
+                    message: "Не удалось удалить сообщения",
+                });
+            }
+            if (!doc) {
+                return res.status(404).json({
+                    message: "Сообщения не найдены"
+                });
+            }
+            res.status(200).json({
+                success: "Сообщения удалены"
+            });
+        });
+
+    } catch (err) {
+        console.warn(err);
+        res.status(500).json({
+            message: 'Проблема с удалением игры',
+        });
+    }
+}

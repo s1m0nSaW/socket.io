@@ -64,45 +64,47 @@ export const gamesOut = async ( io, vkid ) => {
 export const removeGame = async ( io, vkid, gameId ) => {
     try {
         const game = await GameModel.findById(gameId);
-        let user1 = await UserModel.findById(game.user1)
-        let user2 = await UserModel.findById(game.user2)
+        if(game){
+            let user1 = await UserModel.findById(game.user1)
+            let user2 = await UserModel.findById(game.user2)
 
-        if(game.status === 'active') {
-            user1.games.pull(gameId); 
-            await user1.save();
+            if(game.status === 'active') {
+                user1.games.pull(gameId); 
+                await user1.save();
 
-            user2.games.pull(gameId);
-            await user2.save();
-        } else {
-            user1.gamesOut.pull(gameId); 
-            await user1.save();
+                user2.games.pull(gameId);
+                await user2.save();
+            } else {
+                user1.gamesOut.pull(gameId); 
+                await user1.save();
 
-            user2.gamesIn.pull(gameId);
-            await user2.save();
+                user2.gamesIn.pull(gameId);
+                await user2.save();
+            }
+
+            io.to(user1.vkid).emit("updatedUser", { data: { user1 } })
+            io.to(user2.vkid).emit("updatedUser", { data: { user2 } })
+
+            MessageModel.deleteMany({ gameId: gameId }, (err, doc) => {
+                if (err) {
+                    console.log("Не удалось удалить сообщения", gameId)
+                }
+                if (!doc) {
+                    console.log("Сообщения не найдены", gameId)
+                }
+                console.log("Сообщения удалены", gameId)
+            });
+
+            AnsweredModel.deleteMany({ gameId: gameId }, (err, doc) => {
+                if (err) {
+                    console.log("Не удалось удалить answereds", gameId)
+                }
+                if (!doc) {
+                    console.log("answereds не найдены", gameId)
+                }
+                console.log("answereds удалены", gameId)
+            });
         }
-
-        io.to(user1.vkid).emit("updatedUser", { data: { user1 } })
-        io.to(user2.vkid).emit("updatedUser", { data: { user2 } })
-
-        MessageModel.deleteMany({ gameId: gameId }, (err, doc) => {
-            if (err) {
-                console.log("Не удалось удалить сообщения", gameId)
-            }
-            if (!doc) {
-                console.log("Сообщения не найдены", gameId)
-            }
-            console.log("Сообщения удалены", gameId)
-        });
-
-        AnsweredModel.deleteMany({ gameId: gameId }, (err, doc) => {
-            if (err) {
-                console.log("Не удалось удалить answereds", gameId)
-            }
-            if (!doc) {
-                console.log("answereds не найдены", gameId)
-            }
-            console.log("answereds удалены", gameId)
-        });
 
         GameModel.findOneAndDelete(
             {
