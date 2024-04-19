@@ -26,8 +26,8 @@ export const newGame = async (io, playerId1, playerId2, turn, theme) => {
                     quiz: rating.quiz,
                     turn: turn,
                     forSponsor: rating.forSponsor,
-                    player1: player1._id, // создатель
-                    player2: player2._id,
+                    user1: player1._id, // создатель
+                    user2: player2._id,
                     userUrl1: player1.avaUrl, 
                     userUrl2: player2.avaUrl,
                 });
@@ -60,8 +60,8 @@ export const newGame = async (io, playerId1, playerId2, turn, theme) => {
                         quiz: rating.quiz,
                         turn: turn,
                         forSponsor: rating.forSponsor,
-                        player1: player1._id, // создатель
-                        player2: player2._id,
+                        user1: player1._id, // создатель
+                        user2: player2._id,
                         userUrl1: player1.avaUrl, 
                         userUrl2: player2.avaUrl,
                     });
