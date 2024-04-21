@@ -2,6 +2,7 @@ import GameModel from "../models/Game.js";
 import QuestionModel from "../models/Question.js";
 import UserModel from "../models/User.js";
 import AnsweredModel from "../models/Answered.js";
+import MessageModel from "../models/Message.js";
 
 export const getGame = async ( io, vkid, gameId ) => {
     try {
