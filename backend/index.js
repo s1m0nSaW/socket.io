@@ -13,6 +13,7 @@ import { create, getAnwered, update } from './handlers/answeredHandler.js';
 import { getUser, register, getFreeRsvp, checkPromoter, setPromoter } from './handlers/userHandler.js';
 import { getThemes, newGame, newUser } from './handlers/newGameHandler.js';
 import { acceptGame, allGames, gamesIn, gamesOut, getGames, myGames, removeGame } from './handlers/gamesPageHandler.js';
+import { getGame, nextStep, setTurn } from './handlers/gamePlayHandler.js';
 
 dotenv.config();
 
@@ -92,6 +93,10 @@ io.on("connection", (socket) => {
     socket.on("removeGame", async ({vkid, gameId}) => removeGame(io, vkid, gameId));
     socket.on("acceptGame", async ({gameId}) => acceptGame(io, gameId));
     socket.on("getAllGames", async ({vkid}) => allGames(io, vkid));
+
+    socket.on("setGame", async ({vkid, gameId}) => getGame(io, vkid, gameId));
+    socket.on("setTurn", async ({userId, gameId}) => setTurn(io, userId, gameId));
+    socket.on("nextStep", async ({userId, gameId}) => nextStep(io, userId, gameId));
     /*
     router.post('/answer', checkAuth, AnsweredController.create);
     router.post('/up-answer/:id', checkAuth, AnsweredController.update);
