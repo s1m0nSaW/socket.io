@@ -3,6 +3,8 @@ import QuestionModel from "../models/Question.js";
 import UserModel from "../models/User.js";
 import AnsweredModel from "../models/Answered.js";
 import MessageModel from "../models/Message.js";
+import RatingModel from "../models/Rating.js";
+import ComplimentModel from "../models/Compliment.js";
 
 export const getGame = async ( io, vkid, gameId ) => {
     try {
@@ -104,3 +106,56 @@ export const nextStep = async ( io, userId, gameId ) => {
         console.log(err);
     }
 };
+
+export const theEnd = async ( io, gameId, theme ) => {
+    const rating = await RatingModel.findOne({ theme: theme });
+    const answereds = await AnsweredModel.find({ gameId: gameId });
+    io.to(gameId).emit("onTheEnd", { data: { rating, answereds }});
+}
+
+export const updateRating = async (io, ratingId, rate, gameId) => {
+    try {
+        const rating = await RatingModel.findById(ratingId);
+
+        if(rating){
+            let newRating = Math.ceil((rate + (rating.rating * rating.count))/(rating.count + 1));
+            rating.rating = newRating;
+            rating.count += 1;
+            rating.games.push(gameId); 
+            await rating.save();
+
+            const answereds = await AnsweredModel.find({ gameId: gameId });
+            io.to(gameId).emit("onTheEnd", { data: { rating, answereds }});
+        }
+
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+export const createCompliment = async (io, from, to, price, image, name) => {
+    try {
+        let fromUser = await UserModel.findById(from)
+        let toUser = await UserModel.findById(to)
+
+        const doc = new ComplimentModel({
+            from: from,
+            to: to,
+            price: price,
+            image: image,
+            name: name,
+        });
+
+        const compliment = await doc.save();
+
+        if(compliment){
+            io.to(toUser.vkid).emit("notification", { data: { message: `${fromUser.firstName} подарил вам комплимент`, severity:'success' } });
+            io.to(fromUser.vkid).emit("notification", { data: { message: `Комплимент успешно подарен`, severity:'success' } });
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: "Не удалось создать compliment",
+        });
+    }
+}

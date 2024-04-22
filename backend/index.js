@@ -13,7 +13,7 @@ import { create, getAnwered, update } from './handlers/answeredHandler.js';
 import { getUser, register, getFreeRsvp, checkPromoter, setPromoter } from './handlers/userHandler.js';
 import { getThemes, newGame, newUser } from './handlers/newGameHandler.js';
 import { acceptGame, allGames, gamesIn, gamesOut, getGames, myGames, removeGame } from './handlers/gamesPageHandler.js';
-import { getGame, nextStep, setTurn } from './handlers/gamePlayHandler.js';
+import { createCompliment, getGame, nextStep, setTurn, updateRating } from './handlers/gamePlayHandler.js';
 
 dotenv.config();
 
@@ -97,6 +97,9 @@ io.on("connection", (socket) => {
     socket.on("setGame", async ({vkid, gameId}) => getGame(io, vkid, gameId));
     socket.on("setTurn", async ({userId, gameId}) => setTurn(io, userId, gameId));
     socket.on("nextStep", async ({userId, gameId}) => nextStep(io, userId, gameId));
+    socket.on("theEnd", async ({gameId, theme}) => nextStep(io, gameId, theme));
+    socket.on("updateRating", async ({ratingId, rate, gameId}) => updateRating(io, ratingId, rate, gameId));
+    socket.on("makeCompliment", async ({from, to, price, image, name}) => createCompliment(io, from, to, price, image, name));
     /*
     router.post('/answer', checkAuth, AnsweredController.create);
     router.post('/up-answer/:id', checkAuth, AnsweredController.update);
@@ -105,14 +108,6 @@ io.on("connection", (socket) => {
 
     socket.on("socketNotification", ({ userId, message, severity }) => {
         io.to(userId).emit("notification", { data: { message, severity } })
-    })
-
-    socket.on("upGames", ({ userId }) => {
-        io.to(userId).emit("updateGames", { data: { userId } })
-    })
-
-    socket.on("updateGame", ({ gameId }) => {
-        io.to(gameId).emit("update", { data: { gameId } })
     })
 
     socket.on("removeGame", ({ gameId }) => {

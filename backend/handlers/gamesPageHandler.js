@@ -66,7 +66,6 @@ export const gamesOut = async ( io, vkid ) => {
 export const removeGame = async ( io, vkid, gameId ) => {
     try {
         const game = await GameModel.findById(gameId);
-        
         let user1 = await UserModel.findById(game.user1)
         let user2 = await UserModel.findById(game.user2)
 
@@ -119,8 +118,7 @@ export const removeGame = async ( io, vkid, gameId ) => {
                 if (!doc) {
                     console.log('Игра не найдена', gameId)
                 } else {
-                    io.to(user1.vkid).emit("onRemoveGame", { data: "the game is removed" })
-                    io.to(user2.vkid).emit("onRemoveGame", { data: "the game is removed" })
+                    io.to(gameId).emit("onRemoveGame", { data: "the game is removed" })
                     if(vkid === user1.vkid){
                         io.to(user2.vkid).emit("notification", { data: { message: `${user1.firstName} удалил игру`, severity:'info' } })
                         io.to(user1.vkid).emit("notification", { data: { message: `Игра удалена`, severity:'info' } })
