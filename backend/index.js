@@ -13,7 +13,7 @@ import { create, getAnwered, update } from './handlers/answeredHandler.js';
 import { getUser, register, getFreeRsvp, checkPromoter, setPromoter } from './handlers/userHandler.js';
 import { getThemes, newGame, newUser } from './handlers/newGameHandler.js';
 import { acceptGame, allGames, gamesIn, gamesOut, getGames, myGames, removeGame } from './handlers/gamesPageHandler.js';
-import { createCompliment, getGame, nextStep, setTurn, updateRating } from './handlers/gamePlayHandler.js';
+import { createCompliment, getGame, nextStep, setTurn, theEnd, updateRating } from './handlers/gamePlayHandler.js';
 
 dotenv.config();
 
@@ -97,7 +97,7 @@ io.on("connection", (socket) => {
     socket.on("setGame", async ({vkid, gameId}) => getGame(io, vkid, gameId));
     socket.on("setTurn", async ({userId, gameId}) => setTurn(io, userId, gameId));
     socket.on("nextStep", async ({userId, gameId}) => nextStep(io, userId, gameId));
-    socket.on("theEnd", async ({gameId, theme}) => nextStep(io, gameId, theme));
+    socket.on("theEnd", async ({gameId, theme}) => theEnd(io, gameId, theme));
     socket.on("updateRating", async ({ratingId, rate, gameId}) => updateRating(io, ratingId, rate, gameId));
     socket.on("makeCompliment", async ({from, to, price, image, name}) => createCompliment(io, from, to, price, image, name));
     /*
