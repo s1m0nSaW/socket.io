@@ -54,6 +54,7 @@ router.post('/get-all-games', checkAdmin, GameController.getAllGames);
 router.post('/delete-games', checkAdmin, GameController.removeAllGames);
 router.post('/delete-answereds', checkAdmin, GameController.removeAllAnswereds);
 router.post('/delete-messages', checkAdmin, GameController.removeAllMessages);
+router.post('/get-all-answereds', checkAdmin, AnsweredController.getAnwereds);
 
 router.post('/auth/register', UserController.register);
 router.patch('/after-ads', checkAuth, UserController.afterAds);

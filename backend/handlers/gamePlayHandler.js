@@ -41,7 +41,7 @@ export const getGame = async ( io, vkid, gameId ) => {
                     io.to(vkid).emit("answered", { data: answered});
                 }
             } else {
-                const answered = await AnsweredModel.findOne({ questionId: game.answered });
+                const answered = await AnsweredModel.findOne({ _id: game.answered });
                 io.to(vkid).emit("answered", { data: answered});
             }
             io.to(vkid).emit("updatedGame", { data: game});
@@ -83,8 +83,6 @@ export const nextStep = async ( io, userId, gameId ) => {
     try {
         const game = await GameModel.findById(gameId);
         game.activeStep += 1;
-        await game.save();
-
         if (game) {
             const questions = await QuestionModel.find({ theme: game.theme, });
             
@@ -98,6 +96,8 @@ export const nextStep = async ( io, userId, gameId ) => {
                 answer2: 'none',
             });
             const answered = await doc.save();
+            game.answered = answered._id
+            await game.save();
 
             io.to(gameId).emit("answered", { data: answered});
             io.to(gameId).emit("updatedGame", { data: game});
