@@ -10,7 +10,7 @@ import { Server } from 'socket.io';
 import { instrument } from "@socket.io/admin-ui";
 import { sendMessageHandler, getMessagesHandler } from './handlers/messagesHandler.js';
 import { create, getAnwered, update } from './handlers/answeredHandler.js';
-import { getUser, register, getFreeRsvp, checkPromoter, setPromoter } from './handlers/userHandler.js';
+import { getUser, register, getFreeRsvp, checkPromoter, setPromoter, getCompliment } from './handlers/userHandler.js';
 import { getThemes, newGame, newUser } from './handlers/newGameHandler.js';
 import { acceptGame, allGames, gamesIn, gamesOut, getGames, myGames, removeGame } from './handlers/gamesPageHandler.js';
 import { createCompliment, getGame, nextStep, setTurn, theEnd, updateRating } from './handlers/gamePlayHandler.js';
@@ -81,6 +81,7 @@ io.on("connection", (socket) => {
     socket.on("getFreeRsvp", async ({ vkid }) => getFreeRsvp(io, vkid));
     socket.on("checkPromoter", async ({ vkid }) => checkPromoter(io, vkid));
     socket.on("promoter", async ({ vkid }) => setPromoter(io, vkid));
+    socket.on("getUserCompliment", async ({ vkid, friendId }) => getCompliment(io, vkid, friendId));
     
     socket.on("getThemes", ({ vkid }) => getThemes(io, vkid));
     socket.on("newGame", ({ playerId1, playerId2, turn, theme }) => newGame(io, playerId1, playerId2, turn, theme));
@@ -108,10 +109,6 @@ io.on("connection", (socket) => {
 
     socket.on("socketNotification", ({ userId, message, severity }) => {
         io.to(userId).emit("notification", { data: { message, severity } })
-    })
-
-    socket.on("removeGame", ({ gameId }) => {
-        io.to(gameId).emit("deleteGame", { data: { gameId } })
     })
 
 })

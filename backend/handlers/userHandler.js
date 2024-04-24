@@ -106,3 +106,15 @@ export const setPromoter = async ( io, vkid ) => {
         io.to(vkid).emit("error", { data: "Что-то пошло не так", err });
     }
 };
+
+export const getCompliment = async ( io, vkid, friendId ) => {
+    try {
+        const compliments = await ComplimentModel.find({ to: friendId });
+
+        if(compliments) {
+            io.to(vkid).emit("userCompliments", { data: { compliments } })
+        }
+    } catch (err) {
+        console.log(err);
+    }
+};
