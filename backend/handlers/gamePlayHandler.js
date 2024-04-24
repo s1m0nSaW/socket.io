@@ -96,7 +96,8 @@ export const nextStep = async ( io, userId, gameId ) => {
                 answer2: 'none',
             });
             const answered = await doc.save();
-            game.answered = answered._id
+            game.answered = answered._id;
+            game.turn = userId;
             await game.save();
 
             io.to(gameId).emit("answered", { data: answered});
