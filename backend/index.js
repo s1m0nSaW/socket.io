@@ -10,7 +10,7 @@ import { Server } from 'socket.io';
 import { instrument } from "@socket.io/admin-ui";
 import { sendMessageHandler, getMessagesHandler } from './handlers/messagesHandler.js';
 import { create, getAnwered, update } from './handlers/answeredHandler.js';
-import { getUser, register, getFreeRsvp, checkPromoter, setPromoter, getCompliment } from './handlers/userHandler.js';
+import { getUser, register, getFreeRsvp, checkPromoter, setPromoter, getCompliment, afterAds } from './handlers/userHandler.js';
 import { getThemes, newGame, newUser } from './handlers/newGameHandler.js';
 import { acceptGame, allGames, gamesIn, gamesOut, getGames, myGames, removeGame } from './handlers/gamesPageHandler.js';
 import { createCompliment, getGame, nextStep, setTurn, theEnd, updateRating } from './handlers/gamePlayHandler.js';
@@ -34,14 +34,14 @@ app.use(express.json());
 app.use(cors());
 app.use(route);
 app.use('/uploads', express.static('uploads'));
-/*vk.com: https://stage-app51864614-91906819e9d5.pages.vk-apps.com
+/*vk.com: https://prod-app51864614-be68ab63c85a.pages-ac.vk-apps.com/index.html
 iOS & Android:  https://stage-app51864614-91906819e9d5.pages.vk-apps.com
 m.vk.com:       https://stage-app51864614-91906819e9d5.pages.vk-apps.com*/
 
 const server = createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: ["https://prod-app51864614-91906819e9d5.pages-ac.vk-apps.com", 'https://stage-app51864614-91906819e9d5.pages.vk-apps.com', 'https://localhost:3000'],
+        origin: ["https://stage-app51864614-be68ab63c85a.pages.vk-apps.com/index.html", 'https://prod-app51864614-be68ab63c85a.pages-ac.vk-apps.com/index.html', 'https://localhost:3000'],
         credentials: true,
         methods: ["GET", "POST"]
     },
@@ -82,6 +82,7 @@ io.on("connection", (socket) => {
     socket.on("checkPromoter", async ({ vkid }) => checkPromoter(io, vkid));
     socket.on("promoter", async ({ vkid }) => setPromoter(io, vkid));
     socket.on("getUserCompliment", async ({ vkid, friendId }) => getCompliment(io, vkid, friendId));
+    socket.on("afterAds", async ({ vkid }) => afterAds(io, vkid));
     
     socket.on("getThemes", ({ vkid }) => getThemes(io, vkid));
     socket.on("newGame", ({ playerId1, playerId2, turn, theme }) => newGame(io, playerId1, playerId2, turn, theme));

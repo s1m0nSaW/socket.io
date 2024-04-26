@@ -16,6 +16,7 @@ export const getUser = async ( io, vkid ) => {
                 user.rsvpStatus = true;
             }
             if(date > user.adsDate){
+                user.ads = 0;
                 user.adsStatus = true;
             }
     
@@ -113,6 +114,25 @@ export const getCompliment = async ( io, vkid, friendId ) => {
 
         if(compliments) {
             io.to(vkid).emit("userCompliments", { data: { compliments } })
+        }
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+export const afterAds = async ( io, vkid ) => {
+    const date = +new Date()
+    try {
+        const user = await UserModel.findOne({ vkid: vkid });
+        if(user.ads < 2){
+            user.rsvp += 1;
+            user.ads += 1;
+            if (user.ads === 2){
+                user.adsDate = date + 86400000;
+                user.adsStatus = false;
+            }
+            await user.save();
+            io.to(vkid).emit("updatedUser", { data: { user } })
         }
     } catch (err) {
         console.log(err);
