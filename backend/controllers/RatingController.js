@@ -29,6 +29,7 @@ export const createMany = async (req,res) => {
             const doc = new Rating({
                 theme: rates[i].theme,
                 forSponsor: rates[i].forSponsor,
+                quiz: rates[i].quiz,
                 count: rates[i].count,
 		        rating: rates[i].rating,
             });

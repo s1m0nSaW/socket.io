@@ -36,49 +36,41 @@ export const purchase = async (request, response) => {
                     case "get_item":
                         responseData = await handleGetItem(requestParams);
                         // Отправляем ответ
-                        console.log('Отправили ответ в вк: ', responseData);
                         response.status(200).json(responseData);
                         break;
                     case "get_item_test":
                         responseData = await handleGetItem(requestParams);
                         // Отправляем ответ
-                        console.log('Отправили ответ в вк: ', responseData);
                         response.status(200).json(responseData);
                         break;
                     case "get_subscription":
                         responseData = await handleGetSubscription(requestParams);
                         // Отправляем ответ
-                        console.log('Отправили ответ в вк: ', responseData);
                         response.status(200).json(responseData);
                         break;
                     case "get_subscription_test":
                         responseData = await handleGetSubscription(requestParams);
                         // Отправляем ответ
-                        console.log('Отправили ответ в вк: ', responseData);
                         response.status(200).json(responseData);
                         break;
                     case "order_status_change":
                         responseData = await handleOrderStatusChange(requestParams);
                         s = JSON.stringify(responseData);
-                        console.log('Отправили ответ в вк: ', s);
                         response.end(s);
                         break;
                     case "order_status_change_test":
                         responseData = await handleOrderStatusChange(requestParams);
                         s = JSON.stringify(responseData);
-                        console.log('Отправили ответ в вк: ', s);
                         response.end(s);
                         break;
                     case "subscription_status_change":
                         responseData = await handleSubscriptionStatusChange(requestParams);
                         s = JSON.stringify(responseData);
-                        console.log('Отправили ответ в вк: ', s);
                         response.end(s);
                         break;
                     case "subscription_status_change_test":
                         responseData = await handleSubscriptionStatusChange(requestParams);
                         s = JSON.stringify(responseData);
-                        console.log('Отправили ответ в вк: ', s);
                         response.end(s);
                         break;
                 }
@@ -95,7 +87,6 @@ export const purchase = async (request, response) => {
                 };
                 // Отправляем ответ
                 s = JSON.stringify(responseData);
-                console.log('Отправили ответ в вк: ', s);
                 response.end(s);
             }
         });
@@ -200,8 +191,6 @@ const handleOrderStatusChange = async (params) => {
             const user = await UserModel.findOne({ vkid: params.receiver_id });
             if(item?.type === 'rsvp'){
                 user.rsvp += item.count;
-                console.log('User,', user)
-                console.log('Пользователю rsvp успешно начислены')
                 await user.save();
             }
 
@@ -219,12 +208,7 @@ const handleOrderStatusChange = async (params) => {
                 app_order_id: appOrder,
             });
     
-            const saved_doc = await doc.save();
-            if(saved_doc){
-                console.log('Сохранили информацию о заказе в приложении')
-            } else {
-                console.log('Не смогли сохранить информацию о заказе в приложении')
-            }
+            await doc.save();
 
             responseData = {
                 response: {
@@ -249,7 +233,6 @@ const handleOrderStatusChange = async (params) => {
                     app_order_id: params.date,
                 },
             };
-            console.log("Обработан возврат")
             break;
         default:
             console.log("Ошибка в структуре данных")
@@ -274,15 +257,13 @@ const handleSubscriptionStatusChange = async (params) => {
     switch (params.status) {
         case "chargeable":
             // Предоставляем товар в приложени
-
             if(user) {
                 try {
                     user.status = "sponsor";
                     user.statusDate = params.next_bill_time;
-                    await user.save().then((data)=>console.log(data));
-                    console.log('Пользователь успешно стал premium')
+                    await user.save();
                 } catch (error) {
-                    console.log('Ошибка premium', error)
+                    console.log('Ошибка premium')
                 }
             } else {
                 console.log('Пользователь не найден');
@@ -307,12 +288,7 @@ const handleSubscriptionStatusChange = async (params) => {
                     cancel_reason: params.cancel_reason, // only subscription
                 });
         
-                const saved_doc = await doc.save();
-                if(saved_doc){
-                    console.log('Сохранили информацию о подписке в приложении')
-                } else {
-                    console.log('Не смогли сохранить информацию о подписке в приложении')
-                }
+                await doc.save();
 
                 responseData = {
                     response: {
@@ -329,7 +305,7 @@ const handleSubscriptionStatusChange = async (params) => {
                 responseData = {
                     response: {
                         subscription_id: params.subscription_id,
-                        app_order_id: subsOrder.app_order_id,
+                        app_order_id: subscriptionOrder.app_order_id,
                     },
                 };
             } else {
@@ -340,14 +316,11 @@ const handleSubscriptionStatusChange = async (params) => {
                     },
                 };
             }
-            console.log("Обработан возврат")
             break;
         case "cancelled":
             // Обрабатываем возврат
-            let _apOrder = +new Date();
             user.status = 'none';
             user.statusDate = 0;
-            console.log('Пользователь успешно отписался', user)
             await user.save();
             
             if(subscriptionOrder){
