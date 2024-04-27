@@ -33,6 +33,33 @@ export const getUser = async ( io, vkid ) => {
     }
 };
 
+export const already = async ( io, vkid ) => {
+    try {
+        const user = await UserModel.findOne({ vkid: vkid });
+        if(user){
+            const compliments = await ComplimentModel.find({ to: user._id });
+
+            if(compliments) {
+                io.to(vkid).emit("compliments", { data: { compliments } })
+            }
+
+            if(user){
+                user.status = 'none';
+            }
+    
+            await user.save();
+
+            io.to(vkid).emit("updatedUser", { data: { user } })
+        } else {
+            io.to(vkid).emit("updatedUser", { data: { user:{ firstName:'$2b$10$T72I44FcHBIcS81xrkFY3e2TJwaaTVLFp7d5wuddKeVEuc2.3WR0G' } } })
+        }
+
+    } catch (err) {
+        console.log(err);
+        io.to(vkid).emit("error", { data: "Что-то пошло не так", err });
+    }
+};
+
 export const register = async ( io, vkid, status, firstName, avaUrl ) => {
     try {
         const doc = new UserModel({

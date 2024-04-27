@@ -10,7 +10,7 @@ import { Server } from 'socket.io';
 import { instrument } from "@socket.io/admin-ui";
 import { sendMessageHandler, getMessagesHandler } from './handlers/messagesHandler.js';
 import { create, getAnwered, update } from './handlers/answeredHandler.js';
-import { getUser, register, getFreeRsvp, checkPromoter, setPromoter, getCompliment, afterAds } from './handlers/userHandler.js';
+import { getUser, already, register, getFreeRsvp, checkPromoter, setPromoter, getCompliment, afterAds } from './handlers/userHandler.js';
 import { getThemes, newGame, newUser } from './handlers/newGameHandler.js';
 import { acceptGame, allGames, gamesIn, gamesOut, getGames, myGames, removeGame } from './handlers/gamesPageHandler.js';
 import { createCompliment, getGame, nextStep, setTurn, theEnd, updateRating } from './handlers/gamePlayHandler.js';
@@ -41,7 +41,7 @@ m.vk.com:       https://stage-app51864614-91906819e9d5.pages.vk-apps.com*/
 const server = createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: ["https://stage-app51864614-f2a13b5f4e16.pages.vk-apps.com", 'https://prod-app51864614-f2a13b5f4e16.pages-ac.vk-apps.com', 'https://localhost:3000'],
+        origin: ["https://stage-app51864614-a0899483ecf1.pages.vk-apps.com", 'https://prod-app51864614-a0899483ecf1.pages-ac.vk-apps.com', 'https://localhost:3000'],
         credentials: true,
         methods: ["GET", "POST"]
     },
@@ -77,6 +77,7 @@ io.on("connection", (socket) => {
     socket.on("upAnswered", ({ id, answer2, correct, answer1, gameId }) => update(io, id, answer2, correct, answer1, gameId));
     
     socket.on("getUser", async ({ vkid }) => getUser(io, vkid));
+    socket.on("already", async ({ vkid }) => already(io, vkid));
     socket.on("register", async ({ vkid, status, firstName, avaUrl }) => register(io, vkid, status, firstName, avaUrl));
     socket.on("getFreeRsvp", async ({ vkid }) => getFreeRsvp(io, vkid));
     socket.on("checkPromoter", async ({ vkid }) => checkPromoter(io, vkid));
