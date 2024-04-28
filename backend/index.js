@@ -103,11 +103,6 @@ io.on("connection", (socket) => {
     socket.on("theEnd", async ({gameId, theme}) => theEnd(io, gameId, theme));
     socket.on("updateRating", async ({ratingId, rate, gameId}) => updateRating(io, ratingId, rate, gameId));
     socket.on("makeCompliment", async ({from, to, price, image, name}) => createCompliment(io, from, to, price, image, name));
-    /*
-    router.post('/answer', checkAuth, AnsweredController.create);
-    router.post('/up-answer/:id', checkAuth, AnsweredController.update);
-    router.post('/answer/:id', checkAuth, AnsweredController.getAnwered);
-    */
 
     socket.on("socketNotification", ({ userId, message, severity }) => {
         io.to(userId).emit("notification", { data: { message, severity } })

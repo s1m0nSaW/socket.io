@@ -58,7 +58,6 @@ export const setTurn = async (io, userId, gameId) => {
         const game = await GameModel.findOneAndUpdate({ _id: gameId }, { turn: userId }, { new: true }).catch(error => {
             console.log(error);
         });
-        io.to(gameId).emit("updatedGame", { data: game});
         if(game) {
             const questions = await QuestionModel.find({ theme: game.theme, });
             const doc = new AnsweredModel({
@@ -71,6 +70,9 @@ export const setTurn = async (io, userId, gameId) => {
                 answer2: 'none',
             });
             const answered = await doc.save();
+            game.answered = answered._id;
+            await game.save();
+            io.to(gameId).emit("updatedGame", { data: game});
             io.to(gameId).emit("answered", { data: answered});
         }
 
@@ -119,7 +121,7 @@ export const updateRating = async (io, ratingId, rate, gameId) => {
         const rating = await RatingModel.findById(ratingId);
 
         if(rating){
-            let newRating = Math.ceil((rate + (rating.rating * rating.count))/(rating.count + 1));
+            let newRating = Math.round((rate + (rating.rating * rating.count))/(rating.count + 1));
             rating.rating = newRating;
             rating.count += 1;
             rating.games.push(gameId); 
