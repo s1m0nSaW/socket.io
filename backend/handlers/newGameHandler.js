@@ -42,9 +42,9 @@ export const newGame = async (io, playerId1, playerId2, turn, theme) => {
                 
                 player2.gamesIn.push(game._id);
                 player2.save();
-                io.to(player2.vkid).emit("updatedUser", { data: { user: player2 } })
+                io.to(playerId2).emit("updatedUser", { data: { user: player2 } })
 
-                io.to(player2.vkid).emit("notification", { data: { message: `${player1.firstName} пригласил поиграть`, severity:'info' } })
+                io.to(playerId2).emit("notification", { data: { message: `${player1.firstName} пригласил поиграть`, severity:'info' } })
                 io.to(player1.vkid).emit("notification", { data: { message: 'Игра создана', severity:'success' } })
             } else {
                 io.to(player1.vkid).emit("notification", { data: { message: 'Недостаточно монет', severity:'error' } })

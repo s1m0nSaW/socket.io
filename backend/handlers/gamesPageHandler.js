@@ -121,10 +121,10 @@ export const removeGame = async ( io, vkid, gameId ) => {
                     io.to(user1.vkid).emit("onRemoveGame", { data: "the game is removed" })
                     io.to(user2.vkid).emit("onRemoveGame", { data: "the game is removed" })
                     if(vkid === user1.vkid){
-                        io.to(user2.vkid).emit("notification", { data: { message: `${user1.firstName} удалил игру`, severity:'info' } })
+                        io.to(user2.vkid).emit("notification", { data: { message: `${user1.firstName} удалил(-а) игру`, severity:'info' } })
                         io.to(user1.vkid).emit("notification", { data: { message: `Игра удалена`, severity:'info' } })
                     } else {
-                        io.to(user1.vkid).emit("notification", { data: { message: `${user2.firstName} удалил игру`, severity:'info' } })
+                        io.to(user1.vkid).emit("notification", { data: { message: `${user2.firstName} удалил(-а) игру`, severity:'info' } })
                         io.to(user2.vkid).emit("notification", { data: { message: `Игра удалена`, severity:'info' } })
                     }
                 }
@@ -152,7 +152,6 @@ export const acceptGame = async (io, gameId) => {
                     .then(user2 => {
                         io.to(user2.vkid).emit("updatedUser", { data: { user: user2 } })
                         io.to(user2.vkid).emit("gameAccepted", { data: { user: "the game is accepted" } })
-                        io.to(user2.vkid).emit("notification", { data: { message: `Вы согласились играть с ${user1.firstName}`, severity:'info' } })
                         io.to(user1.vkid).emit("notification", { data: { message: `Пользователь ${user2.firstName} согласен играть`, severity:'info' } })
                     })
                     .catch(error => {
