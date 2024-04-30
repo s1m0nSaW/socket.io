@@ -9,7 +9,7 @@ export const getUser = async ( io, vkid ) => {
             const compliments = await ComplimentModel.find({ to: user._id });
 
             if(compliments) {
-                io.to(vkid).emit("compliments", { data: { compliments } })
+                io.to(vkid).emit("compliments", { data: { compliments: compliments.reverse() } })
             }
 
             if(date > user.rsvpDate){
@@ -37,12 +37,6 @@ export const already = async ( io, vkid ) => {
     try {
         const user = await UserModel.findOne({ vkid: vkid });
         if(user){
-            const compliments = await ComplimentModel.find({ to: user._id });
-
-            if(compliments) {
-                io.to(vkid).emit("compliments", { data: { compliments } })
-            }
-
             if(user){
                 user.status = 'none';
             }
@@ -140,7 +134,7 @@ export const getCompliment = async ( io, vkid, friendId ) => {
         const compliments = await ComplimentModel.find({ to: friendId });
 
         if(compliments) {
-            io.to(vkid).emit("userCompliments", { data: { compliments } })
+            io.to(vkid).emit("userCompliments", { data: { compliments: compliments.reverse() } })
         }
     } catch (err) {
         console.log(err);
