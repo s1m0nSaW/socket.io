@@ -72,9 +72,18 @@ io.on("connection", (socket) => {
         console.log('связь с ', userId)
     })
 
-    socket.on("sendMessage", ({ senderId, content, gameId, date }) => sendMessageHandler( io, senderId, content, gameId, date ));
-    socket.on("getMessages", ({ gameId }) => getMessagesHandler( io, gameId ));
-    socket.on("typing", ({ vkid, gameId, status }) => typingMessage(io, vkid, gameId, status));
+    socket.on("sendMessage", ({ senderId, content, gameId, date }) => {
+        sendMessageHandler( io, senderId, content, gameId, date );
+        io.to(vkid).emit("onlines", { data: socketUserIdMap });
+    });
+    socket.on("getMessages", ({ gameId }) => {
+        getMessagesHandler( io, gameId );
+        io.to(vkid).emit("onlines", { data: socketUserIdMap });
+    });
+    socket.on("typing", ({ vkid, gameId, status }) => {
+        typingMessage(io, vkid, gameId, status);
+        io.to(vkid).emit("onlines", { data: socketUserIdMap });
+    });
     
     socket.on("newAnswered", ({ questionId, gameId, turn, user1, user2, answer1, answer2 }) => create(io, questionId, gameId, turn, user1, user2, answer1, answer2));
     socket.on("getAnswered", ({ gameId, answeredId }) => getAnwered(io, gameId, answeredId));
@@ -104,8 +113,14 @@ io.on("connection", (socket) => {
     socket.on("acceptGame", async ({gameId}) => acceptGame(io, gameId));
     socket.on("getAllGames", async ({vkid}) => allGames(io, vkid));
 
-    socket.on("setGame", async ({vkid, gameId}) => getGame(io, vkid, gameId));
-    socket.on("setTurn", async ({userId, gameId}) => setTurn(io, userId, gameId));
+    socket.on("setGame", async ({vkid, gameId}) => {
+        getGame(io, vkid, gameId);
+        io.to(vkid).emit("onlines", { data: socketUserIdMap });
+    });
+    socket.on("setTurn", async ({userId, gameId}) => {
+        setTurn(io, userId, gameId);
+        io.to(vkid).emit("onlines", { data: socketUserIdMap });
+    });
     socket.on("nextStep", async ({userId, gameId}) => {
         nextStep(io, userId, gameId);
         io.to(vkid).emit("onlines", { data: socketUserIdMap });
