@@ -58,6 +58,8 @@ io.engine.on("connection_error", (err) => {
     console.log(`Ошибка:`, err.message);  // the error message, for example "Session ID unknown"
 });
 
+const socketUserIdMap = {};
+
 io.on("connection", (socket) => {
     socket.on("join", ({ userId, gameId }) => {
         socket.join(gameId);
@@ -66,6 +68,7 @@ io.on("connection", (socket) => {
 
     socket.on("joinUser", ({ userId }) => {
         socket.join(userId);
+        socketUserIdMap[socket.id] = userId; // сохраняем mapping
         console.log('связь с ', userId)
     })
 
@@ -76,7 +79,10 @@ io.on("connection", (socket) => {
     socket.on("getAnswered", ({ gameId, answeredId }) => getAnwered(io, gameId, answeredId));
     socket.on("upAnswered", ({ id, answer2, correct, answer1, gameId }) => update(io, id, answer2, correct, answer1, gameId));
     
-    socket.on("getUser", async ({ vkid }) => getUser(io, vkid));
+    socket.on("getUser", async ({ vkid }) => {
+        getUser(io, vkid);
+    });
+
     socket.on("already", async ({ vkid }) => already(io, vkid));
     socket.on("register", async ({ vkid, status, firstName, avaUrl }) => register(io, vkid, status, firstName, avaUrl));
     socket.on("getFreeRsvp", async ({ vkid }) => getFreeRsvp(io, vkid));
@@ -85,7 +91,10 @@ io.on("connection", (socket) => {
     socket.on("getUserCompliment", async ({ vkid, friendId }) => getCompliment(io, vkid, friendId));
     socket.on("afterAds", async ({ vkid }) => afterAds(io, vkid));
     
-    socket.on("getThemes", ({ vkid }) => getThemes(io, vkid));
+    socket.on("getThemes", ({ vkid }) => {
+        getThemes(io, vkid)
+        io.to(vkid).emit("onlines", { data: socketUserIdMap })
+    });
     socket.on("newGame", ({ playerId1, playerId2, turn, theme }) => newGame(io, playerId1, playerId2, turn, theme));
     socket.on("newPlayer", async ({ vkid, playerId, status, firstName, avaUrl }) => newUser(io, vkid, playerId, status, firstName, avaUrl));
 
@@ -99,7 +108,10 @@ io.on("connection", (socket) => {
 
     socket.on("setGame", async ({vkid, gameId}) => getGame(io, vkid, gameId));
     socket.on("setTurn", async ({userId, gameId}) => setTurn(io, userId, gameId));
-    socket.on("nextStep", async ({userId, gameId}) => nextStep(io, userId, gameId));
+    socket.on("nextStep", async ({userId, gameId}) => {
+        nextStep(io, userId, gameId);
+        io.to(vkid).emit("onlines", { data: socketUserIdMap });
+    });
     socket.on("theEnd", async ({gameId, theme}) => theEnd(io, gameId, theme));
     socket.on("updateRating", async ({ratingId, rate, gameId}) => updateRating(io, ratingId, rate, gameId));
     socket.on("makeCompliment", async ({from, to, price, image, name}) => createCompliment(io, from, to, price, image, name));
@@ -107,6 +119,12 @@ io.on("connection", (socket) => {
     socket.on("socketNotification", ({ userId, message, severity }) => {
         io.to(userId).emit("notification", { data: { message, severity } })
     })
+
+    socket.on("disconnect", () => {
+        const userId = socketUserIdMap[socket.id];
+        delete socketUserIdMap[socket.id]; // удаляем mapping
+        console.log(`User ${userId} disconnected`);
+    });
 
 })
 
