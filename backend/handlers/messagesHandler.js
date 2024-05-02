@@ -22,6 +22,14 @@ export const sendMessageHandler = async (io, senderId, content, gameId, date) =>
     }
 };
 
+export const typingMessage = async (io, vkid, gameId, status) => {
+    try {
+        io.to(gameId).emit("typingMessage", { data: {vkid, status}});
+    } catch (err) {
+        console.log(err);
+    }
+};
+
 export const getMessagesHandler = async (io, gameId) => {
     try {
         const messages = await MessageModel.find({ gameId: gameId });

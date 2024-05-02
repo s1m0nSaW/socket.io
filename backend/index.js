@@ -8,7 +8,7 @@ import { addUser } from './users.js';
 import { createServer } from 'node:http';
 import { Server } from 'socket.io';
 import { instrument } from "@socket.io/admin-ui";
-import { sendMessageHandler, getMessagesHandler } from './handlers/messagesHandler.js';
+import { sendMessageHandler, getMessagesHandler, typingMessage } from './handlers/messagesHandler.js';
 import { create, getAnwered, update } from './handlers/answeredHandler.js';
 import { getUser, already, register, getFreeRsvp, checkPromoter, setPromoter, getCompliment, afterAds } from './handlers/userHandler.js';
 import { getThemes, newGame, newUser } from './handlers/newGameHandler.js';
@@ -41,7 +41,7 @@ m.vk.com:       https://stage-app51864614-91906819e9d5.pages.vk-apps.com*/
 const server = createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: ["https://stage-app51864614-20d82284f0b6.pages.vk-apps.com", 'https://prod-app51864614-20d82284f0b6.pages-ac.vk-apps.com', 'https://localhost:3000'],
+        origin: ["https://stage-app51864614-ee5a2afb0e69.pages.vk-apps.com", 'https://prod-app51864614-ee5a2afb0e69.pages-ac.vk-apps.com', 'https://localhost:3000'],
         credentials: true,
         methods: ["GET", "POST"]
     },
@@ -73,16 +73,14 @@ io.on("connection", (socket) => {
     })
 
     socket.on("sendMessage", ({ senderId, content, gameId, date }) => sendMessageHandler( io, senderId, content, gameId, date ));
-    socket.on("getMessages", ({gameId}) => getMessagesHandler( io, gameId ));
+    socket.on("getMessages", ({ gameId }) => getMessagesHandler( io, gameId ));
+    socket.on("typing", ({ vkid, gameId, status }) => typingMessage(io, vkid, gameId, status));
     
     socket.on("newAnswered", ({ questionId, gameId, turn, user1, user2, answer1, answer2 }) => create(io, questionId, gameId, turn, user1, user2, answer1, answer2));
     socket.on("getAnswered", ({ gameId, answeredId }) => getAnwered(io, gameId, answeredId));
     socket.on("upAnswered", ({ id, answer2, correct, answer1, gameId }) => update(io, id, answer2, correct, answer1, gameId));
     
-    socket.on("getUser", async ({ vkid }) => {
-        getUser(io, vkid);
-    });
-
+    socket.on("getUser", async ({ vkid }) => getUser(io, vkid));
     socket.on("already", async ({ vkid }) => already(io, vkid));
     socket.on("register", async ({ vkid, status, firstName, avaUrl }) => register(io, vkid, status, firstName, avaUrl));
     socket.on("getFreeRsvp", async ({ vkid }) => getFreeRsvp(io, vkid));
