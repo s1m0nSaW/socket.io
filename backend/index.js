@@ -74,11 +74,9 @@ io.on("connection", (socket) => {
 
     socket.on("sendMessage", ({ senderId, content, gameId, date }) => {
         sendMessageHandler( io, senderId, content, gameId, date );
-        io.to(vkid).emit("onlines", { data: socketUserIdMap });
     });
     socket.on("getMessages", ({ gameId }) => {
         getMessagesHandler( io, gameId );
-        io.to(vkid).emit("onlines", { data: socketUserIdMap });
     });
     socket.on("typing", ({ vkid, gameId, status }) => {
         typingMessage(io, vkid, gameId, status);
@@ -119,11 +117,9 @@ io.on("connection", (socket) => {
     });
     socket.on("setTurn", async ({userId, gameId}) => {
         setTurn(io, userId, gameId);
-        io.to(vkid).emit("onlines", { data: socketUserIdMap });
     });
     socket.on("nextStep", async ({userId, gameId}) => {
         nextStep(io, userId, gameId);
-        io.to(vkid).emit("onlines", { data: socketUserIdMap });
     });
     socket.on("theEnd", async ({gameId, theme}) => theEnd(io, gameId, theme));
     socket.on("updateRating", async ({ratingId, rate, gameId}) => updateRating(io, ratingId, rate, gameId));
