@@ -260,6 +260,7 @@ const handleSubscriptionStatusChange = async (params) => {
             if(user) {
                 try {
                     user.status = "sponsor";
+                    user.dailyRsvp = 10;
                     user.statusDate = params.next_bill_time;
                     await user.save();
                 } catch (error) {
@@ -320,6 +321,7 @@ const handleSubscriptionStatusChange = async (params) => {
         case "cancelled":
             // Обрабатываем возврат
             user.status = 'none';
+            user.dailyRsvp = 1;
             user.statusDate = 0;
             await user.save();
             

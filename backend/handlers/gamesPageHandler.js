@@ -149,10 +149,14 @@ export const acceptGame = async (io, gameId) => {
                     UserModel.findOneAndUpdate({ _id: game.user2 }, 
                                             { $push: { games: game._id }, $pull: { gamesIn: game._id } }, 
                                             { new: true })
-                    .then(user2 => {
+                    .then(async(user2) => {
                         io.to(user2.vkid).emit("updatedUser", { data: { user: user2 } })
                         io.to(user2.vkid).emit("gameAccepted", { data: { user: "the game is accepted" } })
                         io.to(user1.vkid).emit("notification", { data: { message: `Пользователь ${user2.firstName} согласен играть`, severity:'info' } })
+                        const games = await GameModel.find({ _id: { $in: user1.games } });
+                        const games2 = await GameModel.find({ _id: { $in: user2.games } });
+                        io.to(user1.vkid).emit("myGames", { data: games});
+                        io.to(user2.vkid).emit("myGames", { data: games2});
                     })
                     .catch(error => {
                         console.log('Something went wrong', error);
