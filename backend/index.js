@@ -18,6 +18,7 @@ import { createCompliment, getGame, nextStep, setTurn, theEnd, updateRating } fr
 dotenv.config();
 
 const port = process.env.PORT || 5000;
+const service = process.env.SERVICEKEY
 
 const mongooseUrl = `mongodb://0.0.0.0:27017/ochem`; // localhost
 const url1 = `mongodb://mongo:27017/ochem-vk`; //нужно поменять перед деплойем
@@ -100,7 +101,77 @@ io.on("connection", (socket) => {
         getThemes(io, vkid)
         io.to(vkid).emit("onlines", { data: socketUserIdMap })
     });
-    socket.on("newGame", ({ playerId1, playerId2, turn, theme }) => newGame(io, playerId1, playerId2, turn, theme));
+    socket.on("newGame", async ({ playerId1, playerId2, turn, theme }) => {
+        newGame(io, playerId1, playerId2, turn, theme)
+        
+        const url = "https://api.vk.com/method/apps.isNotificationsAllowed";
+        const data = {
+            user_id: playerId2,
+            apps_id: 51864614,
+            access_token: service,
+            v: 5.199,
+        };
+
+        const options = {
+            method: "POST",
+            hostname: url,
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            }
+        };
+
+        const req = http.request(options, (res) => {
+        let data = "";
+
+        res.on("data", (chunk) => {
+            data += chunk;
+        });
+
+        res.on("end", () => {
+            const response = JSON.parse(data);
+
+            if (response.response.is_allowed) {
+                // отправляем второй POST-запрос
+                const url2 = "https://api.vk.com/method/notifications.sendMessage";
+                const data2 = {
+                    user_ids: playerId2,
+                    message: "Кто-то хочет с вами поиграть",
+                    fragment: "/games",
+                    access_token: service,
+                    v: 5.199
+                };
+
+                const options2 = {
+                    method: "POST",
+                    hostname: url2,
+                    headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                    }
+                };
+
+                const req2 = http.request(options2, (res2) => {
+                    let data2 = "";
+
+                    res2.on("data", (chunk) => {
+                        data2 += chunk;
+                    });
+
+                    res2.on("end", () => {
+                    const response2 = JSON.parse(data2);
+
+                    // обработка ответа второго POST-запроса
+                    });
+                });
+
+                req2.write(querystring.stringify(data2));
+                req2.end();
+            }
+            });
+        });
+
+        req.write(querystring.stringify(data));
+        req.end();
+    });
     socket.on("newPlayer", async ({ vkid, playerId, status, firstName, avaUrl }) => newUser(io, vkid, playerId, status, firstName, avaUrl));
 
     socket.on("getGames", async ({vkid}) => getGames(io, vkid));
