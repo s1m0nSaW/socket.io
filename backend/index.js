@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import route from './route.js'
 import { addUser } from './users.js';
-import http from 'http';
+import axios from 'axios';
 
 import { createServer } from 'node:http';
 import { Server } from 'socket.io';
@@ -104,74 +104,31 @@ io.on("connection", (socket) => {
     });
     socket.on("newGame", async ({ playerId1, playerId2, turn, theme }) => {
         newGame(io, playerId1, playerId2, turn, theme)
-        
-        const url = "https://api.vk.com/method/apps.isNotificationsAllowed";
-        const data = {
-            user_id: playerId2,
-            apps_id: 51864614,
-            access_token: service,
-            v: 5.199,
-        };
 
-        const options = {
-            method: "POST",
-            hostname: url,
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
-            }
-        };
-
-        const req = http.request(options, (res) => {
-        let data = "";
-
-        res.on("data", (chunk) => {
-            data += chunk;
-        });
-
-        res.on("end", () => {
-            const response = JSON.parse(data);
-
-            if (response.response.is_allowed) {
-                // отправляем второй POST-запрос
-                const url2 = "https://api.vk.com/method/notifications.sendMessage";
-                const data2 = {
-                    user_ids: playerId2,
-                    message: "Кто-то хочет с вами поиграть",
-                    fragment: "/games",
-                    access_token: service,
-                    v: 5.199
-                };
-
-                const options2 = {
-                    method: "POST",
-                    hostname: url2,
-                    headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
-                    }
-                };
-
-                const req2 = http.request(options2, (res2) => {
-                    let data2 = "";
-
-                    res2.on("data", (chunk) => {
-                        data2 += chunk;
-                    });
-
-                    res2.on("end", () => {
-                    const response2 = JSON.parse(data2);
-
-                    // обработка ответа второго POST-запроса
-                    });
-                });
-
-                req2.write(querystring.stringify(data2));
-                req2.end();
-            }
+        try {
+            // Отправляем первый POST-запрос для проверки разрешения на уведомления
+            const response1 = await axios.post('https://api.vk.com/method/apps.isNotificationsAllowed', {
+              user_id: playerId2,
+              apps_id: 51864614,
+              access_token: service,
+              v: 5.199
             });
-        });
-
-        req.write(querystring.stringify(data));
-        req.end();
+      
+            if (response1.data.response.is_allowed) {
+              // Если получено разрешение на уведомления, отправляем второй POST-запрос для отправки уведомления
+              const response2 = await axios.post('https://api.vk.com/method/notifications.sendMessage', {
+                user_ids: playerId2,
+                message: 'С вами кто-то хочет поиграть...',
+                fragment: '/games',
+                access_token: service,
+                v: 5.199
+              });
+      
+              console.log(response2.data);
+            }
+          } catch (error) {
+            console.error(error);
+          }
     });
     socket.on("newPlayer", async ({ vkid, playerId, status, firstName, avaUrl }) => newUser(io, vkid, playerId, status, firstName, avaUrl));
 
