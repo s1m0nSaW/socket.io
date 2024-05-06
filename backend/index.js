@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import route from './route.js'
 import { addUser } from './users.js';
+import http from 'http';
 
 import { createServer } from 'node:http';
 import { Server } from 'socket.io';
