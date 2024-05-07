@@ -4,6 +4,12 @@ import MessageModel from "../models/Message.js";
 import AnsweredModel from "../models/Answered.js";
 import Question from "../models/Question.js";
 import Rating from "../models/Rating.js";
+import axios from "axios";
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const service = process.env.SERVICEKEY
 
 export const getGames = async ( io, vkid ) => {
     try {
@@ -136,7 +142,40 @@ export const removeGame = async ( io, vkid, gameId ) => {
     }
 }
 
-export const acceptGame = async (io, gameId) => {
+const sendNotification = async (playerId, text) => {
+    try {
+        // Отправляем первый POST-запрос для проверки разрешения на уведомления
+        const response1 = await axios.post(
+            "https://api.vk.com/method/apps.isNotificationsAllowed",
+            {
+                user_id: playerId,
+                apps_id: 51864614,
+                access_token: service,
+                v: 5.199,
+            }
+        );
+
+        if (response1.data.response.is_allowed) {
+            // Если получено разрешение на уведомления, отправляем второй POST-запрос для отправки уведомления
+            const response2 = await axios.post(
+                "https://api.vk.com/method/notifications.sendMessage",
+                {
+                    user_ids: playerId,
+                    message: text,
+                    fragment: "/games",
+                    access_token: service,
+                    v: 5.199,
+                }
+            );
+
+            console.log(response2.data);
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+export const acceptGame = async (io, gameId, service ) => {
     try {
         GameModel.findOneAndUpdate({ _id: gameId }, { status: 'active' }, { new: true })
             .then(game => {
@@ -149,8 +188,9 @@ export const acceptGame = async (io, gameId) => {
                                             { $push: { games: game._id }, $pull: { gamesIn: game._id } }, 
                                             { new: true })
                     .then(async(user2) => {
-                        io.to(user2.vkid).emit("updatedUser", { data: { user: user2 } })
-                        io.to(user1.vkid).emit("notification", { data: { message: `Пользователь ${user2.firstName} согласен играть`, severity:'info' } })
+                        io.to(user2.vkid).emit("updatedUser", { data: { user: user2 } });
+                        io.to(user1.vkid).emit("notification", { data: { message: `Пользователь ${user2.firstName} согласен играть`, severity:'info' } });
+                        sendNotification(user1.vkid, `Пользователь ${user2.firstName} согласен играть`);
                         const games = await GameModel.find({ _id: { $in: user1.games } });
                         const games2 = await GameModel.find({ _id: { $in: user2.games } });
                         io.to(user1.vkid).emit("myGames", { data: games});

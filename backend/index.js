@@ -4,7 +4,6 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import route from './route.js'
 import { addUser } from './users.js';
-import axios from 'axios';
 
 import { createServer } from 'node:http';
 import { Server } from 'socket.io';
@@ -19,7 +18,6 @@ import { createCompliment, getGame, nextStep, setTurn, theEnd, updateRating } fr
 dotenv.config();
 
 const port = process.env.PORT || 5000;
-const service = process.env.SERVICEKEY
 
 const mongooseUrl = `mongodb://0.0.0.0:27017/ochem`; // localhost
 const url1 = `mongodb://mongo:27017/ochem-vk`; //нужно поменять перед деплойем
@@ -43,7 +41,7 @@ m.vk.com:       https://stage-app51864614-558cedecc5db.pages.vk-apps.com*/
 const server = createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: ["https://stage-app51864614-7eb7de265c1a.pages.vk-apps.com", 'https://prod-app51864614-7eb7de265c1a.pages-ac.vk-apps.com', 'https://localhost:3000'],
+        origin: ["https://stage-app51864614-35cd5f12891f.pages.vk-apps.com", 'https://prod-app51864614-35cd5f12891f.pages-ac.vk-apps.com', 'https://localhost:3000'],
         credentials: true,
         methods: ["GET", "POST"]
     },
@@ -104,31 +102,6 @@ io.on("connection", (socket) => {
     });
     socket.on("newGame", async ({ playerId1, playerId2, turn, theme }) => {
         newGame(io, playerId1, playerId2, turn, theme)
-
-        try {
-            // Отправляем первый POST-запрос для проверки разрешения на уведомления
-            const response1 = await axios.post('https://api.vk.com/method/apps.isNotificationsAllowed', {
-              user_id: playerId2,
-              apps_id: 51864614,
-              access_token: service,
-              v: 5.199
-            });
-      
-            if (response1.data.response.is_allowed) {
-              // Если получено разрешение на уведомления, отправляем второй POST-запрос для отправки уведомления
-              const response2 = await axios.post('https://api.vk.com/method/notifications.sendMessage', {
-                user_ids: playerId2,
-                message: 'С вами кто-то хочет поиграть...',
-                fragment: '/games',
-                access_token: service,
-                v: 5.199
-              });
-      
-              console.log(response2.data);
-            }
-          } catch (error) {
-            console.error(error);
-          }
     });
     socket.on("newPlayer", async ({ vkid, playerId, status, firstName, avaUrl }) => newUser(io, vkid, playerId, status, firstName, avaUrl));
 
