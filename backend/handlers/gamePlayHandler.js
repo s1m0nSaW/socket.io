@@ -6,7 +6,7 @@ import MessageModel from "../models/Message.js";
 import RatingModel from "../models/Rating.js";
 import ComplimentModel from "../models/Compliment.js";
 
-export const getGame = async ( io, vkid, gameId ) => {
+export const getGame = async ( io, vkid, gameId, socketUserIdMap ) => {
     try {
         const game = await GameModel.findById(gameId);
 
@@ -44,6 +44,8 @@ export const getGame = async ( io, vkid, gameId ) => {
                 const answered = await AnsweredModel.findOne({ _id: game.answered });
                 io.to(vkid).emit("answered", { data: answered});
             }
+            
+            io.to(vkid).emit("onlines", { data: socketUserIdMap });
             io.to(vkid).emit("updatedGame", { data: game});
             io.to(vkid).emit("questions", { data: questions});
             io.to(vkid).emit("gameMessages", { data: messages.reverse()});
@@ -81,7 +83,7 @@ export const setTurn = async (io, userId, gameId) => {
     }
 }
 
-export const nextStep = async ( io, userId, gameId ) => {
+export const nextStep = async ( io, userId, gameId, socketUserIdMap ) => {
     try {
         const game = await GameModel.findById(gameId);
         game.activeStep += 1;
@@ -104,16 +106,18 @@ export const nextStep = async ( io, userId, gameId ) => {
 
             io.to(gameId).emit("answered", { data: answered});
             io.to(gameId).emit("updatedGame", { data: game});
+            io.to(gameId).emit("onlines", { data: socketUserIdMap });
         }
     } catch (err) {
         console.log(err);
     }
 };
 
-export const theEnd = async ( io, gameId, theme ) => {
+export const theEnd = async ( io, gameId, theme, socketUserIdMap ) => {
     const rating = await RatingModel.findOne({ theme: theme });
     const answereds = await AnsweredModel.find({ gameId: gameId });
     io.to(gameId).emit("onTheEnd", { data: { rating, answereds }});
+    io.to(gameId).emit("onlines", { data: socketUserIdMap });
 }
 
 export const updateRating = async (io, ratingId, rate, gameId) => {

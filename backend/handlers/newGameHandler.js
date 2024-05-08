@@ -51,7 +51,7 @@ export const getThemes = async (io, vkid) => {
     }
 };
 
-export const newGame = async (io, playerId1, playerId2, turn, theme) => {
+export const newGame = async (io, playerId1, playerId2, theme) => {
     try {
         const player1 = await UserModel.findOne({ vkid: playerId1 });
         const player2 = await UserModel.findOne({ vkid: playerId2 });
@@ -63,23 +63,26 @@ export const newGame = async (io, playerId1, playerId2, turn, theme) => {
                     gameName: `Игра ${player1.firstName} & ${player2.firstName}`,
                     theme: rating.theme,
                     quiz: rating.quiz,
-                    turn: turn,
+                    turn: player2._id,
                     forSponsor: rating.forSponsor,
                     user1: player1._id, // создатель
                     user2: player2._id,
                     userUrl1: player1.avaUrl, 
                     userUrl2: player2.avaUrl,
+                    user1vkid: player1.vkid,
+                    user2vkid: player2.vkid,
                 });
         
                 const game = await doc.save();
+                io.to(player1.vkid).emit("newGameId", { data: { id: game._id } })
 
-                player1.gamesOut.push(game._id);
+                player1.games.push(game._id);
                 player1.rsvp -= 1;
                 player1.createGamesCount += 1;
                 player1.save();
                 io.to(player1.vkid).emit("updatedUser", { data: { user: player1 } })
                 
-                player2.gamesIn.push(game._id);
+                player2.games.push(game._id);
                 player2.save();
                 io.to(playerId2).emit("updatedUser", { data: { user: player2 } })
 
@@ -98,23 +101,25 @@ export const newGame = async (io, playerId1, playerId2, turn, theme) => {
                         gameName: `Игра ${player1.firstName} & ${player2.firstName}`,
                         theme: rating.theme,
                         quiz: rating.quiz,
-                        turn: turn,
+                        turn: player2._id,
                         forSponsor: rating.forSponsor,
                         user1: player1._id, // создатель
                         user2: player2._id,
                         userUrl1: player1.avaUrl, 
                         userUrl2: player2.avaUrl,
+                        user1vkid: player1.vkid,
+                        user2vkid: player2.vkid,
                     });
             
                     const game = await doc.save();
 
-                    player1.gamesOut.push(game._id);
+                    player1.games.push(game._id);
                     player1.rsvp -= 1;
                     player1.createGamesCount += 1;
                     player1.save();
                     io.to(player1.vkid).emit("updatedUser", { data: { user: player1 } })
                     
-                    player2.gamesIn.push(game._id);
+                    player2.games.push(game._id);
                     player2.save();
                     io.to(player2.vkid).emit("updatedUser", { data: { user: player2 } })
             
@@ -133,7 +138,7 @@ export const newUser = async ( io, vkid, playerId, status, firstName, avaUrl ) =
     try {
         const user = await UserModel.findOne({ vkid: playerId });
         if(user){
-            io.to(vkid).emit("friend", { data: { player: user } })
+            io.to(vkid).emit("friend", { data: { player: user, registred: true } })
         } else {
             const doc = new UserModel({
                 vkid: playerId,
@@ -145,7 +150,7 @@ export const newUser = async ( io, vkid, playerId, status, firstName, avaUrl ) =
             const player2 = await doc.save();
     
             if(player2){
-                io.to(vkid).emit("friend", { data: { player: player2 } })
+                io.to(vkid).emit("friend", { data: { player: player2, registred: false } })
             }
         }
     } catch (err) {

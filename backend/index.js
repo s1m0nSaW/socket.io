@@ -41,7 +41,7 @@ m.vk.com:       https://stage-app51864614-558cedecc5db.pages.vk-apps.com*/
 const server = createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: ["https://stage-app51864614-9fba8ea73dfe.pages.vk-apps.com", 'https://prod-app51864614-9fba8ea73dfe.pages-ac.vk-apps.com', 'https://localhost:3000'],
+        origin: ["https://stage-app51864614-61e87ec9a517.pages.vk-apps.com", 'https://prod-app51864614-61e87ec9a517.pages-ac.vk-apps.com', 'https://localhost:3000'],
         credentials: true,
         methods: ["GET", "POST"]
     },
@@ -97,33 +97,34 @@ io.on("connection", (socket) => {
     socket.on("afterAds", async ({ vkid }) => afterAds(io, vkid));
     
     socket.on("getThemes", ({ vkid }) => {
-        getThemes(io, vkid)
+        getThemes(io, vkid,)
         io.to(vkid).emit("onlines", { data: socketUserIdMap })
     });
-    socket.on("newGame", async ({ playerId1, playerId2, turn, theme }) => {
-        newGame(io, playerId1, playerId2, turn, theme)
+    socket.on("newGame", async ({ playerId1, playerId2, theme }) => {
+        newGame(io, playerId1, playerId2, theme)
     });
     socket.on("newPlayer", async ({ vkid, playerId, status, firstName, avaUrl }) => newUser(io, vkid, playerId, status, firstName, avaUrl));
 
     socket.on("getGames", async ({vkid}) => getGames(io, vkid));
-    socket.on("games", async ({vkid}) => myGames(io, vkid));
+    socket.on("games", async ({vkid}) => {
+        myGames(io, vkid, socketUserIdMap)
+    });
     socket.on("gamesIn", async ({vkid}) => gamesIn(io, vkid));
     socket.on("gamesOut", async ({vkid}) => gamesOut(io, vkid));
     socket.on("removeGame", async ({vkid, gameId}) => removeGame(io, vkid, gameId));
     socket.on("acceptGame", async ({gameId}) => acceptGame(io, gameId));
     socket.on("getAllGames", async ({vkid}) => allGames(io, vkid));
 
-    socket.on("setGame", async ({vkid, gameId}) => {
-        getGame(io, vkid, gameId);
-        io.to(vkid).emit("onlines", { data: socketUserIdMap });
+    socket.on("setGame", async ({vkid, gameId }) => {
+        getGame(io, vkid, gameId, socketUserIdMap);
     });
     socket.on("setTurn", async ({userId, gameId}) => {
         setTurn(io, userId, gameId);
     });
     socket.on("nextStep", async ({userId, gameId}) => {
-        nextStep(io, userId, gameId);
+        nextStep(io, userId, gameId, socketUserIdMap);
     });
-    socket.on("theEnd", async ({gameId, theme}) => theEnd(io, gameId, theme));
+    socket.on("theEnd", async ({gameId, theme}) => theEnd(io, gameId, theme, socketUserIdMap));
     socket.on("updateRating", async ({ratingId, rate, gameId}) => updateRating(io, ratingId, rate, gameId));
     socket.on("makeCompliment", async ({from, to, price, image, name}) => createCompliment(io, from, to, price, image, name));
 

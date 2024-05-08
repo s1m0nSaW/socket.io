@@ -41,6 +41,14 @@ const GameSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId, 
         ref: "User" 
     },
+    user1vkid:{
+        type: Number,
+        default: 0,
+    },
+    user2vkid:{
+        type: Number,
+        default: 0,
+    },
     userUrl1: { 
         type: String,
         default: 'none', 
