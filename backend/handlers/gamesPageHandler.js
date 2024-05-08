@@ -77,19 +77,11 @@ export const removeGame = async ( io, vkid, gameId ) => {
         let user1 = await UserModel.findById(game.user1)
         let user2 = await UserModel.findById(game.user2)
 
-        if(game.status === 'active') {
-            user1.games.pull(gameId); 
-            await user1.save();
+        user1.games.pull(gameId); 
+        await user1.save();
 
-            user2.games.pull(gameId);
-            await user2.save();
-        } else {
-            user1.gamesOut.pull(gameId); 
-            await user1.save();
-
-            user2.gamesIn.pull(gameId);
-            await user2.save();
-        }
+        user2.games.pull(gameId);
+        await user2.save();
 
         io.to(user1.vkid).emit("updatedUser", { data: { user: user1 } })
         io.to(user2.vkid).emit("updatedUser", { data: { user: user2 } })
