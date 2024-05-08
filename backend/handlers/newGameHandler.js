@@ -112,6 +112,7 @@ export const newGame = async (io, playerId1, playerId2, theme) => {
                     });
             
                     const game = await doc.save();
+                    io.to(player1.vkid).emit("newGameId", { data: { id: game._id } })
 
                     player1.games.push(game._id);
                     player1.rsvp -= 1;

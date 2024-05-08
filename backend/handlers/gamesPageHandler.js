@@ -33,8 +33,9 @@ export const myGames = async ( io, vkid, socketUserIdMap ) => {
 
         if(user) {
             const games = await GameModel.find({ _id: { $in: user.games } });
-            io.to(vkid).emit("myGames", { data: games});
+            io.to(user.vkid).emit("updatedUser", { data: { user: user } })
             io.to(vkid).emit("onlines", { data: socketUserIdMap })
+            io.to(vkid).emit("myGames", { data: games});
         }
         
     } catch (err) {
