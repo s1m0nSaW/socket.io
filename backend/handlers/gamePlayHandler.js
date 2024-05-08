@@ -16,19 +16,16 @@ export const getGame = async ( io, vkid, gameId, socketUserIdMap ) => {
             let user2 = await UserModel.findById(game.user2)
             const messages = await MessageModel.find({ gameId: game._id });
             if( vkid === user1.vkid ){
-                io.to(user2.vkid).emit("playingGame", { data: {
+                io.to(vkid).emit("playingGame", { data: {
                     user: user1,
                     friend: user2, 
                 } });
-                io.to(vkid).emit("onlines", { data: socketUserIdMap });
             } else {
                 io.to(vkid).emit("playingGame", { data: {
                     user: user2,
                     friend: user1, 
                 } });
-                io.to(user1.vkid).emit("onlines", { data: socketUserIdMap });
             }
-            io.to(vkid).emit("onlines", { data: socketUserIdMap });
             if(game.activeStep === 0){
                 if(game.turn !== null) {
                     const doc = new AnsweredModel({
@@ -51,6 +48,7 @@ export const getGame = async ( io, vkid, gameId, socketUserIdMap ) => {
             io.to(vkid).emit("updatedGame", { data: game});
             io.to(vkid).emit("questions", { data: questions});
             io.to(vkid).emit("gameMessages", { data: messages.reverse()});
+            io.to(gameId).emit("onlines", { data: socketUserIdMap });
         }
     } catch (err) {
         console.log(err);
