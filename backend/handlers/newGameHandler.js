@@ -75,7 +75,6 @@ export const newGame = async (io, playerId1, playerId2, theme, socketUserIdMap) 
                 });
         
                 const game = await doc.save();
-                io.to(player1.vkid).emit("newGameId", { data: { id: game._id } })
 
                 player1.games.push(game._id);
                 player1.rsvp -= 1;
@@ -86,11 +85,12 @@ export const newGame = async (io, playerId1, playerId2, theme, socketUserIdMap) 
                 player2.games.push(game._id);
                 player2.save();
                 io.to(playerId2).emit("updatedUser", { data: { user: player2 } })
-                getGame(io, player1, game._id, socketUserIdMap)
-
+                
                 io.to(playerId2).emit("notification", { data: { message: `${player1.firstName} пригласил поиграть`, severity:'info' } })
                 sendNotification(playerId2, `${player1.firstName} пригласил поиграть`)
                 io.to(player1.vkid).emit("notification", { data: { message: 'Игра создана', severity:'success' } })
+                
+                getGame(io, player1, game._id, socketUserIdMap)
             } else {
                 io.to(player1.vkid).emit("notification", { data: { message: 'Недостаточно монет', severity:'error' } })
             }
@@ -114,7 +114,6 @@ export const newGame = async (io, playerId1, playerId2, theme, socketUserIdMap) 
                     });
             
                     const game = await doc.save();
-                    io.to(player1.vkid).emit("newGameId", { data: { id: game._id } })
 
                     player1.games.push(game._id);
                     player1.rsvp -= 1;
@@ -127,6 +126,8 @@ export const newGame = async (io, playerId1, playerId2, theme, socketUserIdMap) 
                     io.to(player2.vkid).emit("updatedUser", { data: { user: player2 } })
             
                     io.to(player1.vkid).emit("notification", { data: { message: 'Игра создана', severity:'success' } })
+
+                    getGame(io, player1, game._id, socketUserIdMap)
                 } else {
                     io.to(player1.vkid).emit("notification", { data: { message: 'Недостаточно монет', severity:'error' } })
                 }
