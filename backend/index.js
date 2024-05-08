@@ -101,7 +101,7 @@ io.on("connection", (socket) => {
         io.to(vkid).emit("onlines", { data: socketUserIdMap })
     });
     socket.on("newGame", async ({ playerId1, playerId2, theme }) => {
-        newGame(io, playerId1, playerId2, theme)
+        newGame(io, playerId1, playerId2, theme, socketUserIdMap)
     });
     socket.on("newPlayer", async ({ vkid, playerId, status, firstName, avaUrl }) => newUser(io, vkid, playerId, status, firstName, avaUrl));
 

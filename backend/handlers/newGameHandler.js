@@ -3,6 +3,7 @@ import GameModel from "../models/Game.js";
 import UserModel from "../models/User.js";
 import axios from "axios";
 import dotenv from 'dotenv';
+import { getGame } from "./gamePlayHandler.js";
 
 dotenv.config();
 
@@ -51,7 +52,7 @@ export const getThemes = async (io, vkid) => {
     }
 };
 
-export const newGame = async (io, playerId1, playerId2, theme) => {
+export const newGame = async (io, playerId1, playerId2, theme, socketUserIdMap) => {
     try {
         const player1 = await UserModel.findOne({ vkid: playerId1 });
         const player2 = await UserModel.findOne({ vkid: playerId2 });
@@ -85,6 +86,7 @@ export const newGame = async (io, playerId1, playerId2, theme) => {
                 player2.games.push(game._id);
                 player2.save();
                 io.to(playerId2).emit("updatedUser", { data: { user: player2 } })
+                getGame(io, player1, game._id, socketUserIdMap)
 
                 io.to(playerId2).emit("notification", { data: { message: `${player1.firstName} пригласил поиграть`, severity:'info' } })
                 sendNotification(playerId2, `${player1.firstName} пригласил поиграть`)
