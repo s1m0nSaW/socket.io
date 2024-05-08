@@ -1,9 +1,11 @@
 import RatingModel from "../models/Rating.js";
 import GameModel from "../models/Game.js";
 import UserModel from "../models/User.js";
+import QuestionModel from "../models/Question.js";
+import MessageModel from "../models/Message.js";
+import AnsweredModel from "../models/Answered.js";
 import axios from "axios";
 import dotenv from 'dotenv';
-import { getGame } from "./gamePlayHandler.js";
 
 dotenv.config();
 
@@ -80,17 +82,38 @@ export const newGame = async (io, playerId1, playerId2, theme, socketUserIdMap) 
                 player1.rsvp -= 1;
                 player1.createGamesCount += 1;
                 player1.save();
-                io.to(player1.vkid).emit("updatedUser", { data: { user: player1 } })
                 
                 player2.games.push(game._id);
                 player2.save();
+
+                const questions = await QuestionModel.find({ theme: game.theme, });
+                const messages = await MessageModel.find({ gameId: game._id });
+
+                const document = new AnsweredModel({
+                            questionId: questions[0]._id,
+                            gameId: game._id,
+                            turn: game.turn,
+                            user1: game.user1,
+                            user2: game.user2,
+                            answer1: 'none',
+                            answer2: 'none',
+                        });
+                const answered = await document.save();
+                
+                io.to(player1.vkid).emit("playingGame", { data: {
+                    user: player1,
+                    friend: player2, 
+                } });
+                io.to(player1.vkid).emit("answered", { data: answered});
+                io.to(player1.vkid).emit("onlines", { data: socketUserIdMap });
+                io.to(player1.vkid).emit("updatedGame", { data: game});
+                io.to(player1.vkid).emit("questions", { data: questions});
+                io.to(player1.vkid).emit("gameMessages", { data: messages.reverse()});
                 io.to(playerId2).emit("updatedUser", { data: { user: player2 } })
-                
+                io.to(player1.vkid).emit("updatedUser", { data: { user: player1 } })
                 io.to(playerId2).emit("notification", { data: { message: `${player1.firstName} пригласил поиграть`, severity:'info' } })
-                sendNotification(playerId2, `${player1.firstName} пригласил поиграть`)
                 io.to(player1.vkid).emit("notification", { data: { message: 'Игра создана', severity:'success' } })
-                
-                getGame(io, player1, game._id, socketUserIdMap)
+                sendNotification(playerId2, `${player1.firstName} пригласил поиграть`)
             } else {
                 io.to(player1.vkid).emit("notification", { data: { message: 'Недостаточно монет', severity:'error' } })
             }
@@ -119,15 +142,38 @@ export const newGame = async (io, playerId1, playerId2, theme, socketUserIdMap) 
                     player1.rsvp -= 1;
                     player1.createGamesCount += 1;
                     player1.save();
-                    io.to(player1.vkid).emit("updatedUser", { data: { user: player1 } })
                     
                     player2.games.push(game._id);
                     player2.save();
-                    io.to(player2.vkid).emit("updatedUser", { data: { user: player2 } })
-            
-                    io.to(player1.vkid).emit("notification", { data: { message: 'Игра создана', severity:'success' } })
 
-                    getGame(io, player1, game._id, socketUserIdMap)
+                    const questions = await QuestionModel.find({ theme: game.theme, });
+                    const messages = await MessageModel.find({ gameId: game._id });
+
+                    const document = new AnsweredModel({
+                                questionId: questions[0]._id,
+                                gameId: game._id,
+                                turn: game.turn,
+                                user1: game.user1,
+                                user2: game.user2,
+                                answer1: 'none',
+                                answer2: 'none',
+                            });
+                    const answered = await document.save();
+                    
+                    io.to(player1.vkid).emit("playingGame", { data: {
+                        user: player1,
+                        friend: player2, 
+                    } });
+                    io.to(player1.vkid).emit("answered", { data: answered});
+                    io.to(player1.vkid).emit("onlines", { data: socketUserIdMap });
+                    io.to(player1.vkid).emit("updatedGame", { data: game});
+                    io.to(player1.vkid).emit("questions", { data: questions});
+                    io.to(player1.vkid).emit("gameMessages", { data: messages.reverse()});
+                    io.to(player1.vkid).emit("updatedUser", { data: { user: player1 } })
+                    io.to(player2.vkid).emit("updatedUser", { data: { user: player2 } })
+                    io.to(player1.vkid).emit("notification", { data: { message: 'Игра создана', severity:'success' } })
+                    sendNotification(playerId2, `${player1.firstName} пригласил поиграть`)
+
                 } else {
                     io.to(player1.vkid).emit("notification", { data: { message: 'Недостаточно монет', severity:'error' } })
                 }
