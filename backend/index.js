@@ -41,7 +41,7 @@ m.vk.com:       https://stage-app51864614-558cedecc5db.pages.vk-apps.com*/
 const server = createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: ["https://stage-app51864614-ff2b50ab2baf.pages.vk-apps.com", "https://prod-app51864614-ff2b50ab2baf.pages-ac.vk-apps.com", "https://localhost:3000"],
+        origin: ["https://stage-app51864614-d4bcdfe5a80b.pages.vk-apps.com", "https://prod-app51864614-d4bcdfe5a80b.pages-ac.vk-apps.com", "https://localhost:3000"],
         credentials: true,
         methods: ["GET", "POST"]
     },
