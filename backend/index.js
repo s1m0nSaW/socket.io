@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import route from './route.js'
 import { addUser } from './users.js';
+import crypto from 'crypto'
 
 import { createServer } from 'node:http';
 import { Server } from 'socket.io';
@@ -41,7 +42,7 @@ m.vk.com:       https://stage-app51864614-558cedecc5db.pages.vk-apps.com*/
 const server = createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: ["https://stage-app51864614-d4bcdfe5a80b.pages.vk-apps.com", "https://prod-app51864614-d4bcdfe5a80b.pages-ac.vk-apps.com", "https://localhost:3000"],
+        origin: ["https://stage-app51864614-f9e082dd55e0.pages.vk-apps.com", "https://prod-app51864614-f9e082dd55e0.pages-ac.vk-apps.com", "https://localhost:3000"],
         credentials: true,
         methods: ["GET", "POST"]
     },
@@ -59,6 +60,9 @@ io.engine.on("connection_error", (err) => {
 });
 
 const socketUserIdMap = {};
+function generateRequestId() {
+    return crypto.randomBytes(16).toString('hex');
+}
 
 io.on("connection", (socket) => {
     socket.on("join", ({ userId, gameId }) => {
@@ -72,24 +76,44 @@ io.on("connection", (socket) => {
         console.log('связь с ', userId)
     })
 
-    socket.on("sendMessage", ({ senderId, content, gameId, date }) => {
-        sendMessageHandler( io, senderId, content, gameId, date );
+    socket.on("sendMessage", async ({ vkid, senderId, content, gameId, date }) => {
+        const requestId = generateRequestId();
+        const userId = socketUserIdMap[socket.id]; // Получаем userId из мапы
+        if (requestManager.has(requestId)) {
+            console.log(`Request ${requestId} is already in flight`);
+            return;
+        }
+        requestManager.set(requestId, true);
+        try {
+            if (userId === vkid) { // Проверяем соответствие userId и vkid
+                await sendMessageHandler( io, senderId, content, gameId, date );
+            } else return;
+        } finally {
+            requestManager.delete(requestId);
+        }
     });
-    socket.on("getMessages", ({ gameId }) => {
-        getMessagesHandler( io, gameId );
-    });
+
+    socket.on("getMessages", ({ gameId }) => getMessagesHandler( io, gameId ));
     socket.on("typing", ({ vkid, gameId, status }) => {
         typingMessage(io, vkid, gameId, status);
         io.to(vkid).emit("onlines", { data: socketUserIdMap });
     });
     
-    socket.on("newAnswered", ({ questionId, gameId, turn, user1, user2, answer1, answer2 }) => create(io, questionId, gameId, turn, user1, user2, answer1, answer2));
+    socket.on("newAnswered", ({ questionId, gameId, turn, user1, user2, answer1, answer2 }) => {
+        create(io, questionId, gameId, turn, user1, user2, answer1, answer2)
+    });
     socket.on("getAnswered", ({ gameId, answeredId }) => getAnwered(io, gameId, answeredId));
     socket.on("upAnswered", ({ id, answer2, correct, answer1, gameId }) => update(io, id, answer2, correct, answer1, gameId));
     
     socket.on("getUser", async ({ vkid }) => getUser(io, vkid));
     socket.on("already", async ({ vkid }) => already(io, vkid));
-    socket.on("register", async ({ vkid, status, firstName, avaUrl }) => register(io, vkid, status, firstName, avaUrl));
+    socket.on("register", async ({ vkid, status, firstName, avaUrl }) => {
+        const userId = socketUserIdMap[socket.id];
+        if(userId === vkid){
+            register(io, vkid, status, firstName, avaUrl)
+        }
+    });
+
     socket.on("getFreeRsvp", async ({ vkid }) => getFreeRsvp(io, vkid));
     socket.on("checkPromoter", async ({ vkid }) => checkPromoter(io, vkid));
     socket.on("promoter", async ({ vkid }) => setPromoter(io, vkid));
@@ -101,7 +125,20 @@ io.on("connection", (socket) => {
         io.to(vkid).emit("onlines", { data: socketUserIdMap })
     });
     socket.on("newGame", async ({ playerId1, playerId2, theme }) => {
-        newGame(io, playerId1, playerId2, theme, socketUserIdMap)
+        const requestId = generateRequestId();
+        const userId = socketUserIdMap[socket.id]; // Получаем userId из мапы
+        if (requestManager.has(requestId)) {
+            console.log(`Request ${requestId} is already in flight`);
+            return;
+        }
+        requestManager.set(requestId, true);
+        try {
+            if(userId === playerId1){
+                await newGame(io, playerId1, playerId2, theme, socketUserIdMap)
+            } else return;
+        } finally {
+            requestManager.delete(requestId);
+        }
     });
     socket.on("newPlayer", async ({ vkid, playerId, status, firstName, avaUrl }) => newUser(io, vkid, playerId, status, firstName, avaUrl));
 
@@ -111,7 +148,12 @@ io.on("connection", (socket) => {
     });
     socket.on("gamesIn", async ({vkid}) => gamesIn(io, vkid));
     socket.on("gamesOut", async ({vkid}) => gamesOut(io, vkid));
-    socket.on("removeGame", async ({vkid, gameId}) => removeGame(io, vkid, gameId));
+    socket.on("removeGame", async ({vkid, gameId}) => {
+        const userId = socketUserIdMap[socket.id]; // Получаем userId из мапы
+        if(userId === vkid){
+            await removeGame(io, vkid, gameId);
+        }
+    });
     socket.on("acceptGame", async ({gameId}) => acceptGame(io, gameId));
     socket.on("getAllGames", async ({vkid}) => allGames(io, vkid));
 
@@ -126,7 +168,22 @@ io.on("connection", (socket) => {
     });
     socket.on("theEnd", async ({gameId, theme}) => theEnd(io, gameId, theme, socketUserIdMap));
     socket.on("updateRating", async ({ratingId, rate, gameId}) => updateRating(io, ratingId, rate, gameId));
-    socket.on("makeCompliment", async ({from, to, price, image, name}) => createCompliment(io, from, to, price, image, name));
+    socket.on("makeCompliment", async ({vkid, from, to, price, image, name}) => {
+        const userId = socketUserIdMap[socket.id]; // Получаем userId из мапы
+        const requestId = generateRequestId();
+        if (requestManager.has(requestId)) {
+            console.log(`Request ${requestId} is already in flight`);
+            return;
+        }
+        requestManager.set(requestId, true);
+        try {
+            if(userId === vkid){
+                await createCompliment(io, from, to, price, image, name)
+            } else return;
+        } finally {
+            requestManager.delete(requestId);
+        }
+    });
 
     socket.on("socketNotification", ({ userId, message, severity }) => {
         io.to(userId).emit("notification", { data: { message, severity } })

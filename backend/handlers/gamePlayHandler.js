@@ -156,7 +156,7 @@ export const createCompliment = async (io, from, to, price, image, name) => {
         const compliment = await doc.save();
 
         if(compliment){
-            io.to(toUser.vkid).emit("notification", { data: { message: `${fromUser.firstName} подарил вам комплимент`, severity:'success' } });
+            io.to(toUser.vkid).emit("notification", { data: { message: `${fromUser.firstName} подарил(а) вам комплимент`, severity:'success' } });
             io.to(fromUser.vkid).emit("notification", { data: { message: `Комплимент успешно подарен`, severity:'success' } });
         }
     } catch (err) {

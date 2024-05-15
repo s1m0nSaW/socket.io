@@ -39,15 +39,12 @@ export const already = async ( io, vkid ) => {
         if(user){
             if(user){
                 user.status = 'none';
-            }
-    
-            await user.save();
-
-            io.to(vkid).emit("updatedUser", { data: { user } })
+                await user.save();
+                io.to(vkid).emit("updatedUser", { data: { user } })
+            } 
         } else {
             io.to(vkid).emit("updatedUser", { data: { user:{ firstName:'$2b$10$T72I44FcHBIcS81xrkFY3e2TJwaaTVLFp7d5wuddKeVEuc2.3WR0G' } } })
         }
-
     } catch (err) {
         console.log(err);
         io.to(vkid).emit("error", { data: "Что-то пошло не так", err });
