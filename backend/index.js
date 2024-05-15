@@ -15,6 +15,7 @@ import { getUser, already, register, getFreeRsvp, checkPromoter, setPromoter, ge
 import { getThemes, newGame, newUser } from './handlers/newGameHandler.js';
 import { acceptGame, allGames, gamesIn, gamesOut, getGames, myGames, removeGame } from './handlers/gamesPageHandler.js';
 import { createCompliment, getGame, nextStep, setTurn, theEnd, updateRating } from './handlers/gamePlayHandler.js';
+import requestManager from './utils/requestManager.js';
 
 dotenv.config();
 
