@@ -26,25 +26,9 @@ export const getGame = async ( io, vkid, gameId, socketUserIdMap ) => {
                     friend: user1, 
                 } });
             }
-            if(game.activeStep === 0){
-                if(game.turn !== null) {
-                    const doc = new AnsweredModel({
-                        questionId: questions[0]._id,
-                        gameId: game._id,
-                        turn: game.turn,
-                        user1: game.user1,
-                        user2: game.user2,
-                        answer1: 'none',
-                        answer2: 'none',
-                    });
-                    const answered = await doc.save();
-                    io.to(vkid).emit("answered", { data: answered});
-                }
-            } else {
-                const answered = await AnsweredModel.findOne({ _id: game.answered });
-                io.to(vkid).emit("answered", { data: answered});
-            }
+            const answered = await AnsweredModel.findOne({ _id: game.answered });
             
+            io.to(vkid).emit("answered", { data: answered});
             io.to(vkid).emit("updatedGame", { data: game});
             io.to(vkid).emit("questions", { data: questions});
             io.to(vkid).emit("gameMessages", { data: messages.reverse()});
