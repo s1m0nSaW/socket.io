@@ -99,6 +99,9 @@ export const newGame = async (io, playerId1, playerId2, theme, socketUserIdMap) 
                             answer2: 'none',
                         });
                 const answered = await document.save();
+
+                game.answered = answered._id;
+                await game.save();
                 
                 io.to(player1.vkid).emit("playingGame", { data: {
                     user: player1,
@@ -159,6 +162,9 @@ export const newGame = async (io, playerId1, playerId2, theme, socketUserIdMap) 
                                 answer2: 'none',
                             });
                     const answered = await document.save();
+
+                    game.answered = answered._id;
+                    await game.save();
                     
                     io.to(player1.vkid).emit("playingGame", { data: {
                         user: player1,
