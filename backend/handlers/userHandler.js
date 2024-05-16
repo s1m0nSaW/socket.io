@@ -130,9 +130,9 @@ export const setPromoter = async ( io, vkid ) => {
 export const getCompliment = async ( io, vkid, friendId ) => {
     try {
         const compliments = await ComplimentModel.find({ to: friendId });
-
         if(compliments) {
-            io.to(vkid).emit("userCompliments", { data: { compliments: compliments.reverse() } })
+            const activeComps = compliments.filter(comp => comp.active === true);
+            io.to(vkid).emit("userCompliments", { data: { compliments: activeComps.reverse() } })
         }
     } catch (err) {
         console.log(err);
