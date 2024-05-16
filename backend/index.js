@@ -43,7 +43,7 @@ m.vk.com:       https://stage-app51864614-558cedecc5db.pages.vk-apps.com*/
 const server = createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: ["https://stage-app51864614-51585a56ab71.pages.vk-apps.com", "https://prod-app51864614-51585a56ab71.pages-ac.vk-apps.com", "https://localhost:3000"],
+        origin: ["https://stage-app51864614-31797902c0ef.pages.vk-apps.com", "https://prod-app51864614-31797902c0ef.pages-ac.vk-apps.com", "https://localhost:3000"],
         credentials: true,
         methods: ["GET", "POST"]
     },
@@ -179,7 +179,7 @@ io.on("connection", (socket) => {
         requestManager.set(requestId, true);
         try {
             if(userId === vkid){
-                await createCompliment(io, from, to, key, title, price, image, name)
+                await createCompliment(io, vkid, from, to, key, title, price, image, name)
             } else return;
         } finally {
             requestManager.delete(requestId);
