@@ -1,21 +1,24 @@
 import MessageModel from "../models/Message.js";
+import UserModel from "../models/User.js";
 
-export const sendMessageHandler = async (io, senderId, content, gameId, date) => {
+export const sendMessageHandler = async (io, userId, senderId, content, gameId, date) => {
     try {
-        const doc = new MessageModel({
-            senderId: senderId,
-            content: content,
-            gameId: gameId,
-            date: date,
-        });
-
-        const message = await doc.save();
-
-        if(message) {
-            const messages = await MessageModel.find({ gameId: gameId });
-            io.to(gameId).emit("gameMessages", { data: messages.reverse()});
+        let user = await UserModel.findById(senderId)
+        if(userId === user.vkid){
+            const doc = new MessageModel({
+                senderId: senderId,
+                content: content,
+                gameId: gameId,
+                date: date,
+            });
+    
+            const message = await doc.save();
+    
+            if(message) {
+                const messages = await MessageModel.find({ gameId: gameId });
+                io.to(gameId).emit("gameMessages", { data: messages.reverse()});
+            }
         }
-
     } catch (err) {
         console.log(err);
         io.to(gameId).emit("message", { data: "Не удалось создать сообщение"});

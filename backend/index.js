@@ -87,7 +87,7 @@ io.on("connection", (socket) => {
         requestManager.set(requestId, true);
         try {
             if (userId === vkid) { // Проверяем соответствие userId и vkid
-                await sendMessageHandler( io, senderId, content, gameId, date );
+                await sendMessageHandler( io, userId, senderId, content, gameId, date );
             } else return;
         } finally {
             requestManager.delete(requestId);
@@ -179,7 +179,7 @@ io.on("connection", (socket) => {
         requestManager.set(requestId, true);
         try {
             if(userId === vkid){
-                await createCompliment(io, vkid, from, to, key, title, price, image, name)
+                await createCompliment(io, userId, from, to, key, title, price, image, name)
             } else return;
         } finally {
             requestManager.delete(requestId);

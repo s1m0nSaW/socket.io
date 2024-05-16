@@ -109,14 +109,14 @@ export const newGame = async (io, playerId1, playerId2, theme, socketUserIdMap) 
                 } });
                 io.to(player1.vkid).emit("answered", { data: answered});
                 io.to(player1.vkid).emit("onlines", { data: socketUserIdMap });
-                io.to(player1.vkid).emit("updatedGame", { data: game});
                 io.to(player1.vkid).emit("questions", { data: questions});
                 io.to(player1.vkid).emit("gameMessages", { data: messages.reverse()});
-                io.to(playerId2).emit("updatedUser", { data: { user: player2 } })
-                io.to(player1.vkid).emit("updatedUser", { data: { user: player1 } })
                 io.to(playerId2).emit("notification", { data: { message: `${player1.firstName} пригласил поиграть`, severity:'info' } })
                 io.to(player1.vkid).emit("notification", { data: { message: 'Игра создана', severity:'success' } })
                 sendNotification(playerId2, `${player1.firstName} пригласил поиграть`)
+                io.to(playerId2).emit("updatedUser", { data: { user: player2 } })
+                io.to(player1.vkid).emit("updatedUser", { data: { user: player1 } })
+                io.to(player1.vkid).emit("updatedGame", { data: game});
             } else {
                 io.to(player1.vkid).emit("notification", { data: { message: 'Недостаточно монет', severity:'error' } })
             }
@@ -172,13 +172,13 @@ export const newGame = async (io, playerId1, playerId2, theme, socketUserIdMap) 
                     } });
                     io.to(player1.vkid).emit("answered", { data: answered});
                     io.to(player1.vkid).emit("onlines", { data: socketUserIdMap });
-                    io.to(player1.vkid).emit("updatedGame", { data: game});
                     io.to(player1.vkid).emit("questions", { data: questions});
                     io.to(player1.vkid).emit("gameMessages", { data: messages.reverse()});
-                    io.to(player1.vkid).emit("updatedUser", { data: { user: player1 } })
-                    io.to(player2.vkid).emit("updatedUser", { data: { user: player2 } })
                     io.to(player1.vkid).emit("notification", { data: { message: 'Игра создана', severity:'success' } })
                     sendNotification(playerId2, `${player1.firstName} пригласил поиграть`)
+                    io.to(player2.vkid).emit("updatedUser", { data: { user: player2 } })
+                    io.to(player1.vkid).emit("updatedUser", { data: { user: player1 } })
+                    io.to(player1.vkid).emit("updatedGame", { data: game});
 
                 } else {
                     io.to(player1.vkid).emit("notification", { data: { message: 'Недостаточно монет', severity:'error' } })

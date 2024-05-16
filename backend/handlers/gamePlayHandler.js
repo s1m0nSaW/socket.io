@@ -124,13 +124,13 @@ export const updateRating = async (io, ratingId, rate, gameId) => {
     }
 };
 
-export const createCompliment = async (io, vkid, from, to, key, title, price, image, name) => {
+export const createCompliment = async (io, userId, from, to, key, title, price, image, name) => {
     const keys = ["prEL8T", "ub5H1t", "FLvSQs"]
     try {
         let fromUser = await UserModel.findById(from)
         let toUser = await UserModel.findById(to)
 
-        if(vkid === fromUser.vkid){
+        if(userId === fromUser.vkid){
             const found = keys.includes(key)
 
             if(found){
