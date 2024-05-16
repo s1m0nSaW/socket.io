@@ -9,7 +9,8 @@ export const getUser = async ( io, vkid ) => {
             const compliments = await ComplimentModel.find({ to: user._id });
 
             if(compliments) {
-                io.to(vkid).emit("compliments", { data: { compliments: compliments.reverse() } })
+                const activeComps = compliments.filter(comp => comp.active === true);
+                io.to(vkid).emit("compliments", { data: { compliments: activeComps.reverse() } })
             }
 
             if(date > user.rsvpDate){
