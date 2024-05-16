@@ -34,6 +34,7 @@ router.get("/", (req, res) => {
 router.post('/purchase', PurchaseController.purchase)
 router.post('/admin/:id', checkAdmin, UserController.remove);
 router.post('/sponsor/:id', checkAdmin, UserController.updateSponsor);
+router.post('/remove-all-users', checkAdmin, UserController.removeAll);
 router.post('/quests', checkAdmin, QuestionController.getAll);
 router.post('/theme', checkAdmin, QuestionController.getQuestions);
 router.post('/question', checkAdmin, QuestionController.create);
@@ -55,6 +56,9 @@ router.post('/delete-games', checkAdmin, GameController.removeAllGames);
 router.post('/delete-answereds', checkAdmin, GameController.removeAllAnswereds);
 router.post('/delete-messages', checkAdmin, GameController.removeAllMessages);
 router.post('/get-all-answereds', checkAdmin, AnsweredController.getAnwereds);
+router.post('/remove-all-comps', checkAdmin, ComplimentController.removeAll);
+router.post('/del-compliment/:id', checkAdmin, ComplimentController.remove);
+router.post('/get-all-comps', checkAdmin, ComplimentController.getAll);
 
 router.post('/auth/register', UserController.register);
 router.patch('/after-ads', checkAuth, UserController.afterAds);

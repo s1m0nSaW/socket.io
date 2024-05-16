@@ -1,4 +1,5 @@
 import ItemModel from "../models/Item.js";
+import ComplimentModel from "../models/Compliment.js";
 import UserModel from "../models/User.js";
 import OrderModel from "../models/Order.js";
 import md5 from "md5";
@@ -117,34 +118,63 @@ function calcSignature(params) {
 
 // Обработчик уведомления get_item
 const handleGetItem = async (params) => {
+    const items = ["sale_item_3", "sale_item_1", "sale_item_2", "sale_item_subscription_1", "sale_item_subscription_2"]
     let responseData;
-    // Получаем информацию о товаре
-    const item = await ItemModel.findOne({ item: params.item });
 
-    // Возвращаем ответ
-    if (item) {
-        responseData = {
-            response: {
-                title: item.title,
-                price: item.price,
-                item_id: item.item,
-                expiration: 3600,
-                photo_url: item.photo_url,
-              },
-        };
-        return responseData;
-        
+    const found = items.includes(params.item)
+    if(found){
+        // Получаем информацию о товаре
+        const item = await ItemModel.findOne({ item: params.item });
+        // Возвращаем ответ
+        if (item) {
+            responseData = {
+                response: {
+                    title: item.title,
+                    price: item.price,
+                    item_id: item.item,
+                    expiration: 3600,
+                    photo_url: item.photo_url,
+                },
+            };
+            return responseData;
+            
+        } else {
+            console.log("Товара не существует")
+            responseData = {
+                error: {
+                    error_code: 20,
+                    error_msg: "Товара не существует",
+                    critical: true,
+                },
+            };
+            return responseData;
+        }
     } else {
-        console.log("Товара не существует")
-        responseData = {
-            error: {
-                error_code: 20,
-                error_msg: "Товара не существует",
-                critical: true,
-            },
-        };
-        return responseData;
+        const item = await ComplimentModel.findOne({ _id: params.item });
+        if (item) {
+            responseData = {
+                response: {
+                    title: item.title,
+                    price: item.price,
+                    item_id: item._id,
+                    expiration: 3600,
+                },
+            };
+            return responseData;
+            
+        } else {
+            console.log("Товара не существует")
+            responseData = {
+                error: {
+                    error_code: 20,
+                    error_msg: "Товара не существует",
+                    critical: true,
+                },
+            };
+            return responseData;
+        }
     }
+    
 }
 
 const handleGetSubscription = async (params) => {
@@ -183,57 +213,106 @@ const handleGetSubscription = async (params) => {
 // Обработчик уведомления order_status_change
 const handleOrderStatusChange = async (params) => {
     let responseData;
+    const items = ["sale_item_3", "sale_item_1", "sale_item_2", "sale_item_subscription_1", "sale_item_subscription_2"]
     
     switch (params.status) {
         case "chargeable":
-            // Предоставляем товар в приложении
-            const item = await ItemModel.findOne({ item: params.item });
-            const user = await UserModel.findOne({ vkid: params.receiver_id });
-            if(item?.type === 'rsvp'){
-                user.rsvp += item.count;
-                await user.save();
-            }
+            const found = items.includes(params.item)
+            if(found){
+                // Предоставляем товар в приложении
+                const item = await ItemModel.findOne({ item: params.item });
+                const user = await UserModel.findOne({ vkid: params.user_id });
+                if(item?.type === 'rsvp'){
+                    user.rsvp += item.count;
+                    await user.save();
+                }
 
-            // Формируем ответ
-            let appOrder = params.date; // Идентификатор заказа в приложении
-            
-            // Сохраняем информацию о заказе в приложении
-            const doc = new OrderModel({
-                type: 'order',
-                item: params.item,
-                item_id: params.item_id,
-                order_id: params.order_id,
-                user_id: params.user_id,
-                receiver_id: params.receiver_id,
-                app_order_id: appOrder,
-            });
-    
-            await doc.save();
-
-            responseData = {
-                response: {
+                // Формируем ответ
+                let appOrder = params.date; // Идентификатор заказа в приложении
+                
+                // Сохраняем информацию о заказе в приложении
+                const doc = new OrderModel({
+                    type: 'order',
+                    item: params.item,
+                    item_id: params.item_id,
                     order_id: params.order_id,
+                    user_id: params.user_id,
+                    receiver_id: params.receiver_id,
                     app_order_id: appOrder,
-                },
-            };
+                });
+        
+                await doc.save();
 
-            break;
+                responseData = {
+                    response: {
+                        order_id: params.order_id,
+                        app_order_id: appOrder,
+                    },
+                };
+
+                break;
+            } else {
+                const item = await ComplimentModel.findOne({ _id: params.item });
+                item.active = true;
+                await item.save();
+
+                // Формируем ответ
+                let appOrder = params.date; // Идентификатор заказа в приложении
+                
+                // Сохраняем информацию о заказе в приложении
+                const doc = new OrderModel({
+                    type: 'order',
+                    item: params.item,
+                    item_id: params.item_id,
+                    order_id: params.order_id,
+                    user_id: params.user_id,
+                    receiver_id: params.receiver_id,
+                    app_order_id: appOrder,
+                });
+        
+                await doc.save();
+
+                responseData = {
+                    response: {
+                        order_id: params.order_id,
+                        app_order_id: appOrder,
+                    },
+                };
+
+                break;
+            }
+            
 
         case "refund":
             // Обрабатываем возврат
-            const _item = await ItemModel.findOne({ item: params.item });
-            const _user = await UserModel.findOne({ vkid: params.receiver_id });
-            if(item?.type === 'rsvp'){
-                _user.rsvp -= _item.count;
-                await _user.save();
+            const _found = items.includes(params.item)
+            if(_found){
+                const _item = await ItemModel.findOne({ item: params.item });
+                const _user = await UserModel.findOne({ vkid: params.receiver_id });
+                if(_item?.type === 'rsvp'){
+                    _user.rsvp -= _item.count;
+                    await _user.save();
+                }
+                responseData = {
+                    response: {
+                        order_id: params.order_id,
+                        app_order_id: params.date,
+                    },
+                };
+                break;
+            } else {
+                const compliment = await ComplimentModel.findOne({ _id: params.item });
+                compliment.active = false;
+                await compliment.save();
+                responseData = {
+                    response: {
+                        order_id: params.order_id,
+                        app_order_id: params.date,
+                    },
+                };
+                break;
             }
-            responseData = {
-                response: {
-                    order_id: params.order_id,
-                    app_order_id: params.date,
-                },
-            };
-            break;
+            
         default:
             console.log("Ошибка в структуре данных")
             responseData = {

@@ -43,7 +43,7 @@ m.vk.com:       https://stage-app51864614-558cedecc5db.pages.vk-apps.com*/
 const server = createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: ["https://stage-app51864614-f9e082dd55e0.pages.vk-apps.com", "https://prod-app51864614-f9e082dd55e0.pages-ac.vk-apps.com", "https://localhost:3000"],
+        origin: ["https://stage-app51864614-00cefa3ebbad.pages.vk-apps.com", "https://prod-app51864614-00cefa3ebbad.pages-ac.vk-apps.com", "https://localhost:3000"],
         credentials: true,
         methods: ["GET", "POST"]
     },
@@ -169,7 +169,7 @@ io.on("connection", (socket) => {
     });
     socket.on("theEnd", async ({gameId, theme}) => theEnd(io, gameId, theme, socketUserIdMap));
     socket.on("updateRating", async ({ratingId, rate, gameId}) => updateRating(io, ratingId, rate, gameId));
-    socket.on("makeCompliment", async ({vkid, from, to, price, image, name}) => {
+    socket.on("makeCompliment", async ({vkid, from, to, key, title, price, image, name}) => {
         const userId = socketUserIdMap[socket.id]; // Получаем userId из мапы
         const requestId = generateRequestId();
         if (requestManager.has(requestId)) {
@@ -179,7 +179,7 @@ io.on("connection", (socket) => {
         requestManager.set(requestId, true);
         try {
             if(userId === vkid){
-                await createCompliment(io, from, to, price, image, name)
+                await createCompliment(io, from, to, key, title, price, image, name)
             } else return;
         } finally {
             requestManager.delete(requestId);

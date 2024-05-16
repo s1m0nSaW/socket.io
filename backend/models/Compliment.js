@@ -9,9 +9,17 @@ const ComplimentSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "User" 
     },
+    key:{
+        type: String,
+        required: true,
+    },
+    title:{
+        type: String,
+        required: true,
+    },
     price: {
         type: Number,
-        default: 0,
+        required: true,
     },
     image: {
         type: String,
@@ -21,6 +29,10 @@ const ComplimentSchema = new mongoose.Schema({
         type: String,
         default: 'none',
     },
+    active: {
+        type: Boolean,
+        default: false,
+    }
 },{
     timestamps:true,
 },

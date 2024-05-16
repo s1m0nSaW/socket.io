@@ -305,3 +305,29 @@ export const updatePromoter = async (req, res) => {
         });
     }
 };
+
+export const removeAll = async (req, res) => {
+    try {
+        UserModel.deleteMany({}, (err, doc) => {
+            if (err) {
+                return res.status(500).json({ 
+                    message: "Не удалось удалить user",
+                });
+            }
+
+            if (!doc) {
+                return res.status(404).json({
+                    message: "users не найдены",
+                });
+            }
+            res.status(200).json({
+                success: "users удалены",
+            });
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: "Проблема с удалением users",
+        });
+    }
+};

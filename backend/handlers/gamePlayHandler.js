@@ -124,25 +124,52 @@ export const updateRating = async (io, ratingId, rate, gameId) => {
     }
 };
 
-export const createCompliment = async (io, from, to, price, image, name) => {
+export const createCompliment = async (io, from, to, key, title, price, image, name) => {
+    const keys = ["prEL8T", "ub5H1t", "FLvSQs"]
     try {
         let fromUser = await UserModel.findById(from)
         let toUser = await UserModel.findById(to)
 
-        const doc = new ComplimentModel({
-            from: from,
-            to: to,
-            price: price,
-            image: image,
-            name: name,
-        });
+        const found = keys.includes(key)
 
-        const compliment = await doc.save();
-
-        if(compliment){
-            io.to(toUser.vkid).emit("notification", { data: { message: `${fromUser.firstName} подарил(а) вам комплимент`, severity:'success' } });
-            io.to(fromUser.vkid).emit("notification", { data: { message: `Комплимент успешно подарен`, severity:'success' } });
+        if(found){
+            const doc = new ComplimentModel({
+                from: from,
+                to: to,
+                key: key,
+                title: title,
+                price: price,
+                image: image,
+                name: name,
+                active: true,
+            });
+    
+            const compliment = await doc.save();
+    
+            if(compliment){
+                io.to(toUser.vkid).emit("notification", { data: { message: `${fromUser.firstName} подарил(а) вам комплимент`, severity:'success' } });
+                io.to(fromUser.vkid).emit("notification", { data: { message: `Комплимент успешно подарен`, severity:'success' } });
+            }
+        } else {
+            const doc = new ComplimentModel({
+                from: from,
+                to: to,
+                key: key,
+                title: title,
+                price: price,
+                image: image,
+                name: name,
+                active: false,
+            });
+    
+            const compliment = await doc.save();
+    
+            if(compliment){
+                io.to(fromUser.vkid).emit("compDataForBridge", { data: compliment._id  });
+            }
         }
+
+        
     } catch (err) {
         console.log(err);
         res.status(500).json({
