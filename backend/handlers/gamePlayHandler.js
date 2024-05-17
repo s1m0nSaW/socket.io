@@ -105,18 +105,21 @@ export const theEnd = async ( io, gameId, theme, socketUserIdMap ) => {
 }
 
 export const updateRating = async (io, ratingId, rate, gameId) => {
+
     try {
-        const rating = await RatingModel.findById(ratingId);
+        if(rate > 0 || rate <= 5) {
+            const rating = await RatingModel.findById(ratingId);
 
-        if(rating){
-            let newRating = Math.round((rate + (rating.rating * rating.count))/(rating.count + 1));
-            rating.rating = newRating;
-            rating.count += 1;
-            rating.games.push(gameId); 
-            await rating.save();
+            if(rating){
+                const newRating = ((rating.rating * rating.count) + rate) / (rating.count + 1);
+                rating.rating = Math.min(5, Math.round(newRating));
+                rating.count += 1;
+                rating.games.push(gameId); 
+                await rating.save();
 
-            const answereds = await AnsweredModel.find({ gameId: gameId });
-            io.to(gameId).emit("onTheEnd", { data: { rating, answereds }});
+                const answereds = await AnsweredModel.find({ gameId: gameId });
+                io.to(gameId).emit("onTheEnd", { data: { rating, answereds }});
+            }
         }
 
     } catch (error) {

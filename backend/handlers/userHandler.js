@@ -22,7 +22,9 @@ export const getUser = async ( io, vkid ) => {
             }
     
             await user.save();
-
+            const games = await GameModel.find({ _id: { $in: user.games } });
+            if(games){ io.to(vkid).emit("myGames", { data: games}) }
+            
             io.to(vkid).emit("updatedUser", { data: { user } })
         } else {
             io.to(vkid).emit("updatedUser", { data: { user:{ firstName:'$2b$10$T72I44FcHBIcS81xrkFY3e2TJwaaTVLFp7d5wuddKeVEuc2.3WR0G' } } })
