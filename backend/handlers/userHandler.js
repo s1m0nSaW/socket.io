@@ -1,5 +1,6 @@
 import UserModel from "../models/User.js";
 import ComplimentModel from "../models/Compliment.js";
+import GameModel from "../models/Game.js";
 
 export const getUser = async ( io, vkid ) => {
     try {
