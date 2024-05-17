@@ -44,6 +44,11 @@ const sendNotification = async (playerId, text) => {
     }
 }
 
+export const userCoins = async (playerId1) => {
+    const player1 = await UserModel.findOne({ vkid: playerId1 });
+    return player1.rsvp
+}
+
 export const getThemes = async (io, vkid) => {
     try {
         const ratings = await RatingModel.find().exec();

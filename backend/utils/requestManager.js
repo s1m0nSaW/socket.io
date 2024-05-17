@@ -3,16 +3,16 @@ class RequestManager {
         this.activeRequests = new Map();
     }
 
-    has(requestId) {
-        return this.activeRequests.has(requestId);
+    has(userId) {
+        return this.activeRequests.has(userId);
     }
 
-    set(requestId, value) {
-        this.activeRequests.set(requestId, value);
+    set(userId, requestId) {
+        this.activeRequests.set(userId, requestId);
     }
 
-    delete(requestId) {
-        this.activeRequests.delete(requestId);
+    delete(userId) {
+        this.activeRequests.delete(userId);
     }
 
     clear() {

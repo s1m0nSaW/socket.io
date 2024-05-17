@@ -12,7 +12,7 @@ import { instrument } from "@socket.io/admin-ui";
 import { sendMessageHandler, getMessagesHandler, typingMessage } from './handlers/messagesHandler.js';
 import { create, getAnwered, update } from './handlers/answeredHandler.js';
 import { getUser, already, register, getFreeRsvp, checkPromoter, setPromoter, getCompliment, afterAds } from './handlers/userHandler.js';
-import { getThemes, newGame, newUser } from './handlers/newGameHandler.js';
+import { getThemes, newGame, newUser, userCoins } from './handlers/newGameHandler.js';
 import { acceptGame, allGames, gamesIn, gamesOut, getGames, myGames, removeGame } from './handlers/gamesPageHandler.js';
 import { createCompliment, getGame, nextStep, setTurn, theEnd, updateRating } from './handlers/gamePlayHandler.js';
 import requestManager from './utils/requestManager.js';
@@ -80,17 +80,17 @@ io.on("connection", (socket) => {
     socket.on("sendMessage", async ({ vkid, senderId, content, gameId, date }) => {
         const requestId = generateRequestId();
         const userId = socketUserIdMap[socket.id]; // Получаем userId из мапы
-        if (requestManager.has(requestId)) {
-            console.log(`Request ${requestId} is already in flight`);
+        if (requestManager.has(userId)) {
+            console.log(`User ${userId} is already in flight`);
             return;
         }
-        requestManager.set(requestId, true);
+        requestManager.set(userId, requestId);
         try {
             if (userId === vkid) { // Проверяем соответствие userId и vkid
                 await sendMessageHandler( io, userId, senderId, content, gameId, date );
             } else return;
         } finally {
-            requestManager.delete(requestId);
+            requestManager.delete(userId);
         }
     });
 
@@ -128,17 +128,21 @@ io.on("connection", (socket) => {
     socket.on("newGame", async ({ playerId1, playerId2, theme }) => {
         const requestId = generateRequestId();
         const userId = socketUserIdMap[socket.id]; // Получаем userId из мапы
-        if (requestManager.has(requestId)) {
-            console.log(`Request ${requestId} is already in flight`);
+        if (requestManager.has(userId)) {
+            console.log(`User ${userId} is already in flight`);
             return;
         }
-        requestManager.set(requestId, true);
+        if (!userCoins(playerId1) || userCoins(playerId1) < 1) {
+            console.log(`User ${userId} does not have enough coins`);
+            return;
+        }
+        requestManager.set(userId, requestId);
         try {
             if(userId === playerId1){
                 await newGame(io, playerId1, playerId2, theme, socketUserIdMap)
             } else return;
         } finally {
-            requestManager.delete(requestId);
+            requestManager.delete(userId);
         }
     });
     socket.on("newPlayer", async ({ vkid, playerId, status, firstName, avaUrl }) => newUser(io, vkid, playerId, status, firstName, avaUrl));
@@ -172,17 +176,17 @@ io.on("connection", (socket) => {
     socket.on("makeCompliment", async ({vkid, from, to, key, title, price, image, name}) => {
         const userId = socketUserIdMap[socket.id]; // Получаем userId из мапы
         const requestId = generateRequestId();
-        if (requestManager.has(requestId)) {
-            console.log(`Request ${requestId} is already in flight`);
+        if (requestManager.has(userId)) {
+            console.log(`User ${userId} is already in flight`);
             return;
         }
-        requestManager.set(requestId, true);
+        requestManager.set(userId, requestId);
         try {
             if(userId === vkid){
                 await createCompliment(io, userId, from, to, key, title, price, image, name)
             } else return;
         } finally {
-            requestManager.delete(requestId);
+            requestManager.delete(userId);
         }
     });
 
