@@ -223,8 +223,10 @@ const handleOrderStatusChange = async (params) => {
                 const item = await ItemModel.findOne({ item: params.item });
                 const user = await UserModel.findOne({ vkid: params.user_id });
                 if(item?.type === 'rsvp'){
-                    user.rsvp += item.count;
-                    await user.save();
+                    if(user){
+                        user.rsvp += item.count;
+                        await user.save();
+                    }
                 }
 
                 // Формируем ответ
