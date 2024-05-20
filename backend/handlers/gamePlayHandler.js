@@ -111,8 +111,7 @@ export const updateRating = async (io, ratingId, rate, gameId) => {
             const rating = await RatingModel.findById(ratingId);
 
             if(rating){
-                const newRating = ((rating.rating * rating.count) + rate) / (rating.count + 1);
-                rating.rating = Math.min(5, Math.round(newRating));
+                rating.rating += rate;
                 rating.count += 1;
                 rating.games.push(gameId); 
                 await rating.save();
