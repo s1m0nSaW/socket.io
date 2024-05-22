@@ -105,11 +105,11 @@ export const theEnd = async ( io, gameId, theme, socketUserIdMap ) => {
 }
 
 export const updateRating = async (io, ratingId, rate, gameId) => {
-
     try {
-        if(rate > 0 || rate <= 5) {
+        if(rate < 1 || rate > 5) {
+            console.log('подмена данных rate:', rate)
+        } else {
             const rating = await RatingModel.findById(ratingId);
-
             if(rating){
                 rating.rating += rate;
                 rating.count += 1;
@@ -120,7 +120,6 @@ export const updateRating = async (io, ratingId, rate, gameId) => {
                 io.to(gameId).emit("onTheEnd", { data: { rating, answereds }});
             }
         }
-
     } catch (error) {
         console.log(error);
     }

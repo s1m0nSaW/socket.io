@@ -172,7 +172,20 @@ io.on("connection", (socket) => {
         nextStep(io, userId, gameId, socketUserIdMap);
     });
     socket.on("theEnd", async ({gameId, theme}) => theEnd(io, gameId, theme, socketUserIdMap));
-    socket.on("updateRating", async ({ratingId, rate, gameId}) => updateRating(io, ratingId, rate, gameId));
+    socket.on("updateRating", async ({ratingId, rate, gameId}) => {
+        const userId = socketUserIdMap[socket.id]; // Получаем userId из мапы
+        const requestId = generateRequestId();
+        if (requestManager.has(userId)) {
+            console.log(`User ${userId} is already in flight`);
+            return;
+        }
+        requestManager.set(userId, requestId);
+        try {
+            await updateRating(io, ratingId, rate, gameId)
+        } finally {
+            requestManager.delete(userId);
+        }
+    });
     socket.on("makeCompliment", async ({vkid, from, to, key, title, price, image, name}) => {
         const userId = socketUserIdMap[socket.id]; // Получаем userId из мапы
         const requestId = generateRequestId();
