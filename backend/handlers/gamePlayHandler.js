@@ -106,6 +106,7 @@ export const theEnd = async ( io, gameId, theme, socketUserIdMap ) => {
 
 export const updateRating = async (io, ratingId, rate, gameId) => {
     try {
+        rate = Number(rate);
         if(rate < 1 || rate > 5) {
             console.log('подмена данных rate:', rate)
         } else {
